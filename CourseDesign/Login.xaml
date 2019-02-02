@@ -6,8 +6,5 @@
         xmlns:local="clr-namespace:CourseDesign"
         mc:Ignorable="d"
         Title="Login" Height="450" Width="800">
-    <Grid>
-        <Button x:Name="button" Content="秋冬套nb" HorizontalAlignment="Left" Margin="203,118,0,0" VerticalAlignment="Top" Width="75"/>
-
-    </Grid>
+    <Grid/>
 </Window>
