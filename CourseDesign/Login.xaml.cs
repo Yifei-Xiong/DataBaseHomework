@@ -27,7 +27,8 @@ namespace CourseDesign {
 		}
 
 		private void button_login_Click(object sender, RoutedEventArgs e) {
-
+			ClientWindow clientWindow = new ClientWindow();
+			clientWindow.ShowDialog();
 		}
 
 		private void button_about_Click(object sender, RoutedEventArgs e) {
