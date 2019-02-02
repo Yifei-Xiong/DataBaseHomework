@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CourseDesign"
         mc:Ignorable="d"
-        Title="登陆 - IM by BMP136 &amp; Night_Wso" Height="233.041" Width="386.8">
+        Title="登陆 - IM by BMP136 &amp; Night_Wso" Height="233.041" Width="386.8" ResizeMode="NoResize">
     <Grid>
         <TextBox x:Name="textBox_id" HorizontalAlignment="Left" Height="23" Margin="196,28,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
         <PasswordBox x:Name="passwordBox" HorizontalAlignment="Left" Height="23" Margin="196,64,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>

@@ -47,5 +47,9 @@ namespace CourseDesign {
 			About about = new About();
 			about.ShowDialog();
 		}
+
+		private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			string ChatUserName = listBox.SelectedItem.ToString();
+		}
 	}
 }
