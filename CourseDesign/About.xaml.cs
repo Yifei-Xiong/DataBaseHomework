@@ -10,29 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace CourseDesign {
 	/// <summary>
-	/// MainWindow.xaml 的交互逻辑
+	/// About.xaml 的交互逻辑
 	/// </summary>
-	public partial class MainWindow : Window {
-		public MainWindow() {
+	public partial class About : Window {
+		public About() {
 			InitializeComponent();
 		}
 
-		private void button_register_Click(object sender, RoutedEventArgs e) {
-
-		}
-
-		private void button_login_Click(object sender, RoutedEventArgs e) {
-
-		}
-
-		private void button_about_Click(object sender, RoutedEventArgs e) {
-			About about = new About();
-			about.ShowDialog();
+		private void button_Click(object sender, RoutedEventArgs e) {
+			Close();
 		}
 	}
 }
