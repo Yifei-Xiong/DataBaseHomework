@@ -22,13 +22,19 @@ namespace CourseDesign {
 			InitializeComponent();
 		}
 
+		public Login(string UserID) {
+			InitializeComponent();
+			textBox_id.Text = UserID;
+		}
+
 		private void button_register_Click(object sender, RoutedEventArgs e) {
 
 		}
 
 		private void button_login_Click(object sender, RoutedEventArgs e) {
-			ClientWindow clientWindow = new ClientWindow();
-			clientWindow.ShowDialog();
+			ClientWindow clientWindow = new ClientWindow(textBox_id.Text); //传入用户名
+			clientWindow.Show();
+			Close();
 		}
 
 		private void button_about_Click(object sender, RoutedEventArgs e) {
