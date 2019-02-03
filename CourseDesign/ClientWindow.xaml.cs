@@ -49,7 +49,7 @@ namespace CourseDesign {
 		}
 
 		private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			string ChatUserName = listBox.SelectedItem.ToString();
+			string ChatUserName = listBox.SelectedItem.ToString(); //当前聊天者的姓名
 		}
 	}
 }
