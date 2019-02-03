@@ -17,12 +17,12 @@ using System.Windows.Shapes;
 
 namespace Listener
 {
-    /// <summary>
-    /// MainWindow.xaml 的交互逻辑
-    /// </summary>
-    public partial class MainWindow : Window
+	/// <summary>
+	/// ServerWindow.xaml 的交互逻辑
+	/// </summary>
+	public partial class ServerWindow : Window
     {
-        public MainWindow()
+        public ServerWindow()
         {
             InitializeComponent();
             var threadAccept = new Thread(AcceptClientConnect);

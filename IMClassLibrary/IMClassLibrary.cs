@@ -21,6 +21,11 @@ namespace IMClassLibrary
 				return ms.GetBuffer();
 			}
 		} //数据包转化为字节数组
+		public DataPackage(string sender, string receiver) {
+			this.Sender = sender;
+			this.Receiver = receiver;
+			sendTime = DateTime.Now;
+		} //构造函数 接受发送者与接收者字符串
 		private readonly DateTime sendTime; //消息的发送时间
 		public string Sender { get; set; }
 		public string Receiver { get; set; }
@@ -38,6 +43,10 @@ namespace IMClassLibrary
 				}
 			}
 		} //构造函数 字节数组转化为数据包
+		public LoginDataPackage(string sender, string receiver, string userID, string password) : base(sender,receiver) {
+			this.UserID = userID;
+			this.Password = password;
+		} //构造函数 接受发送者,接收者字符串,登录用户名与密码
 		public string UserID { get; set; } //登录用户名
 		public string Password { protected get; set; } //登录密码
 	}
@@ -53,7 +62,10 @@ namespace IMClassLibrary
 				}
 			}
 		} //构造函数 字节数组转化为数据包
-		public string UserID { get; set; } //登录用户名
+		public LogoutDataPackage(string sender, string receiver, string userID) : base(sender, receiver) {
+			this.UserID = userID;
+		} //构造函数 接受发送者,接收者字符串,登出用户名
+		public string UserID { get; set; } //登出用户名
 	}
 
 	//聊天数据包类
@@ -67,6 +79,9 @@ namespace IMClassLibrary
 				}
 			}
 		} //构造函数 字节数组转化为数据包
+		public ChatDataPackage(string sender, string receiver, string message) : base(sender, receiver) {
+			this.Message = message;
+		} //构造函数 接受发送者,接收者字符串,发送的消息
 		public string Message { get; set; } //发送的消息
 	}
 
@@ -75,6 +90,9 @@ namespace IMClassLibrary
 		public SingleChatDataPackage(byte[] Bytes) : base(Bytes) {
 
 		} //构造函数 字节数组转化为数据包
+		public SingleChatDataPackage(string sender, string receiver, string message) : base(sender,receiver,message) {
+
+		} //构造函数 接受发送者,接收者字符串,发送的消息
 	}
 
 	//多人聊天数据包类
@@ -82,5 +100,8 @@ namespace IMClassLibrary
 		public MultiChatDataPackage (byte[] Bytes) : base(Bytes) {
 			
 		} //构造函数 字节数组转化为数据包
+		public MultiChatDataPackage(string sender, string receiver, string message) : base(sender, receiver, message) {
+
+		} //构造函数 接受发送者,接收者字符串,发送的消息
 	}
 }
