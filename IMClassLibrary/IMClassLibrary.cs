@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace IMClassLibrary
 {
 	//数据包类
-	abstract class DataPackage {
+	public abstract class DataPackage {
 		public DataPackage() {
 			sendTime = DateTime.Now;
 		}
@@ -32,7 +32,7 @@ namespace IMClassLibrary
 	}
 
 	//登入数据包类
-	class LoginDataPackage : DataPackage {
+	public class LoginDataPackage : DataPackage {
 		public LoginDataPackage(byte[] Bytes) {
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
@@ -52,7 +52,7 @@ namespace IMClassLibrary
 	}
 
 	//登出数据包类
-	class LogoutDataPackage : DataPackage {
+	public class LogoutDataPackage : DataPackage {
 		public LogoutDataPackage(byte[] Bytes) {
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
@@ -69,7 +69,7 @@ namespace IMClassLibrary
 	}
 
 	//聊天数据包类
-	class ChatDataPackage : DataPackage {
+	public class ChatDataPackage : DataPackage {
 		public ChatDataPackage (byte[] Bytes) {
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
@@ -86,7 +86,7 @@ namespace IMClassLibrary
 	}
 
 	//单人聊天数据包类
-	class SingleChatDataPackage : ChatDataPackage {
+	public class SingleChatDataPackage : ChatDataPackage {
 		public SingleChatDataPackage(byte[] Bytes) : base(Bytes) {
 
 		} //构造函数 字节数组转化为数据包
@@ -96,7 +96,7 @@ namespace IMClassLibrary
 	}
 
 	//多人聊天数据包类
-	class MultiChatDataPackage : ChatDataPackage {
+	public class MultiChatDataPackage : ChatDataPackage {
 		public MultiChatDataPackage (byte[] Bytes) : base(Bytes) {
 			
 		} //构造函数 字节数组转化为数据包
