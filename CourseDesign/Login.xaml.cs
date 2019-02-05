@@ -31,10 +31,15 @@ namespace CourseDesign {
 
 		private void button_register_Click(object sender, RoutedEventArgs e) {
 
+			MessageBox.Show("注册成功！");
+			ClientWindow clientWindow = new ClientWindow(textBox_id.Text); //传入用户名
+			clientWindow.Show();
+			Close();
 		}
 
 		private void button_login_Click(object sender, RoutedEventArgs e) {
-			string[] ip = textBlock_ip.Text.Split(':');
+			/*
+			string[] ip = textBox_ip.Text.Split(':');
 			TcpClient tcpClient = new TcpClient();
 			IPAddress ServerIP = IPAddress.Parse(ip[0]);
 			tcpClient.Connect(ServerIP, int.Parse(ip[1])); //建立与服务器的连接
@@ -45,7 +50,7 @@ namespace CourseDesign {
 				Byte[] sendBytes = loginDataPackage.DataPackageToBytes(); //登录数据包转化为字节数组
 				networkStream.Write(sendBytes, 0, sendBytes.Length);
 			}
-
+			*/
 			ClientWindow clientWindow = new ClientWindow(textBox_id.Text); //传入用户名
 			clientWindow.Show();
 			Close();

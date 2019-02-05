@@ -34,6 +34,7 @@ namespace CourseDesign {
 
 		//登出
 		private void MenuItem_Logout_Click(object sender, RoutedEventArgs e) {
+
 			Login login = new Login(UserID);
 			login.Show();
 			Close(); //关闭ClientWindow窗口
