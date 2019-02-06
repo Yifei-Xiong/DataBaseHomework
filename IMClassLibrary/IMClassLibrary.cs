@@ -104,4 +104,20 @@ namespace IMClassLibrary
 
 		} //构造函数 接受发送者,接收者字符串,发送的消息
 	}
+
+	//更改名称数据包类
+	public class ChangeNameDataPackage : DataPackage {
+		public ChangeNameDataPackage(byte[] Bytes) {
+			using (MemoryStream ms = new MemoryStream(Bytes)) {
+				IFormatter formatter = new BinaryFormatter();
+				if (formatter.Deserialize(ms) is ChangeNameDataPackage changeNameDataPackage) {
+					this.Name = changeNameDataPackage.Name;
+				}
+			}
+		} //构造函数 字节数组转化为数据包
+		public ChangeNameDataPackage(string sender, string receiver, string name) : base(sender, receiver) {
+			this.Name = name;
+		} //构造函数 接受发送者,接收者字符串,用户名称
+		public string Name { get; set; } //用户名称
+	}
 }
