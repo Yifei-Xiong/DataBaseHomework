@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <TextBox x:Name="portText" HorizontalAlignment="Left" Height="79" Margin="252,51,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="354" FontSize="48" TextChanged="ProtText_TextChanged"/>
+        <TextBlock x:Name="port" HorizontalAlignment="Left" Margin="62,51,0,0" TextWrapping="Wrap" Text="端口号" VerticalAlignment="Top" Height="79" Width="152" FontSize="48"/>
+        <Button x:Name="StartButton" Content="开始" HorizontalAlignment="Left" Margin="143,268,0,0" VerticalAlignment="Top" Width="238" Height="58" FontSize="48"/>
+        <Button x:Name="EndButton" Content="关闭" HorizontalAlignment="Left" VerticalAlignment="Top" Width="234" Margin="451,268,0,0" Height="58" FontSize="48"/>
+
     </Grid>
 </Window>
