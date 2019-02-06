@@ -33,10 +33,16 @@ namespace Listener
         {
             while (true)
             {
-                try
-                {
-                }
+
             }
         }
-    }
+
+		private void button_StartServer_Click(object sender, RoutedEventArgs e) {
+
+		}
+
+		private void button_StopServer_Click(object sender, RoutedEventArgs e) {
+
+		}
+	}
 }

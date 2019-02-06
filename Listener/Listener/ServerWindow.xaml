@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Listener"
         mc:Ignorable="d"
-        Title="ServerWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="服务端登陆 - IM by BMP136 &amp; Night_Wso" Height="233.041" Width="386.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
-        <TextBox x:Name="portText" HorizontalAlignment="Left" Height="79" Margin="252,51,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="354" FontSize="48" TextChanged="ProtText_TextChanged"/>
-        <TextBlock x:Name="port" HorizontalAlignment="Left" Margin="62,51,0,0" TextWrapping="Wrap" Text="端口号" VerticalAlignment="Top" Height="79" Width="152" FontSize="48"/>
-        <Button x:Name="StartButton" Content="开始" HorizontalAlignment="Left" Margin="143,268,0,0" VerticalAlignment="Top" Width="238" Height="58" FontSize="48"/>
-        <Button x:Name="EndButton" Content="关闭" HorizontalAlignment="Left" VerticalAlignment="Top" Width="234" Margin="451,268,0,0" Height="58" FontSize="48"/>
 
+        <Button x:Name="button_StartServer" Content="运行" HorizontalAlignment="Left" Margin="86,146,0,0" VerticalAlignment="Top" Width="75" Click="button_StartServer_Click" />
+        <Button x:Name="button_StopServer" Content="关闭" HorizontalAlignment="Left" Margin="216,146,0,0" VerticalAlignment="Top" Width="75" Click="button_StopServer_Click" />
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="106,68,0,0" TextWrapping="Wrap" Text="请输入端口号(1024-65535)：" VerticalAlignment="Top" Width="89"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="205,70,0,0" TextWrapping="Wrap" Text="37529" VerticalAlignment="Top" Width="55" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
     </Grid>
 </Window>
