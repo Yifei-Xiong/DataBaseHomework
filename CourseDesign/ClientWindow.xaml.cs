@@ -34,6 +34,7 @@ namespace CourseDesign {
 
 		//登出
 		private void MenuItem_Logout_Click(object sender, RoutedEventArgs e) {
+
 			Login login = new Login(UserID);
 			login.Show();
 			Close(); //关闭ClientWindow窗口
@@ -49,7 +50,12 @@ namespace CourseDesign {
 		}
 
 		private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			string ChatUserName = listBox.SelectedItem.ToString();
+			string ChatUserName = listBox.SelectedItem.ToString(); //当前聊天者的姓名
+		}
+
+		private void button_SendMessage_Click(object sender, RoutedEventArgs e) {
+			IMClassLibrary.SingleChatDataPackage singleChatDataPackage = new IMClassLibrary.SingleChatDataPackage(UserID, "wuxia", ChatBox.Text); //初始化单人聊天数据包
+			Byte[] sendBytes = singleChatDataPackage.DataPackageToBytes(); //单人聊天数据包转化为字节数组
 		}
 	}
 }
