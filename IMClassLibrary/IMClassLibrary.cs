@@ -51,7 +51,7 @@ namespace IMClassLibrary
 			this.Password = password;
 		} //构造函数 接受发送者,接收者字符串,登录用户名与密码
 		public string UserID { get; set; } //登录用户名
-		public string Password { protected get; set; } //登录密码
+		public string Password { get; set; } //登录密码
 	}
 
 	//登出数据包类

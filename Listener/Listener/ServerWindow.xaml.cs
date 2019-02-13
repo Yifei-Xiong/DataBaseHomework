@@ -19,6 +19,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Listener
 {
@@ -29,7 +31,7 @@ namespace Listener
 
     public class UserClass
     {
-        public int userId;
+        public string userId;
         public string name;
         public string password;
         public bool isOnline;
@@ -78,24 +80,58 @@ namespace Listener
         private void AcceptClientConnect()
         {
             IPAddress ip = IPAddress.Parse("127.0.0.1");//服务器端ip
-            var myListener = new TcpListener(ip, 7890);//创建TcpListener实例
+            var myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
             myListener.Start();//start
             var newClient = myListener.AcceptTcpClient();//等待客户端连接
+            myListener.Stop();
             var newThread = new Thread(AcceptClientConnect);
             newThread.Start();
             while (true)
             {
                 try {
-
-                } catch {
-
+                    NetworkStream clientStream = newClient.GetStream();
+                    byte[] receiveBytes = new byte[10000];
+                    clientStream.Read(receiveBytes, 0, 10000);
+                    int type = 0;
+                    using (MemoryStream ms = new MemoryStream(receiveBytes)) {
+                        IFormatter formatter = new BinaryFormatter();
+                        var DataPackage = formatter.Deserialize(ms) as IMClassLibrary.DataPackage;
+                        if (DataPackage == null) {
+                            MessageBox.Show("接收数据非数据包");
+                            continue;
+                        }
+                        type = DataPackage.MessageType;
+                    }
+                    if (type == 0) {
+                        MessageBox.Show("数据包非法");
+                        continue;
+                    }
+                    switch (type) {
+                        case 1: {
+                                var LogIn = new IMClassLibrary.LoginDataPackage(receiveBytes);
+                                bool SuccessLogin = false;
+                                foreach(UserClass nowUser in user) {
+                                    if (LogIn.UserID == nowUser.userId && LogIn.Password == nowUser.password) {
+                                        SuccessLogin = true;
+                                    }
+                                }
+                            }
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                    }
+                }
+                catch {
+                    break;
                 }
             }
         }
 
 		private void button_StartServer_Click(object sender, RoutedEventArgs e) {
             bool canTurnPortToInt = int.TryParse(port.Text, out nowEnterPort);
-            if (canTurnPortToInt == false || nowEnterPort > 65536) {
+            if (canTurnPortToInt == false || nowEnterPort > 65535 || nowEnterPort < 1024) {
                 MessageBox.Show("端口号输入错误");
                 return;
             }
