@@ -26,7 +26,7 @@ namespace IMClassLibrary
 			this.Receiver = receiver;
 			sendTime = DateTime.Now;
 		} //构造函数 接受发送者与接收者字符串
-		private readonly DateTime sendTime; //消息的发送时间
+		public readonly DateTime sendTime; //消息的发送时间
 		public string Sender { get; set; }
 		public string Receiver { get; set; }
 		public int MessageType = 0; //数据包类Type为0
@@ -100,6 +100,9 @@ namespace IMClassLibrary
 		public SingleChatDataPackage(string sender, string receiver, string message) : base(sender,receiver,message) {
 			MessageType = 4;
 		} //构造函数 接受发送者,接收者字符串,发送的消息
+		public static string operator +(string str, SingleChatDataPackage data) {
+			return str+data.Message;
+		}
 	}
 
 	//多人聊天数据包类

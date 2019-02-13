@@ -45,7 +45,7 @@ namespace Listener
             InitializeComponent();
             button_StopServer.IsEnabled = false;
             //////user(ArrayList) Serization
-            GetSerizationUser();
+            //GetSerizationUser();
         }
 
         ~ ServerWindow() {
