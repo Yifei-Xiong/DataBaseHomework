@@ -35,6 +35,7 @@ namespace Listener
         public string name;
         public string password;
         public bool isOnline;
+        public ArrayList message;
     }
 
 	public partial class ServerWindow : Window
@@ -106,20 +107,46 @@ namespace Listener
                         MessageBox.Show("数据包非法");
                         continue;
                     }
+                    string processUser = "";
                     switch (type) {
                         case 1: {
                                 var LogIn = new IMClassLibrary.LoginDataPackage(receiveBytes);
                                 bool SuccessLogin = false;
-                                foreach(UserClass nowUser in user) {
+                                foreach (UserClass nowUser in user) {
                                     if (LogIn.UserID == nowUser.userId && LogIn.Password == nowUser.password) {
                                         SuccessLogin = true;
+                                        processUser = nowUser.userId;
+                                        nowUser.isOnline = true;
                                     }
+                                }
+                                if (SuccessLogin == false) 
+                                    return;
+                            }
+                            break;
+                        case 2: {
+                                var LogOut = new IMClassLibrary.LogoutDataPackage(receiveBytes);
+                                if (LogOut.UserID != processUser) {
+                                    MessageBox.Show("登出用户名非正确");
+                                    continue;
+                                }
+                                foreach (UserClass nowUser in user) {
+                                    if (nowUser.userId == processUser)
+                                        nowUser.isOnline = false;
                                 }
                             }
                             break;
-                        case 2:
+                        case 3: {
+                                MessageBox.Show("发送了父类聊天数据包");
+                            }
                             break;
-                        case 3:
+                        case 4: {
+                                var message = new IMClassLibrary.SingleChatDataPackage(receiveBytes);
+                                var receiver = message.Receiver;
+                                foreach (UserClass nowUser in user) {
+                                    if (receiver == nowUser.userId)
+                                        nowUser.message.Add(message);
+                                }
+                            }
                             break;
                     }
                 }
