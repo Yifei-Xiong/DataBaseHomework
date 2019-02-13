@@ -29,11 +29,13 @@ namespace IMClassLibrary
 		private readonly DateTime sendTime; //消息的发送时间
 		public string Sender { get; set; }
 		public string Receiver { get; set; }
+		public int MessageType = 0; //数据包类Type为0
 	}
 
 	//登入数据包类
 	public class LoginDataPackage : DataPackage {
 		public LoginDataPackage(byte[] Bytes) {
+			MessageType = 1;
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
 				LoginDataPackage loginDataPackage = formatter.Deserialize(ms) as LoginDataPackage;
@@ -44,6 +46,7 @@ namespace IMClassLibrary
 			}
 		} //构造函数 字节数组转化为数据包
 		public LoginDataPackage(string sender, string receiver, string userID, string password) : base(sender,receiver) {
+			MessageType = 1;
 			this.UserID = userID;
 			this.Password = password;
 		} //构造函数 接受发送者,接收者字符串,登录用户名与密码
@@ -54,6 +57,7 @@ namespace IMClassLibrary
 	//登出数据包类
 	public class LogoutDataPackage : DataPackage {
 		public LogoutDataPackage(byte[] Bytes) {
+			MessageType = 2;
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
 				LogoutDataPackage logoutDataPackage = formatter.Deserialize(ms) as LogoutDataPackage;
@@ -63,6 +67,7 @@ namespace IMClassLibrary
 			}
 		} //构造函数 字节数组转化为数据包
 		public LogoutDataPackage(string sender, string receiver, string userID) : base(sender, receiver) {
+			MessageType = 2;
 			this.UserID = userID;
 		} //构造函数 接受发送者,接收者字符串,登出用户名
 		public string UserID { get; set; } //登出用户名
@@ -71,6 +76,7 @@ namespace IMClassLibrary
 	//聊天数据包类
 	public class ChatDataPackage : DataPackage {
 		public ChatDataPackage (byte[] Bytes) {
+			MessageType = 3;
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
 				ChatDataPackage chatDataPackage = formatter.Deserialize(ms) as ChatDataPackage;
@@ -80,6 +86,7 @@ namespace IMClassLibrary
 			}
 		} //构造函数 字节数组转化为数据包
 		public ChatDataPackage(string sender, string receiver, string message) : base(sender, receiver) {
+			MessageType = 3;
 			this.Message = message;
 		} //构造函数 接受发送者,接收者字符串,发送的消息
 		public string Message { get; set; } //发送的消息
@@ -88,26 +95,27 @@ namespace IMClassLibrary
 	//单人聊天数据包类
 	public class SingleChatDataPackage : ChatDataPackage {
 		public SingleChatDataPackage(byte[] Bytes) : base(Bytes) {
-
+			MessageType = 4;
 		} //构造函数 字节数组转化为数据包
 		public SingleChatDataPackage(string sender, string receiver, string message) : base(sender,receiver,message) {
-
+			MessageType = 4;
 		} //构造函数 接受发送者,接收者字符串,发送的消息
 	}
 
 	//多人聊天数据包类
 	public class MultiChatDataPackage : ChatDataPackage {
 		public MultiChatDataPackage (byte[] Bytes) : base(Bytes) {
-			
+			MessageType = 5;
 		} //构造函数 字节数组转化为数据包
 		public MultiChatDataPackage(string sender, string receiver, string message) : base(sender, receiver, message) {
-
+			MessageType = 5;
 		} //构造函数 接受发送者,接收者字符串,发送的消息
 	}
 
 	//更改名称数据包类
 	public class ChangeNameDataPackage : DataPackage {
 		public ChangeNameDataPackage(byte[] Bytes) {
+			MessageType = 6;
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
 				if (formatter.Deserialize(ms) is ChangeNameDataPackage changeNameDataPackage) {
@@ -116,6 +124,7 @@ namespace IMClassLibrary
 			}
 		} //构造函数 字节数组转化为数据包
 		public ChangeNameDataPackage(string sender, string receiver, string name) : base(sender, receiver) {
+			MessageType = 6;
 			this.Name = name;
 		} //构造函数 接受发送者,接收者字符串,用户名称
 		public string Name { get; set; } //用户名称
