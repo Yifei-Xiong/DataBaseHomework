@@ -43,7 +43,6 @@ namespace Listener
         public ServerWindow()
         {
             InitializeComponent();
-            button_StopServer.IsEnabled = false;
             //////user(ArrayList) Serization
             GetSerizationUser();
         }
@@ -87,10 +86,23 @@ namespace Listener
             myListener.Stop();
             var newThread = new Thread(AcceptClientConnect);
             newThread.Start();
+            int index = -1;
             while (true)
             {
                 try {
                     NetworkStream clientStream = newClient.GetStream();
+                    if (index >= 0) {
+                        var nUser = (UserClass)user[index];
+                        if (nUser.message.Count > 0) {
+                            foreach (IMClassLibrary.DataPackage message in nUser.message) {
+                                var info = message.DataPackageToBytes();
+                                clientStream.Write(info, 0, info.Length);
+                            }
+                            nUser.message.Clear();
+                            continue;
+                        }
+                    }
+
                     byte[] receiveBytes = new byte[10000];
                     clientStream.Read(receiveBytes, 0, 10000);
                     int type = 0;
@@ -116,6 +128,7 @@ namespace Listener
                                     if (LogIn.UserID == nowUser.userId && LogIn.Password == nowUser.password) {
                                         SuccessLogin = true;
                                         processUser = nowUser.userId;
+                                        index = int.Parse(processUser) - 1000;
                                         nowUser.isOnline = true;
                                     }
                                 }
@@ -143,7 +156,24 @@ namespace Listener
                                 var message = new IMClassLibrary.SingleChatDataPackage(receiveBytes);
                                 var receiver = message.Receiver;
                                 foreach (UserClass nowUser in user) {
+                                    if (receiver == nowUser.userId) {
+                                        nowUser.message.Add(message);
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        case 5: {
+
+                            }
+                            break;
+                        case 6: {
+                                var message = new IMClassLibrary.ChangeNameDataPackage(receiveBytes);
+                                var receiver = message.Receiver;
+                                foreach (UserClass nowUser in user) {
                                     if (receiver == nowUser.userId)
+                                        nowUser.name = message.Name;
+                                    else
                                         nowUser.message.Add(message);
                                 }
                             }
@@ -165,9 +195,5 @@ namespace Listener
             var threadAccept = new Thread(AcceptClientConnect);
             threadAccept.Start();
         }
-
-		private void button_StopServer_Click(object sender, RoutedEventArgs e) {
-
-		}
 	}
 }
