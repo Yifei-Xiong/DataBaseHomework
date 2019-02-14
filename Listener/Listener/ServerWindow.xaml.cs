@@ -31,27 +31,42 @@ namespace Listener
 
     public class UserClass
     {
-        public string userId;
-        public string name;
-        public string password;
-        public bool isOnline;
-        public ArrayList message;
+        public string userId { get; set; }
+        public string name { get; set; }
+        public string password { get; set; }
+        public bool isOnline { get; set; }
+        public ArrayList message { get; set; }
+
+        public UserClass() { }
+        public UserClass(string ID, string Name, string Password) {
+            userId = ID;
+            name = Name;
+            password = Password;
+            isOnline = false;
+            message.Clear();
+        }
     }
 
 	public partial class ServerWindow : Window
     {
+        int UserCnt = 1000;
+        ArrayList user;
+
         public ServerWindow()
         {
             InitializeComponent();
             //////user(ArrayList) Serization
-            //GetSerizationUser();
+            GetSerizationUser();
+            if (user.Count == 0) {
+                UserClass ADMIN = new UserClass(Convert.ToString(UserCnt++), "admin", "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918");
+                user.Add(ADMIN);
+            }
         }
 
         ~ ServerWindow() {
             SerizationUser();
         }
 
-        ArrayList user;
         private void SerizationUser() {
             XmlSerializer ser = new XmlSerializer(typeof(ArrayList));
             MemoryStream mem = new MemoryStream();
@@ -59,7 +74,7 @@ namespace Listener
             ser.Serialize(writer, user);
             writer.Close();
             string s = Encoding.Default.GetString(mem.ToArray());
-            FileStream fs = new FileStream("C:\\all.txt", FileMode.Create);
+            FileStream fs = new FileStream("C:\\USERDATA.txt", FileMode.Create);
             StreamWriter sw = new StreamWriter(fs);
             sw.Write(s);
             sw.Flush();
@@ -68,11 +83,16 @@ namespace Listener
         }
 
         private void GetSerizationUser() {
-            StreamReader sr = new StreamReader("C:\\all.txt");
-            string s = sr.ReadLine();
-            XmlSerializer mySerializer = new XmlSerializer(typeof(ArrayList));
-            StreamReader mem2 = new StreamReader(new MemoryStream(Encoding.Default.GetBytes(s)), Encoding.Default);
-            ArrayList myObject = (ArrayList)mySerializer.Deserialize(mem2);
+            try {
+                StreamReader sr = new StreamReader("C:\\USERDATA.txt");
+                string s = sr.ReadLine();
+                XmlSerializer mySerializer = new XmlSerializer(typeof(ArrayList));
+                StreamReader mem2 = new StreamReader(new MemoryStream(Encoding.Default.GetBytes(s)), Encoding.Default);
+                ArrayList myObject = (ArrayList)mySerializer.Deserialize(mem2);
+            }
+            catch {
+                return;
+            }
         }
 
         private int nowEnterPort;
