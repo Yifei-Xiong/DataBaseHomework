@@ -113,6 +113,9 @@ namespace IMClassLibrary
 		public MultiChatDataPackage(string sender, string receiver, string message) : base(sender, receiver, message) {
 			MessageType = 5;
 		} //构造函数 接受发送者,接收者字符串,发送的消息
+		public static string operator +(string str, MultiChatDataPackage data) {
+			return str + data.Message;
+		}
 	}
 
 	//更改名称数据包类
@@ -132,4 +135,5 @@ namespace IMClassLibrary
 		} //构造函数 接受发送者,接收者字符串,用户名称
 		public string Name { get; set; } //用户名称
 	}
+
 }
