@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMClassLibrary", "IMClassLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Listener", "Listener\Listener\Listener.csproj", "{0E083E5F-083D-401D-8149-33507C4FE50D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2P_TCP", "P2P_TCP\P2P_TCP.csproj", "{3A623C53-6516-4DE6-AD4D-407D80D69286}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{0E083E5F-083D-401D-8149-33507C4FE50D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E083E5F-083D-401D-8149-33507C4FE50D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E083E5F-083D-401D-8149-33507C4FE50D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A623C53-6516-4DE6-AD4D-407D80D69286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A623C53-6516-4DE6-AD4D-407D80D69286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A623C53-6516-4DE6-AD4D-407D80D69286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A623C53-6516-4DE6-AD4D-407D80D69286}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -74,6 +74,7 @@ namespace CourseDesign {
 		private void button_SendMessage_Click(object sender, RoutedEventArgs e) {
 			IMClassLibrary.SingleChatDataPackage singleChatDataPackage = new IMClassLibrary.SingleChatDataPackage(UserID, "wuxia", ChatBox.Text); //初始化单人聊天数据包
 			Byte[] sendBytes = singleChatDataPackage.DataPackageToBytes(); //单人聊天数据包转化为字节数组
+
 		}
 		private void ReceiveMessage(IMClassLibrary.SingleChatDataPackage data) {
 			PersonMessage msg;
@@ -94,7 +95,6 @@ namespace CourseDesign {
 				item.Content = msg.Person;
 				listBox.Items.Add(item);
 			} //未存在此联系人，增加新联系人与聊天数据
-			listBox.Items[i]
 		}
 	}
 }
