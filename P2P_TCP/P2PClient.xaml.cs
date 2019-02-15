@@ -21,12 +21,13 @@ using System.Windows.Threading;
 
 namespace P2P_TCP {
 	/// <summary>
-	/// MainWindow.xaml 的交互逻辑
+	/// P2PClient.xaml 的交互逻辑
 	/// </summary>
-	public partial class MainWindow : Window {
-		public MainWindow() {
+	public partial class P2PClient : Window {
+		public P2PClient() {
 			InitializeComponent();
-			myIPAddress = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);
+			//myIPAddress = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);
+			myIPAddress = IPAddress.Parse("127.0.0.1");
 			MyPort++;
 			//一台计算机如果生成多个P2P终端,端口号应不同
 			for (int i = 0; i < 51; i++) {
@@ -157,7 +158,7 @@ namespace P2P_TCP {
 			int i2 = s.IndexOf(":", i1 + 1); //第二个:
 			FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
 			friendIPAndPort.friendIP = s.Substring(0, i1); //提取IP字符串
-			friendIPAndPort.friendIP = s.Substring(i1 + 1, i2 - i1 - 2); //提取端口字符串
+			friendIPAndPort.friendPort = s.Substring(i1 + 1, i2 - i1 - 2); //提取端口字符串
 			int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
 			if(k==-1) {
 				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
@@ -209,5 +210,34 @@ namespace P2P_TCP {
 		private void SetListViewSource (FriendIPAndPort arg) {
 			myFriendIPAndPorts.Add(arg);
 		} //修改FriendListView的方法
+
+		private void AddFriendButton_Click(object sender, RoutedEventArgs e) {
+			IPAddress myFriendIpAdress;
+			if(IPAddress.TryParse(addFriendIPTextBox.Text,out myFriendIpAdress)==false) {
+				MessageBox.Show("IP地址格式不正确！");
+				return;
+			}
+			int myFriendPort;
+			if(int.TryParse(addFriendPortTextBox.Text,out myFriendPort)==false) {
+				MessageBox.Show("端口号格式不正确！");
+				return;
+			}
+			else {
+				if (myFriendPort<1024|| myFriendPort>65535) {
+					MessageBox.Show("端口号范围不正确！(1024-65535)");
+					return;
+				}
+			}
+			FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
+			friendIPAndPort.friendIP = addFriendIPTextBox.Text; //IP字符串
+			friendIPAndPort.friendPort = addFriendPortTextBox.Text; //端口字符串
+			int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
+			if (k == -1) {
+				myFriendIPAndPorts.Add(friendIPAndPort);
+			} //未找到该ip与端口号，需要增加
+			else {
+				MessageBox.Show("好友已在列表中");
+			}
+		}
 	}
 }
