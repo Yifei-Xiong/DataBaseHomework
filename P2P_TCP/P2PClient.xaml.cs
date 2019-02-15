@@ -86,6 +86,7 @@ namespace P2P_TCP {
 				myIPAndPorts[i] = (FriendIPAndPort)FriendListView.SelectedItems[i];
 			} //得到所有要发送的好友IP和端口号
 			string s = IPAndPort + "说:" + SendMessageTextBox.Text; //要发送的字符串
+			FriendListBox.Items.Add(IPAndPort + "（本机）说:" + SendMessageTextBox.Text); //显示已发送的信息
 			UnicodeEncoding ascii = new UnicodeEncoding(); //以下将字符串转换为字节数组
 			int n = (ascii.GetBytes(s)).Length;
 			byte[] SendMsg = new byte[n];
@@ -117,11 +118,11 @@ namespace P2P_TCP {
 					netStream.Write(stateObject.buffer, 0, stateObject.buffer.Length);
 				}
 				else {
-					MessageBox.Show("发送到-" + stateObject.friendIPAndPort + "-失败");
+					MessageBox.Show("发送到" + stateObject.friendIPAndPort + "的消息失败");
 				}
 			}
 			catch {
-				MessageBox.Show("发送到-" + stateObject.friendIPAndPort + "-失败");
+				MessageBox.Show("发送到" + stateObject.friendIPAndPort + "的消息失败");
 			}
 			finally {
 				if (netStream != null) {
