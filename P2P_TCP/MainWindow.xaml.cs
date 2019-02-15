@@ -17,6 +17,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 namespace P2P_TCP {
 	/// <summary>
@@ -45,6 +46,9 @@ namespace P2P_TCP {
 			}
 			FriendListView.ItemsSource = myFriendIPAndPorts; //FriendListview的数据源
 			IPAndPort = myIPAddress.ToString() + ":" + MyPort.ToString();
+			ListenerThread = new Thread(new ThreadStart(ListenerthreadMethod));
+			ListenerThread.IsBackground = true; //主线程结束后，该线程自动结束
+			ListenerThread.Start(); //启动线程
 		}
 
 		static int MyPort = 1499; //本程序侦听准备使用的端口号,为静态变量
@@ -83,13 +87,13 @@ namespace P2P_TCP {
 			string s = IPAndPort + "说:" + SendMessageTextBox.Text; //要发送的字符串
 			UnicodeEncoding ascii = new UnicodeEncoding(); //以下将字符串转换为字节数组
 			int n = (ascii.GetBytes(s)).Length;
-			byte [] SendMsg = new byte[n];
+			byte[] SendMsg = new byte[n];
 			SendMsg = ascii.GetBytes(s);
 			string ip = null; //记录好友端IP
 			int port = 0; //记录好友端端口号
 			TcpClient tcpClient;
 			StateObject stateObject;
-			for(int i=0;i< myIPAndPorts.Length; i++) {
+			for (int i = 0; i < myIPAndPorts.Length; i++) {
 				tcpClient = new TcpClient(); //每次发送建立一个TcpClient类对象
 				stateObject = new StateObject(); ////每次发送建立一个StateObject类对象
 				stateObject.tcpClient = tcpClient;
@@ -108,19 +112,102 @@ namespace P2P_TCP {
 			try {
 				tcpClient.EndConnect(ar); //结束和下载服务器的连接，如下载错误将产生异常
 				netStream = tcpClient.GetStream();
-				if(netStream.CanWrite) {
-					netStream.Write(stateObject.buffer,0,stateObject.buffer.Length);
-				} else {
+				if (netStream.CanWrite) {
+					netStream.Write(stateObject.buffer, 0, stateObject.buffer.Length);
+				}
+				else {
 					MessageBox.Show("发送到-" + stateObject.friendIPAndPort + "-失败");
 				}
-			} catch {
+			}
+			catch {
 				MessageBox.Show("发送到-" + stateObject.friendIPAndPort + "-失败");
-			} finally {
-				if(netStream !=null) {
+			}
+			finally {
+				if (netStream != null) {
 					netStream.Close();
 				}
 				tcpClient.Close();
 			}
 		} //不在主线程执行
+
+		private Thread ListenerThread; //接收信息的侦听线程类变量
+		private delegate void OneArgDelegate(string arg); //代表无返回值有一个string参数方法
+		private delegate void SetList(FriendIPAndPort arg); //代表无返回值 FriendIPAndPort参数方法
+		private delegate void ReadDataF(TcpClient tcpClient); //代表无返回值 Tcpclient参数方法
+
+		private void ListenerthreadMethod() {
+			TcpClient tcpClient = null; //服务器和客户机连接的 TcpClient类对象
+			ReadDataF readDataF = new ReadDataF(readRevMsg); //方法 readRevMsg
+			while (true) {
+				try {
+					tcpClient = tcpListener.AcceptTcpClient(); //阻塞等待客户端的连接
+					readDataF.BeginInvoke(tcpClient, null, null); //异步调用方法readRevMsg
+				}
+				catch {
+
+				} //即使发生错误，如果tcpClient不为null，下次循环将引用其他对象
+			}
+		} //侦听线程执行的方法
+
+		public void readRevMsg(TcpClient tcpClient) {
+			byte[] bytes = ReadFromTcpClient(tcpClient);
+			UnicodeEncoding ascii = new UnicodeEncoding();
+			string s = ascii.GetString(bytes);
+			int i1 = s.IndexOf(":"); //第一个:
+			int i2 = s.IndexOf(":", i1 + 1); //第二个:
+			FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
+			friendIPAndPort.friendIP = s.Substring(0, i1); //提取IP字符串
+			friendIPAndPort.friendIP = s.Substring(i1 + 1, i2 - i1 - 2); //提取端口字符串
+			int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
+			if(k==-1) {
+				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
+			} //未找到该ip与端口号，需要增加
+			this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new OneArgDelegate(SetFriendListBox), s); //接受信息在FriendListBox显示
+		} //被异步调用的方法
+
+		public byte[] ReadFromTcpClient(TcpClient tcpClient) {
+			List<byte> data = new List<byte>();
+			NetworkStream netStream = null;
+			byte[] bytes = new byte[tcpClient.ReceiveBufferSize]; //字节数组保存接收到的数据
+			int n = 0;
+			try {
+				netStream = tcpClient.GetStream();
+				if(netStream.CanRead) {
+					do { //文件大小未知
+						n = netStream.Read(bytes, 0, (int)tcpClient.ReceiveBufferSize);
+						if (n == (int)tcpClient.ReceiveBufferSize) {
+							data.AddRange(bytes);
+						} //如果bytes被读入数据填满
+						else if (n != 0) {
+							byte[] bytes1 = new byte[n];
+							for (int i = 0; i < n; i++) {
+								bytes1[i] = bytes[i];
+							}
+							data.AddRange(bytes1);
+						} //读入的字节数不为0
+					} while (netStream.DataAvailable); //是否还有数据
+				} //判断数据是否可读
+				bytes = data.ToArray();
+			}
+			catch {
+				MessageBox.Show("读数据失败");
+				bytes = null;
+			}
+			finally {
+				if(netStream != null) {
+					netStream.Close();
+				}
+				tcpClient.Close();
+			}
+			return bytes;
+		}
+
+		private void SetFriendListBox(string text) {
+			FriendListBox.Items.Add(text);
+		} //修改FriendListBox的方法
+
+		private void SetListViewSource (FriendIPAndPort arg) {
+			myFriendIPAndPorts.Add(arg);
+		} //修改FriendListView的方法
 	}
 }

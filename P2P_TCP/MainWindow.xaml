@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="P2P终端" Height="450" Width="800">
     <Grid>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="34,378,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="125"/>
-        <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="34,1,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="34,378,0,0" TextWrapping="Wrap" Text="本机IP地址和端口号:" VerticalAlignment="Top" Width="125"/>
+        <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="34,0,0,404" TextWrapping="Wrap" Text="好友列表" VerticalAlignment="Bottom"/>
         <ListView x:Name="FriendListView" SelectionMode="Multiple" HorizontalAlignment="Left" Height="229" Margin="6,18,0,0" VerticalAlignment="Top" Width="229">
             <ListView.View>
                 <GridView AllowsColumnReorder="True">
@@ -20,6 +20,8 @@
         <TextBlock x:Name="SendMessageTextBlock" HorizontalAlignment="Left" Margin="41,263,0,0" TextWrapping="Wrap" Text="发送内容" VerticalAlignment="Top"/>
         <TextBox x:Name="SendMessageTextBox" HorizontalAlignment="Left" Height="23" Margin="41,283,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="SendMessageButton" Content="发送信息" HorizontalAlignment="Left" Margin="59,321,0,0" VerticalAlignment="Top" Width="75" Click="SendMessageButton_Click"/>
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="410,0,0,404" TextWrapping="Wrap" Text="收到的信息" VerticalAlignment="Bottom"/>
+        <ListBox x:Name="FriendListBox" HorizontalAlignment="Left" Height="229" Margin="263,18,0,0" VerticalAlignment="Top" Width="402"/>
 
     </Grid>
 </Window>
