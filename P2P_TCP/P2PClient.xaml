@@ -7,9 +7,24 @@
         mc:Ignorable="d"
         Title="P2P终端" Height="450" Width="800">
     <Grid>
+        <Menu x:Name="menu" Height="29" VerticalAlignment="Center"  DockPanel.Dock="Top" Margin="0,0,0,391" >
+            <MenuItem Header="文件(_F)" InputGestureText="Ctrl+F" Name="MenuItem_File" >
+                <MenuItem Header="好友列表保存到文件" HorizontalAlignment="Left" Click="MenuItem_Click" />
+                <MenuItem Header="好友列表保存到数据库" HorizontalAlignment="Left" />
+                <MenuItem Header="消息列表保存到文件" HorizontalAlignment="Left" Click="MenuItem_Click_1"/>
+                <MenuItem Header="消息列表保存到数据库" HorizontalAlignment="Left" />
+                <MenuItem Header="从文件导入好友列表" HorizontalAlignment="Left" />
+                <MenuItem Header="从数据库导入好友列表" HorizontalAlignment="Left" />
+                <MenuItem Header="从文件导入消息列表" HorizontalAlignment="Left" />
+                <MenuItem Header="从数据库导入消息列表" HorizontalAlignment="Left" />
+            </MenuItem>
+            <MenuItem Header="登出(_L)" InputGestureText="Ctrl+L" Name="MenuItem_Logout"  />
+            <MenuItem Header="退出(_E)" InputGestureText="Ctrl+E" Name="MenuItem_Exit" />
+            <MenuItem Header="关于(_A)" InputGestureText="Ctrl+A" Name="MenuItem_About"  />
+        </Menu>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="34,378,0,0" TextWrapping="Wrap" Text="本机IP地址和端口号:" VerticalAlignment="Top" Width="125"/>
-        <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="34,0,0,404" TextWrapping="Wrap" Text="好友列表" VerticalAlignment="Bottom"/>
-        <ListView x:Name="FriendListView" SelectionMode="Multiple" HorizontalAlignment="Left" Height="229" Margin="6,18,0,0" VerticalAlignment="Top" Width="229">
+        <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="24,0,0,370" TextWrapping="Wrap" Text="好友列表" VerticalAlignment="Bottom"/>
+        <ListView x:Name="FriendListView" SelectionMode="Multiple" HorizontalAlignment="Left" Height="229" Margin="12,54,0,0" VerticalAlignment="Top" Width="229">
             <ListView.View>
                 <GridView AllowsColumnReorder="True">
                     <GridViewColumn DisplayMemberBinding="{Binding Path=friendIP}" Header="好友IP" Width="160"/>
@@ -17,13 +32,13 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBlock x:Name="SendMessageTextBlock" HorizontalAlignment="Left" Margin="41,263,0,0" TextWrapping="Wrap" Text="发送内容" VerticalAlignment="Top"/>
-        <TextBox x:Name="SendMessageTextBox" HorizontalAlignment="Left" Height="23" Margin="41,283,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="SendMessageButton" Content="发送信息" HorizontalAlignment="Left" Margin="59,321,0,0" VerticalAlignment="Top" Width="75" Click="SendMessageButton_Click"/>
-        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="410,0,0,404" TextWrapping="Wrap" Text="收到的信息" VerticalAlignment="Bottom"/>
-        <ListBox x:Name="FriendListBox" HorizontalAlignment="Left" Height="229" Margin="263,18,0,0" VerticalAlignment="Top" Width="402"/>
-        <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="298,283,0,0" TextWrapping="Wrap" Text="增加的好友IP" VerticalAlignment="Top"/>
-        <TextBox x:Name="addFriendIPTextBox" HorizontalAlignment="Left" Height="23" Margin="421,275,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBlock x:Name="SendMessageTextBlock" HorizontalAlignment="Left" Margin="43,283,0,0" TextWrapping="Wrap" Text="发送内容" VerticalAlignment="Top"/>
+        <TextBox x:Name="SendMessageTextBox" HorizontalAlignment="Left" Height="23" Margin="43,303,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="SendMessageButton" Content="发送信息" HorizontalAlignment="Left" Margin="61,341,0,0" VerticalAlignment="Top" Width="75" Click="SendMessageButton_Click"/>
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="421,0,0,348" TextWrapping="Wrap" Text="收到的信息" VerticalAlignment="Bottom"/>
+        <ListBox x:Name="FriendListBox" HorizontalAlignment="Left" Height="229" Margin="291,77,0,0" VerticalAlignment="Top" Width="402"/>
+        <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="298,320,0,0" TextWrapping="Wrap" Text="增加的好友IP" VerticalAlignment="Top"/>
+        <TextBox x:Name="addFriendIPTextBox" HorizontalAlignment="Left" Height="23" Margin="421,312,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <TextBlock x:Name="textBlock4" HorizontalAlignment="Left" Margin="286,341,0,0" TextWrapping="Wrap" Text="增加的好友端口号" VerticalAlignment="Top"/>
         <TextBox x:Name="addFriendPortTextBox" HorizontalAlignment="Left" Height="23" Margin="421,340,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="AddFriendButton" Content="添加好友至列表" HorizontalAlignment="Left" Margin="410,378,0,0" VerticalAlignment="Top" Width="104" Click="AddFriendButton_Click"/>

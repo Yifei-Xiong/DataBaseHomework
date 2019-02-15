@@ -18,6 +18,9 @@ using System.Threading;
 using System.IO;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using Microsoft.Win32;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace P2P_TCP {
 	/// <summary>
@@ -238,6 +241,40 @@ namespace P2P_TCP {
 			} //未找到该ip与端口号，需要增加
 			else {
 				MessageBox.Show("好友已在列表中");
+			}
+		}
+
+		private void MenuItem_Click(object sender, RoutedEventArgs e) {
+			string s = "";
+			for (int i=0;i < myFriendIPAndPorts.Count;i++) {
+				s += myFriendIPAndPorts[i].friendIP + ":" + myFriendIPAndPorts[i].friendPort + "\r\n";
+			}
+			SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+			saveFileDialog1.Filter = "文本文档(*.txt)|*.txt|所有文件(*.*)|*.*";
+			if (saveFileDialog1.ShowDialog().Value) {
+				FileStream fs = new FileStream(saveFileDialog1.FileName, FileMode.Create);
+				StreamWriter streamWriter = new StreamWriter(fs, Encoding.Default);
+				streamWriter.Write(s);
+				streamWriter.Flush();
+				streamWriter.Close();
+				fs.Close();
+			}
+		}
+
+		private void MenuItem_Click_1(object sender, RoutedEventArgs e) {
+			string s = "";
+			foreach (var item in this.FriendListBox.Items) {
+				s += item.ToString() + "\r\n";
+			}
+			SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+			saveFileDialog1.Filter = "文本文档(*.txt)|*.txt|所有文件(*.*)|*.*";
+			if (saveFileDialog1.ShowDialog().Value) {
+				FileStream fs = new FileStream(saveFileDialog1.FileName, FileMode.Create);
+				StreamWriter streamWriter = new StreamWriter(fs, Encoding.Default);
+				streamWriter.Write(s);
+				streamWriter.Flush();
+				streamWriter.Close();
+				fs.Close();
 			}
 		}
 	}
