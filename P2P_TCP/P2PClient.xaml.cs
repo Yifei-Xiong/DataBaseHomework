@@ -277,5 +277,68 @@ namespace P2P_TCP {
 				fs.Close();
 			}
 		}
+
+		private void MenuItem_Click_2(object sender, RoutedEventArgs e) {
+			OpenFileDialog openFileDialog1 = new OpenFileDialog();
+			openFileDialog1.Filter = "文本文档(*.txt)|*.txt|所有文件(*.*)|*.*";
+			if (openFileDialog1.ShowDialog().Value) {
+				string s_FileName = openFileDialog1.FileName;
+				string FileExtension = System.IO.Path.GetExtension(s_FileName).ToUpper();
+				if (FileExtension == ".TXT") {
+					using (FileStream fileStream = File.OpenRead(s_FileName)) {
+						StreamReader reader = new StreamReader(fileStream);
+						string text = reader.ReadToEnd();
+						string[] friendData = text.Split('\n');
+						FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
+						foreach(string data in friendData) {
+							if(data==string.Empty) {
+								break; //防止最后一行换行符导致的多读入
+							}
+							string[] IPAndPort = data.Split(':');
+							friendIPAndPort.friendIP = IPAndPort[0]; //IP字符串
+							friendIPAndPort.friendPort = IPAndPort[1].Substring(0, IPAndPort[1].Length-1); //端口字符串，防止读入\r
+							int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
+							if (k == -1) {
+								myFriendIPAndPorts.Add(friendIPAndPort); //增加此好友
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private void MenuItem_Click_3(object sender, RoutedEventArgs e) {
+			OpenFileDialog openFileDialog1 = new OpenFileDialog();
+			openFileDialog1.Filter = "文本文档(*.txt)|*.txt|所有文件(*.*)|*.*";
+			if (openFileDialog1.ShowDialog().Value) {
+				string s_FileName = openFileDialog1.FileName;
+				string FileExtension = System.IO.Path.GetExtension(s_FileName).ToUpper();
+				if (FileExtension == ".TXT") {
+					using (FileStream fileStream = File.OpenRead(s_FileName)) {
+						StreamReader reader = new StreamReader(fileStream);
+						string[] data = reader.ReadToEnd().Split('\n');
+						foreach(string str in data) {
+							if (str == string.Empty) {
+								break; //防止最后一行换行符导致的多读入
+							}
+							FriendListBox.Items.Add(str.Substring(0, str.Length - 1)); //添加消息
+						}
+					}
+				}
+			}
+		}
+
+		private void MenuItem_Logout_Click(object sender, RoutedEventArgs e) {
+
+		}
+
+		private void MenuItem_Exit_Click(object sender, RoutedEventArgs e) {
+
+		}
+
+		private void MenuItem_About_Click(object sender, RoutedEventArgs e) {
+			CourseDesign.About about = new CourseDesign.About();
+			about.ShowDialog();
+		}
 	}
 }

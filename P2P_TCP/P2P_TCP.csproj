@@ -94,5 +94,19 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CourseDesign\CourseDesign.csproj">
+      <Project>{a987b490-582c-4362-8300-195cbb091f21}</Project>
+      <Name>CourseDesign</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IMClassLibrary\IMClassLibrary.csproj">
+      <Project>{e3d2c371-ac00-4612-b461-bde8db89601d}</Project>
+      <Name>IMClassLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Listener\Listener\Listener.csproj">
+      <Project>{0e083e5f-083d-401d-8149-33507c4fe50d}</Project>
+      <Name>Listener</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
