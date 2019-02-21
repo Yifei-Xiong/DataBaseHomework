@@ -27,7 +27,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="25*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="261.4,353,0,0" TextWrapping="Wrap" Text="本机IP地址和端口号:" VerticalAlignment="Top" Width="323" TextAlignment="Center" Grid.Column="1"/>
+            <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="261.2,372,0,0" TextWrapping="Wrap" Text="本机IP地址和端口号:" VerticalAlignment="Top" Width="323" TextAlignment="Center" Grid.Column="1"/>
             <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="8.4,0,0,373" TextWrapping="Wrap" Text="好友列表" VerticalAlignment="Bottom" Width="229" TextAlignment="Center" Grid.Column="1"/>
             <ListView x:Name="FriendListView" SelectionMode="Multiple" HorizontalAlignment="Left" Height="240" Margin="8.4,31,0,0" VerticalAlignment="Top" Width="229" Grid.Column="1">
                 <ListView.View>
@@ -39,14 +39,17 @@
             </ListView>
             <TextBlock x:Name="SendMessageTextBlock" HorizontalAlignment="Left" Margin="293.4,293,0,0" TextWrapping="Wrap" Text="发送内容" VerticalAlignment="Top" Width="67" TextAlignment="Center" Grid.Column="1"/>
             <TextBox x:Name="SendMessageTextBox" HorizontalAlignment="Left" Height="23" Margin="392.4,288,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="192" Grid.Column="1"/>
-            <Button x:Name="SendMessageButton" Content="发送信息" HorizontalAlignment="Left" Margin="392.4,321,0,0" VerticalAlignment="Top" Width="192" Click="SendMessageButton_Click" Grid.Column="1"/>
+            <Button x:Name="SendMessageButton" Content="发送信息" HorizontalAlignment="Left" Margin="392.2,319,0,0" VerticalAlignment="Top" Width="192" Click="SendMessageButton_Click" Grid.Column="1"/>
             <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="261.4,0,0,373" TextWrapping="Wrap" Text="收到的信息" VerticalAlignment="Bottom" TextAlignment="Center" Width="323" Grid.Column="1"/>
             <ListBox x:Name="FriendListBox" HorizontalAlignment="Left" Height="240" Margin="261.4,31,0,0" VerticalAlignment="Top" Width="323" Grid.Column="1"/>
             <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="8.4,293,0,0" TextWrapping="Wrap" Text="增加的好友IP" VerticalAlignment="Top" TextAlignment="Center" Height="17" Width="104" Grid.Column="1"/>
             <TextBox x:Name="addFriendIPTextBox" HorizontalAlignment="Left" Height="23" Margin="117.4,288,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Grid.Column="1"/>
             <TextBlock x:Name="textBlock4" Margin="8.4,321,0,0" TextWrapping="Wrap" Text="增加的好友端口号" Height="23" Width="104" TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"/>
             <TextBox x:Name="addFriendPortTextBox" HorizontalAlignment="Left" Height="23" Margin="117.4,316,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Grid.Column="1"/>
-            <Button x:Name="AddFriendButton" Content="添加好友至列表" HorizontalAlignment="Left" Margin="117.4,349,0,0" VerticalAlignment="Top" Width="120" Click="AddFriendButton_Click" Grid.Column="1"/>
+            <Button x:Name="AddFriendButton" Content="添加好友至列表" HorizontalAlignment="Left" Margin="117.2,344,0,0" VerticalAlignment="Top" Width="120" Click="AddFriendButton_Click" Grid.Column="1"/>
+            <TextBox x:Name="SaveFilePath" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="117.2,368,0,0" TextWrapping="Wrap" Text="D://file.dat" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
+            <TextBlock x:Name="textBlock5" Grid.Column="1" HorizontalAlignment="Left" Margin="10.2,372,0,0" TextWrapping="Wrap" Text="文件接收目录" VerticalAlignment="Top" Height="18" Width="102" TextAlignment="Center"/>
+            <Button x:Name="SendFileButton" Content="发送文件" HorizontalAlignment="Left" Margin="392.2,344,0,0" VerticalAlignment="Top" Width="192" Grid.Column="1" Click="SendFileButton_Click"/>
         </Grid>
     </DockPanel>
 

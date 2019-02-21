@@ -136,4 +136,13 @@ namespace IMClassLibrary
 		public string Name { get; set; } //用户名称
 	}
 
+	//文件数据包类
+	public class FileDataPackage : ChatDataPackage {
+		public FileDataPackage(byte[] Bytes) : base(Bytes) {
+			MessageType = 7;
+		} //构造函数 字节数组转化为数据包
+		public string FileName { get; set; } //文件名称
+		public FileStream fs; //文件流
+	}
+
 }

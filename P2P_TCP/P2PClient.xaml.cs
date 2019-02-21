@@ -74,6 +74,10 @@ namespace P2P_TCP {
 
 		public class FriendIPAndPorts : ObservableCollection<FriendIPAndPort> { } //定义集合
 		FriendIPAndPorts myFriendIPAndPorts = new FriendIPAndPorts();
+		private Thread ListenerThread; //接收信息的侦听线程类变量
+		private delegate void OneArgDelegate(string arg); //代表无返回值有一个string参数方法
+		private delegate void SetList(FriendIPAndPort arg); //代表无返回值 FriendIPAndPort参数方法
+		private delegate void ReadDataF(TcpClient tcpClient); //代表无返回值 Tcpclient参数方法
 
 		private void SendMessageButton_Click(object sender, RoutedEventArgs e) {
 			if (SendMessageTextBox.Text == "") {
@@ -135,10 +139,35 @@ namespace P2P_TCP {
 			}
 		} //不在主线程执行
 
-		private Thread ListenerThread; //接收信息的侦听线程类变量
-		private delegate void OneArgDelegate(string arg); //代表无返回值有一个string参数方法
-		private delegate void SetList(FriendIPAndPort arg); //代表无返回值 FriendIPAndPort参数方法
-		private delegate void ReadDataF(TcpClient tcpClient); //代表无返回值 Tcpclient参数方法
+		private void SendFileButton_Click(object sender, RoutedEventArgs e) {
+			TcpClient tcpClient = new TcpClient();
+			tcpClient.BeginConnect("localhost", 1300, new AsyncCallback(DownLoadCallBackF), tcpClient);
+		} //发送文件
+
+		public void DownLoadCallBackF(IAsyncResult ar) {
+			TcpClient tcpClient = (TcpClient)ar.AsyncState;
+			try {
+				tcpClient.EndConnect(ar);
+			}
+			catch {
+				MessageBox.Show("连接失败");
+				return;
+			}
+			byte[] bytes = ReadFromTcpClient(tcpClient);
+			FileStream fs = null;
+			try {
+				fs = new FileStream(SaveFilePath.Text, FileMode.Create); //建立文件
+				fs.Write(bytes, 0, bytes.Length);
+			}
+			catch {
+				MessageBox.Show("写入文件失败");
+			}
+			finally {
+				if (fs != null) {
+					fs.Close();
+				}
+			}
+		} //下载文件的异步方法
 
 		private void ListenerthreadMethod() {
 			TcpClient tcpClient = null; //服务器和客户机连接的 TcpClient类对象
@@ -164,7 +193,7 @@ namespace P2P_TCP {
 			friendIPAndPort.friendIP = s.Substring(0, i1); //提取IP字符串
 			friendIPAndPort.friendPort = s.Substring(i1 + 1, i2 - i1 - 2); //提取端口字符串
 			int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
-			if(k==-1) {
+			if (k == -1) {
 				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
 			} //未找到该ip与端口号，需要增加
 			this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new OneArgDelegate(SetFriendListBox), s); //接受信息在FriendListBox显示
@@ -177,7 +206,7 @@ namespace P2P_TCP {
 			int n = 0;
 			try {
 				netStream = tcpClient.GetStream();
-				if(netStream.CanRead) {
+				if (netStream.CanRead) {
 					do { //文件大小未知
 						n = netStream.Read(bytes, 0, (int)tcpClient.ReceiveBufferSize);
 						if (n == (int)tcpClient.ReceiveBufferSize) {
@@ -199,7 +228,7 @@ namespace P2P_TCP {
 				bytes = null;
 			}
 			finally {
-				if(netStream != null) {
+				if (netStream != null) {
 					netStream.Close();
 				}
 				tcpClient.Close();
@@ -211,23 +240,23 @@ namespace P2P_TCP {
 			FriendListBox.Items.Add(text);
 		} //修改FriendListBox的方法
 
-		private void SetListViewSource (FriendIPAndPort arg) {
+		private void SetListViewSource(FriendIPAndPort arg) {
 			myFriendIPAndPorts.Add(arg);
 		} //修改FriendListView的方法
 
 		private void AddFriendButton_Click(object sender, RoutedEventArgs e) {
 			IPAddress myFriendIpAdress;
-			if(IPAddress.TryParse(addFriendIPTextBox.Text,out myFriendIpAdress)==false) {
+			if (IPAddress.TryParse(addFriendIPTextBox.Text, out myFriendIpAdress) == false) {
 				MessageBox.Show("IP地址格式不正确！");
 				return;
 			}
 			int myFriendPort;
-			if(int.TryParse(addFriendPortTextBox.Text,out myFriendPort)==false) {
+			if (int.TryParse(addFriendPortTextBox.Text, out myFriendPort) == false) {
 				MessageBox.Show("端口号格式不正确！");
 				return;
 			}
 			else {
-				if (myFriendPort<1024|| myFriendPort>65535) {
+				if (myFriendPort < 1024 || myFriendPort > 65535) {
 					MessageBox.Show("端口号范围不正确！(1024-65535)");
 					return;
 				}
@@ -246,7 +275,7 @@ namespace P2P_TCP {
 
 		private void MenuItem_Click(object sender, RoutedEventArgs e) {
 			string s = "";
-			for (int i=0;i < myFriendIPAndPorts.Count;i++) {
+			for (int i = 0; i < myFriendIPAndPorts.Count; i++) {
 				s += myFriendIPAndPorts[i].friendIP + ":" + myFriendIPAndPorts[i].friendPort + "\r\n";
 			}
 			SaveFileDialog saveFileDialog1 = new SaveFileDialog();
@@ -290,13 +319,13 @@ namespace P2P_TCP {
 						string text = reader.ReadToEnd();
 						string[] friendData = text.Split('\n');
 						FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
-						foreach(string data in friendData) {
-							if(data==string.Empty) {
+						foreach (string data in friendData) {
+							if (data == string.Empty) {
 								break; //防止最后一行换行符导致的多读入
 							}
 							string[] IPAndPort = data.Split(':');
 							friendIPAndPort.friendIP = IPAndPort[0]; //IP字符串
-							friendIPAndPort.friendPort = IPAndPort[1].Substring(0, IPAndPort[1].Length-1); //端口字符串，防止读入\r
+							friendIPAndPort.friendPort = IPAndPort[1].Substring(0, IPAndPort[1].Length - 1); //端口字符串，防止读入\r
 							int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
 							if (k == -1) {
 								myFriendIPAndPorts.Add(friendIPAndPort); //增加此好友
@@ -317,7 +346,7 @@ namespace P2P_TCP {
 					using (FileStream fileStream = File.OpenRead(s_FileName)) {
 						StreamReader reader = new StreamReader(fileStream);
 						string[] data = reader.ReadToEnd().Split('\n');
-						foreach(string str in data) {
+						foreach (string str in data) {
 							if (str == string.Empty) {
 								break; //防止最后一行换行符导致的多读入
 							}
@@ -340,5 +369,6 @@ namespace P2P_TCP {
 			CourseDesign.About about = new CourseDesign.About();
 			about.ShowDialog();
 		}
+
 	}
 }
