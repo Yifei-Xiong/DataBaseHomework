@@ -370,15 +370,17 @@ namespace P2P_TCP {
 		} //从文件导入消息列表
 
 		private void MenuItem_Logout_Click(object sender, RoutedEventArgs e) {
-
-		}
+			Login login = new Login(UserID);
+			login.Show();
+			Close(); //关闭Client窗口
+		} //登出
 
 		private void MenuItem_Exit_Click(object sender, RoutedEventArgs e) {
-
-		}
+			Close();
+		} //退出
 
 		private void MenuItem_About_Click(object sender, RoutedEventArgs e) {
-			P2P_TCP.About about = new P2P_TCP.About();
+			About about = new About();
 			about.ShowDialog();
 		}
 

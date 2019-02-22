@@ -33,8 +33,8 @@ namespace P2P_TCP {
 		private void button_register_Click(object sender, RoutedEventArgs e) {
 
 			MessageBox.Show("注册成功！");
-			ClientWindow clientWindow = new ClientWindow(textBox_id.Text); //传入用户名
-			clientWindow.Show();
+			P2PClient client = new P2PClient(textBox_id.Text); //传入用户名
+			client.Show();
 			Close();
 		}
 
