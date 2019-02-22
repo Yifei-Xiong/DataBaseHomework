@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:P2P_TCP"
         mc:Ignorable="d"
-        Title="" Height="448.4" Width="658.533">
+        Title="" Height="466" Width="658.533" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <DockPanel  LastChildFill="True">
         <Menu x:Name="menu" VerticalAlignment="Center"  DockPanel.Dock="Top" Margin="0,0,0.2,394.4" >
             <MenuItem Header="文件(_F)" InputGestureText="Ctrl+F" Name="MenuItem_File" >

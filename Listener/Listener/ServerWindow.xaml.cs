@@ -43,7 +43,8 @@ namespace Listener
             name = Name;
             password = Password;
             isOnline = false;
-            message.Clear();
+			message = new ArrayList();
+
         }
     }
 
@@ -70,10 +71,10 @@ namespace Listener
         private void SerizationUser() {
             XmlSerializer ser = new XmlSerializer(typeof(ArrayList));
             MemoryStream mem = new MemoryStream();
-            XmlTextWriter writer = new XmlTextWriter(mem, Encoding.Default);
+            XmlTextWriter writer = new XmlTextWriter(mem, Encoding.UTF8);
             ser.Serialize(writer, user);
             writer.Close();
-            string s = Encoding.Default.GetString(mem.ToArray());
+            string s = Encoding.UTF8.GetString(mem.ToArray());
             FileStream fs = new FileStream("C:\\USERDATA.txt", FileMode.Create);
             StreamWriter sw = new StreamWriter(fs);
             sw.Write(s);
@@ -87,10 +88,12 @@ namespace Listener
                 StreamReader sr = new StreamReader("C:\\USERDATA.txt");
                 string s = sr.ReadLine();
                 XmlSerializer mySerializer = new XmlSerializer(typeof(ArrayList));
-                StreamReader mem2 = new StreamReader(new MemoryStream(Encoding.Default.GetBytes(s)), Encoding.Default);
+                StreamReader mem2 = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(s)), Encoding.UTF8);
                 ArrayList myObject = (ArrayList)mySerializer.Deserialize(mem2);
+				user = myObject;
             }
             catch {
+				user = new ArrayList();
                 return;
             }
         }
@@ -102,7 +105,13 @@ namespace Listener
             IPAddress ip = IPAddress.Parse("127.0.0.1");//服务器端ip
             var myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
             myListener.Start();//start
-            var newClient = myListener.AcceptTcpClient();//等待客户端连接
+			var newClient = new TcpClient();
+			try {
+				newClient = myListener.AcceptTcpClient();//等待客户端连接
+			}
+			catch {
+				return;
+			}
             myListener.Stop();
             var newThread = new Thread(AcceptClientConnect);
             newThread.Start();
@@ -207,13 +216,19 @@ namespace Listener
         }
 
 		private void button_StartServer_Click(object sender, RoutedEventArgs e) {
-            bool canTurnPortToInt = int.TryParse(port.Text, out nowEnterPort);
+			if((string)button_StartServer.Content == "退出") {
+				this.Close();
+			}
+
+			bool canTurnPortToInt = int.TryParse(portText.Text, out nowEnterPort);
             if (canTurnPortToInt == false || nowEnterPort > 65535 || nowEnterPort < 1024) {
                 MessageBox.Show("端口号输入错误");
                 return;
             }
             var threadAccept = new Thread(AcceptClientConnect);
             threadAccept.Start();
-        }
+			button_StartServer.Content = "退出";
+
+		}
 	}
 }
