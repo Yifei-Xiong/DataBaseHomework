@@ -297,7 +297,7 @@ namespace P2P_TCP {
 			saveFileDialog1.Filter = "文本文档(*.txt)|*.txt|所有文件(*.*)|*.*";
 			if (saveFileDialog1.ShowDialog().Value) {
 				FileStream fs = new FileStream(saveFileDialog1.FileName, FileMode.Create);
-				StreamWriter streamWriter = new StreamWriter(fs, Encoding.Default);
+				StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8);
 				streamWriter.Write(s);
 				streamWriter.Flush();
 				streamWriter.Close();
@@ -314,7 +314,7 @@ namespace P2P_TCP {
 			saveFileDialog1.Filter = "文本文档(*.txt)|*.txt|所有文件(*.*)|*.*";
 			if (saveFileDialog1.ShowDialog().Value) {
 				FileStream fs = new FileStream(saveFileDialog1.FileName, FileMode.Create);
-				StreamWriter streamWriter = new StreamWriter(fs, Encoding.Default);
+				StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8);
 				streamWriter.Write(s);
 				streamWriter.Flush();
 				streamWriter.Close();
@@ -334,6 +334,8 @@ namespace P2P_TCP {
 						string text = reader.ReadToEnd();
 						string[] friendData = text.Split('\n');
 						FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
+						IPAddress myFriendIpAdress; //测试IP格式是否正确
+						int myFriendPort; //测试端口格式是否正确
 						foreach (string data in friendData) {
 							if (data == string.Empty) {
 								break; //防止最后一行换行符导致的多读入
@@ -341,6 +343,14 @@ namespace P2P_TCP {
 							string[] IPAndPort = data.Split(':');
 							friendIPAndPort.friendIP = IPAndPort[0]; //IP字符串
 							friendIPAndPort.friendPort = IPAndPort[1].Substring(0, IPAndPort[1].Length - 1); //端口字符串，防止读入\r
+							if (IPAddress.TryParse(friendIPAndPort.friendIP, out myFriendIpAdress) == false) {
+								MessageBox.Show("联系人文件IP地址格式不正确！");
+								return;
+							}
+							if (int.TryParse(friendIPAndPort.friendPort, out myFriendPort) == false) {
+								MessageBox.Show("联系人文件端口号格式不正确！");
+								return;
+							}
 							int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
 							if (k == -1) {
 								myFriendIPAndPorts.Add(friendIPAndPort); //增加此好友
@@ -359,14 +369,22 @@ namespace P2P_TCP {
 				string FileExtension = System.IO.Path.GetExtension(s_FileName).ToUpper();
 				if (FileExtension == ".TXT") {
 					using (FileStream fileStream = File.OpenRead(s_FileName)) {
-						StreamReader reader = new StreamReader(fileStream);
-						string[] data = reader.ReadToEnd().Split('\n');
+						byte[] bytes = new byte[fileStream.Length];
+						fileStream.Read(bytes, 0, bytes.Length);
+						string[] data = Encoding.UTF8.GetString(bytes).Split('\n');
 						foreach (string str in data) {
 							if (str == string.Empty) {
 								break; //防止最后一行换行符导致的多读入
 							}
-							if(FriendListBox.Items.IndexOf(str.Substring(0, str.Length - 1))==-1) {
-								FriendListBox.Items.Add(str.Substring(0, str.Length - 1)); //添加消息
+							if (str[str.Length-1] == '\r') {
+								if (FriendListBox.Items.IndexOf(str.Substring(0, str.Length - 1)) == -1) {
+									FriendListBox.Items.Add(str.Substring(0, str.Length - 1)); //添加消息
+								} //忽略'\r'
+							}
+							else {
+								if (FriendListBox.Items.IndexOf(str.Substring(0, str.Length)) == -1) {
+									FriendListBox.Items.Add(str.Substring(0, str.Length)); //添加消息
+								}
 							}
 						}
 					}
