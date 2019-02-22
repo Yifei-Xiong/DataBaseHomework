@@ -276,6 +276,9 @@ namespace P2P_TCP {
 		}
 
 		private void DeleteFriendButton_Click(object sender, RoutedEventArgs e) {
+			if(FriendListView.SelectedItems.Count==0) {
+				MessageBox.Show("未选择删除的联系人");
+			}
 			FriendIPAndPort[] myIPAndPorts = new FriendIPAndPort[FriendListView.SelectedItems.Count];
 			for (int i = 0; i < myIPAndPorts.Length; i++) {
 				myIPAndPorts[i] = (FriendIPAndPort)FriendListView.SelectedItems[i];
@@ -283,7 +286,7 @@ namespace P2P_TCP {
 			for (int i = 0; i < myIPAndPorts.Length; i++) {
 				myFriendIPAndPorts.Remove(myIPAndPorts[i]);
 			}
-		}
+		} //删除选中联系人
 
 		private void MenuItem_Click(object sender, RoutedEventArgs e) {
 			string s = "";
@@ -362,7 +365,9 @@ namespace P2P_TCP {
 							if (str == string.Empty) {
 								break; //防止最后一行换行符导致的多读入
 							}
-							FriendListBox.Items.Add(str.Substring(0, str.Length - 1)); //添加消息
+							if(FriendListBox.Items.IndexOf(str.Substring(0, str.Length - 1))==-1) {
+								FriendListBox.Items.Add(str.Substring(0, str.Length - 1)); //添加消息
+							}
 						}
 					}
 				}
