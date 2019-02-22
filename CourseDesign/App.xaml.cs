@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace CourseDesign {
+namespace P2P_TCP {
 	/// <summary>
 	/// App.xaml 的交互逻辑
 	/// </summary>

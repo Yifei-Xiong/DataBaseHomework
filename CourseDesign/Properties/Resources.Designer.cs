@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CourseDesign.Properties {
+namespace P2P_TCP.Properties {
 
 
 	/// <summary>

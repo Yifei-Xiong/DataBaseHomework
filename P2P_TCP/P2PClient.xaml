@@ -5,18 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:P2P_TCP"
         mc:Ignorable="d"
-        Title="P2P终端" Height="448.4" Width="658.533">
+        Title="" Height="448.4" Width="658.533">
     <DockPanel  LastChildFill="True">
         <Menu x:Name="menu" VerticalAlignment="Center"  DockPanel.Dock="Top" Margin="0,0,0.2,394.4" >
             <MenuItem Header="文件(_F)" InputGestureText="Ctrl+F" Name="MenuItem_File" >
                 <MenuItem Header="好友列表保存到文件" HorizontalAlignment="Left" Click="MenuItem_Click" />
-                <MenuItem Header="好友列表保存到数据库" HorizontalAlignment="Left" />
                 <MenuItem Header="消息列表保存到文件" HorizontalAlignment="Left" Click="MenuItem_Click_1"/>
-                <MenuItem Header="消息列表保存到数据库" HorizontalAlignment="Left" />
                 <MenuItem Header="从文件导入好友列表" HorizontalAlignment="Left" Click="MenuItem_Click_2" />
-                <MenuItem Header="从数据库导入好友列表" HorizontalAlignment="Left" />
                 <MenuItem Header="从文件导入消息列表" HorizontalAlignment="Left" Click="MenuItem_Click_3" />
-                <MenuItem Header="从数据库导入消息列表" HorizontalAlignment="Left" />
             </MenuItem>
             <MenuItem Header="登出(_L)" InputGestureText="Ctrl+L" Name="MenuItem_Logout" Click="MenuItem_Logout_Click"  />
             <MenuItem Header="退出(_E)" InputGestureText="Ctrl+E" Name="MenuItem_Exit" Click="MenuItem_Exit_Click" />

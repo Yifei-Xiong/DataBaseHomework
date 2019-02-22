@@ -27,13 +27,12 @@ namespace P2P_TCP {
 	/// P2PClient.xaml 的交互逻辑
 	/// </summary>
 	public partial class P2PClient : Window {
-		public P2PClient() {
+		public P2PClient(string ID) {
 			InitializeComponent();
 			//myIPAddress = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);
 			myIPAddress = IPAddress.Parse("127.0.0.1");
-			MyPort++;
-			//一台计算机如果生成多个P2P终端,端口号应不同
-			for (int i = 0; i < 51; i++) {
+			MyPort++; //一台计算机如果生成多个P2P终端,端口号应不同
+			for (int i = 0; i <= 100; i++) {
 				try {
 					tcpListener = new TcpListener(myIPAddress, MyPort);
 					tcpListener.Start();
@@ -43,7 +42,7 @@ namespace P2P_TCP {
 				catch {
 					MyPort++; //已被使用,端口号加1
 				}
-				if (i == 50) {
+				if (i == 100) {
 					MessageBox.Show("不能建立服务器,可能计算机网络有问题");
 					this.Close();
 				}
@@ -53,8 +52,11 @@ namespace P2P_TCP {
 			ListenerThread = new Thread(new ThreadStart(ListenerthreadMethod));
 			ListenerThread.IsBackground = true; //主线程结束后，该线程自动结束
 			ListenerThread.Start(); //启动线程
+			UserID = ID; //设置用户名
+			this.Title = "当前用户ID：" + ID;
 		}
 
+		string UserID; //用户ID
 		static int MyPort = 37529; //本程序侦听准备使用的端口号,为静态变量
 		IPAddress myIPAddress = null; //本程序侦听使用的IP地址
 		TcpListener tcpListener = null; //接收信息的侦听类对象,检查是否有信息
@@ -273,6 +275,16 @@ namespace P2P_TCP {
 			}
 		}
 
+		private void DeleteFriendButton_Click(object sender, RoutedEventArgs e) {
+			FriendIPAndPort[] myIPAndPorts = new FriendIPAndPort[FriendListView.SelectedItems.Count];
+			for (int i = 0; i < myIPAndPorts.Length; i++) {
+				myIPAndPorts[i] = (FriendIPAndPort)FriendListView.SelectedItems[i];
+			}
+			for (int i = 0; i < myIPAndPorts.Length; i++) {
+				myFriendIPAndPorts.Remove(myIPAndPorts[i]);
+			}
+		}
+
 		private void MenuItem_Click(object sender, RoutedEventArgs e) {
 			string s = "";
 			for (int i = 0; i < myFriendIPAndPorts.Count; i++) {
@@ -288,7 +300,7 @@ namespace P2P_TCP {
 				streamWriter.Close();
 				fs.Close();
 			}
-		}
+		} //保存好友列表到文件
 
 		private void MenuItem_Click_1(object sender, RoutedEventArgs e) {
 			string s = "";
@@ -305,7 +317,7 @@ namespace P2P_TCP {
 				streamWriter.Close();
 				fs.Close();
 			}
-		}
+		} //保存消息列表到文件
 
 		private void MenuItem_Click_2(object sender, RoutedEventArgs e) {
 			OpenFileDialog openFileDialog1 = new OpenFileDialog();
@@ -334,7 +346,7 @@ namespace P2P_TCP {
 					}
 				}
 			}
-		}
+		} //从文件导入好友列表
 
 		private void MenuItem_Click_3(object sender, RoutedEventArgs e) {
 			OpenFileDialog openFileDialog1 = new OpenFileDialog();
@@ -355,7 +367,7 @@ namespace P2P_TCP {
 					}
 				}
 			}
-		}
+		} //从文件导入消息列表
 
 		private void MenuItem_Logout_Click(object sender, RoutedEventArgs e) {
 
@@ -366,18 +378,9 @@ namespace P2P_TCP {
 		}
 
 		private void MenuItem_About_Click(object sender, RoutedEventArgs e) {
-			CourseDesign.About about = new CourseDesign.About();
+			P2P_TCP.About about = new P2P_TCP.About();
 			about.ShowDialog();
 		}
 
-		private void DeleteFriendButton_Click(object sender, RoutedEventArgs e) {
-			FriendIPAndPort[] myIPAndPorts = new FriendIPAndPort[FriendListView.SelectedItems.Count];
-			for (int i = 0; i < myIPAndPorts.Length; i++) {
-				myIPAndPorts[i] = (FriendIPAndPort)FriendListView.SelectedItems[i];
-			}
-			for (int i = 0; i < myIPAndPorts.Length; i++) {
-				myFriendIPAndPorts.Remove(myIPAndPorts[i]);
-			}
-		}
 	}
 }

@@ -52,8 +52,8 @@ namespace P2P_TCP {
 				networkStream.Write(sendBytes, 0, sendBytes.Length);
 			}
 			*/
-			ClientWindow clientWindow = new ClientWindow(textBox_id.Text); //传入用户名
-			clientWindow.Show();
+			P2PClient client = new P2PClient(textBox_id.Text); //传入用户名
+			client.Show();
 			textBox_id.Text = sha256(passwordBox.Password);
 			Close();
 		}

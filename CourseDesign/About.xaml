@@ -1,9 +1,9 @@
-﻿<Window x:Class="CourseDesign.About"
+﻿<Window x:Class="P2P_TCP.About"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CourseDesign"
+        xmlns:local="clr-namespace:P2P_TCP"
         mc:Ignorable="d"
         Title="关于此程序" Height="214.945" Width="360.325" ResizeMode="NoResize">
     <Grid>
