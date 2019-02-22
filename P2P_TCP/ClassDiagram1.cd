@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="P2P_TCP.P2PClient">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="P2P_TCP.P2PClient.StateObject" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>P2PClient.xaml.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Struct Name="P2P_TCP.P2PClient.FriendIPAndPort" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>P2PClient.xaml.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Class Name="P2P_TCP.P2PClient.FriendIPAndPorts" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>P2PClient.xaml.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Delegate Name="P2P_TCP.P2PClient.OneArgDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>P2PClient.xaml.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="P2P_TCP.P2PClient.SetList" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>P2PClient.xaml.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="P2P_TCP.P2PClient.ReadDataF" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>P2PClient.xaml.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>QAAQACEAADAAASAEAABAAiBAAIcAIAgAAABAOAAAAAA=</HashCode>
+      <FileName>P2PClient.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>

@@ -55,7 +55,7 @@ namespace P2P_TCP {
 			ListenerThread.Start(); //启动线程
 		}
 
-		static int MyPort = 1499; //本程序侦听准备使用的端口号,为静态变量
+		static int MyPort = 37529; //本程序侦听准备使用的端口号,为静态变量
 		IPAddress myIPAddress = null; //本程序侦听使用的IP地址
 		TcpListener tcpListener = null; //接收信息的侦听类对象,检查是否有信息
 		string IPAndPort; //记录本地IP和端口号
@@ -370,5 +370,14 @@ namespace P2P_TCP {
 			about.ShowDialog();
 		}
 
+		private void DeleteFriendButton_Click(object sender, RoutedEventArgs e) {
+			FriendIPAndPort[] myIPAndPorts = new FriendIPAndPort[FriendListView.SelectedItems.Count];
+			for (int i = 0; i < myIPAndPorts.Length; i++) {
+				myIPAndPorts[i] = (FriendIPAndPort)FriendListView.SelectedItems[i];
+			}
+			for (int i = 0; i < myIPAndPorts.Length; i++) {
+				myFriendIPAndPorts.Remove(myIPAndPorts[i]);
+			}
+		}
 	}
 }

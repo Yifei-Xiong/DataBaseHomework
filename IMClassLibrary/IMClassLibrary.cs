@@ -142,7 +142,7 @@ namespace IMClassLibrary
 			MessageType = 7;
 		} //构造函数 字节数组转化为数据包
 		public string FileName { get; set; } //文件名称
-		public FileStream fs; //文件流
+		public FileStream fileStream; //文件流
 	}
 
 }

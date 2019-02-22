@@ -28,7 +28,7 @@
                 <ColumnDefinition Width="25*"/>
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="261.2,372,0,0" TextWrapping="Wrap" Text="本机IP地址和端口号:" VerticalAlignment="Top" Width="323" TextAlignment="Center" Grid.Column="1"/>
-            <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="8.4,0,0,373" TextWrapping="Wrap" Text="好友列表" VerticalAlignment="Bottom" Width="229" TextAlignment="Center" Grid.Column="1"/>
+            <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="8.4,0,0,373" TextWrapping="Wrap" Text="联系人列表" VerticalAlignment="Bottom" Width="229" TextAlignment="Center" Grid.Column="1"/>
             <ListView x:Name="FriendListView" SelectionMode="Multiple" HorizontalAlignment="Left" Height="240" Margin="8.4,31,0,0" VerticalAlignment="Top" Width="229" Grid.Column="1">
                 <ListView.View>
                     <GridView AllowsColumnReorder="True">
@@ -46,10 +46,11 @@
             <TextBox x:Name="addFriendIPTextBox" HorizontalAlignment="Left" Height="23" Margin="117.4,288,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Grid.Column="1"/>
             <TextBlock x:Name="textBlock4" Margin="8.4,321,0,0" TextWrapping="Wrap" Text="增加的好友端口号" Height="23" Width="104" TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"/>
             <TextBox x:Name="addFriendPortTextBox" HorizontalAlignment="Left" Height="23" Margin="117.4,316,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Grid.Column="1"/>
-            <Button x:Name="AddFriendButton" Content="添加好友至列表" HorizontalAlignment="Left" Margin="117.2,344,0,0" VerticalAlignment="Top" Width="120" Click="AddFriendButton_Click" Grid.Column="1"/>
-            <TextBox x:Name="SaveFilePath" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="117.2,368,0,0" TextWrapping="Wrap" Text="D://file.dat" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
+            <Button x:Name="AddFriendButton" Content="添加联系人至列表" HorizontalAlignment="Left" Margin="117.2,344,0,0" VerticalAlignment="Top" Width="120" Click="AddFriendButton_Click" Grid.Column="1"/>
+            <TextBox x:Name="SaveFilePath" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="117.2,368,0,0" TextWrapping="Wrap" Text="D:\Files" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
             <TextBlock x:Name="textBlock5" Grid.Column="1" HorizontalAlignment="Left" Margin="10.2,372,0,0" TextWrapping="Wrap" Text="文件接收目录" VerticalAlignment="Top" Height="18" Width="102" TextAlignment="Center"/>
             <Button x:Name="SendFileButton" Content="发送文件" HorizontalAlignment="Left" Margin="392.2,344,0,0" VerticalAlignment="Top" Width="192" Grid.Column="1" Click="SendFileButton_Click"/>
+            <Button x:Name="DeleteFriendButton" Content="删除选中的联系人" HorizontalAlignment="Left" Margin="10.2,344,0,0" VerticalAlignment="Top" Width="102" Grid.Column="1" Click="DeleteFriendButton_Click"/>
         </Grid>
     </DockPanel>
 
