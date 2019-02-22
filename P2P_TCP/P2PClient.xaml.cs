@@ -382,7 +382,7 @@ namespace P2P_TCP {
 		private void MenuItem_About_Click(object sender, RoutedEventArgs e) {
 			About about = new About();
 			about.ShowDialog();
-		}
+		} //关于
 
 	}
 }
