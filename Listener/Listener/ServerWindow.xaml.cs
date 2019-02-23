@@ -24,9 +24,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Listener
 {
-	/// <summary>
-	/// ServerWindow.xaml 的交互逻辑
-	/// </summary>
+    /// <summary>
+    /// ServerWindow.xaml 的交互逻辑
+    /// </summary>
     /// 
 
     public class UserClass
@@ -34,37 +34,36 @@ namespace Listener
         public string userId { get; set; }
         public string password { get; set; }
         public bool isOnline { get; set; }
-        public ArrayList message { get; set; }
+        //public ArrayList message { get; set; }
 
         public UserClass() { }
         public UserClass(string ID, string Password) {
             userId = ID;
             password = Password;
             isOnline = false;
-			message = new ArrayList();
+            //message = new ArrayList();
 
         }
     }
 
-	public partial class ServerWindow : Window
+    public partial class ServerWindow : Window
     {
         int UserCnt = 1000;
         ArrayList user;
 
-        public ServerWindow()
-        {
+        public ServerWindow() {
             InitializeComponent();
-			//////user(ArrayList) Serization
-			//textBlock3.Text += ((IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0)).ToString();
-			textBlock3.Text += "127.0.0.1";
-			GetSerizationUser();
+            //////user(ArrayList) Serization
+            //textBlock3.Text += ((IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0)).ToString();
+            textBlock3.Text += "127.0.0.1";
+            GetSerizationUser();
             if (user.Count == 0) {
                 UserClass ADMIN = new UserClass("admin", "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918");
                 user.Add(ADMIN);
             }
         }
 
-        ~ ServerWindow() {
+        ~ServerWindow() {
             SerizationUser();
         }
 
@@ -90,50 +89,68 @@ namespace Listener
                 XmlSerializer mySerializer = new XmlSerializer(typeof(ArrayList));
                 StreamReader mem2 = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(s)), Encoding.UTF8);
                 ArrayList myObject = (ArrayList)mySerializer.Deserialize(mem2);
-				user = myObject;
+                user = myObject;
             }
             catch {
-				user = new ArrayList();
+                user = new ArrayList();
                 return;
             }
         }
 
         private int nowEnterPort;
 
-        private void AcceptClientConnect()
-        {
+        public byte[] ReadFromTcpClient(TcpClient tcpClient) {
+            List<byte> data = new List<byte>();
+            NetworkStream netStream = null;
+            byte[] bytes = new byte[tcpClient.ReceiveBufferSize]; //字节数组保存接收到的数据
+            int n = 0;
+            try {
+                netStream = tcpClient.GetStream();
+                if (netStream.CanRead) {
+                    do { //文件大小未知
+                        n = netStream.Read(bytes, 0, (int)tcpClient.ReceiveBufferSize);
+                        if (n == (int)tcpClient.ReceiveBufferSize) {
+                            data.AddRange(bytes);
+                        } //如果bytes被读入数据填满
+                        else if (n != 0) {
+                            byte[] bytes1 = new byte[n];
+                            for (int i = 0; i < n; i++) {
+                                bytes1[i] = bytes[i];
+                            }
+                            data.AddRange(bytes1);
+                        } //读入的字节数不为0
+                    } while (netStream.DataAvailable); //是否还有数据
+                } //判断数据是否可读
+                bytes = data.ToArray();
+            }
+            catch {
+                MessageBox.Show("读数据失败");
+                bytes = null;
+            }
+            finally {
+                if (netStream != null) {
+                    netStream.Close();
+                }
+                tcpClient.Close();
+            }
+            return bytes;
+        }
+
+        private void AcceptClientConnect() {
             IPAddress ip = IPAddress.Parse("127.0.0.1");//服务器端ip
             var myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
             myListener.Start();//start
-			var newClient = new TcpClient();
-			try {
-				newClient = myListener.AcceptTcpClient();//等待客户端连接
-			}
-			catch {
-				return;
-			}
-            myListener.Stop();
-            var newThread = new Thread(AcceptClientConnect);
-            newThread.Start();
-            int index = -1;
-            while (true)
-            {
+            var newClient = new TcpClient();
+            while (true) {
                 try {
-                    NetworkStream clientStream = newClient.GetStream();
-                    if (index >= 0) {
-                        var nUser = (UserClass)user[index];
-                        if (nUser.message.Count > 0) {
-                            foreach (IMClassLibrary.DataPackage message in nUser.message) {
-                                var info = message.DataPackageToBytes();
-                                clientStream.Write(info, 0, info.Length);
-                            }
-                            nUser.message.Clear();
-                            continue;
-                        }
-                    }
+                    newClient = myListener.AcceptTcpClient();//等待客户端连接
+                }
+                catch {
+                    return;
+                }
 
-                    byte[] receiveBytes = new byte[10000];
-                    clientStream.Read(receiveBytes, 0, 10000);
+                try {
+                    byte[] receiveBytes = ReadFromTcpClient(newClient);
                     int type = 0;
                     using (MemoryStream ms = new MemoryStream(receiveBytes)) {
                         IFormatter formatter = new BinaryFormatter();
@@ -148,7 +165,6 @@ namespace Listener
                         MessageBox.Show("数据包非法");
                         continue;
                     }
-                    string processUser = "";
                     switch (type) {
                         case 1: {
                                 var LogIn = new IMClassLibrary.LoginDataPackage(receiveBytes);
@@ -162,9 +178,10 @@ namespace Listener
                                         }
                                     }
                                     if (CanResiger == false) {
-
+                                        ///////////////////////////
                                     } else {
                                         user.Add(newUser);
+                                        ///////////////////////////
                                     }
                                     continue;
                                 }
@@ -173,25 +190,41 @@ namespace Listener
                                     var nowUser = (UserClass)user[i];
                                     if (LogIn.UserID == nowUser.userId && LogIn.Password == nowUser.password) {
                                         SuccessLogin = true;
-                                        index = i;
                                         nowUser.isOnline = true;
                                     }
+                                    user[i] = nowUser;
                                 }
-                                if (SuccessLogin == false) 
-                                    return;
+                                if (SuccessLogin == false) {
+                                    ////////////////////////////
+                                    continue;
+                                } else {
+                                    /////////
+                                    continue;
+                                }
                             }
                             break;
+
+
                         case 2: {
                                 var LogOut = new IMClassLibrary.LogoutDataPackage(receiveBytes);
-                                var nowC = (UserClass)user[index];
-                                nowC.isOnline = false;
-                                user[index] = nowC;
+                                for (int i = 0; i < user.Count; ++i) {
+                                    var t = (UserClass)user[i];
+                                    if (t.userId == LogOut.UserID) {
+                                        t.isOnline = false;
+                                        user[i] = t;
+                                        break;
+                                    }
+                                }
                             }
                             break;
+
+
                         case 3: {
                                 MessageBox.Show("发送了父类聊天数据包");
                             }
                             break;
+
+
                         /*
                         case 4: {
                                 var message = new IMClassLibrary.SingleChatDataPackage(receiveBytes);
@@ -209,19 +242,21 @@ namespace Listener
 
                             }
                             break;
-                        /*
-                        case 6: {
-                                var message = new IMClassLibrary.ChangeNameDataPackage(receiveBytes);
-                                var receiver = message.Receiver;
-                                foreach (UserClass nowUser in user) {
-                                    if (receiver == nowUser.userId)
-                                        nowUser.name = message.Name;
-                                    else
-                                        nowUser.message.Add(message);
+
+
+                            /*
+                            case 6: {
+                                    var message = new IMClassLibrary.ChangeNameDataPackage(receiveBytes);
+                                    var receiver = message.Receiver;
+                                    foreach (UserClass nowUser in user) {
+                                        if (receiver == nowUser.userId)
+                                            nowUser.name = message.Name;
+                                        else
+                                            nowUser.message.Add(message);
+                                    }
                                 }
-                            }
-                            break;
-                        */
+                                break;
+                            */
                     }
                 }
                 catch {
@@ -230,28 +265,28 @@ namespace Listener
             }
         }
 
-		private void button_StartServer_Click(object sender, RoutedEventArgs e) {
-			if((string)button_StartServer.Content == "退出") {
-				this.Close();
-			}
+        private void button_StartServer_Click(object sender, RoutedEventArgs e) {
+            if ((string)button_StartServer.Content == "退出") {
+                this.Close();
+            }
 
-			bool canTurnPortToInt = int.TryParse(portText.Text, out nowEnterPort);
+            bool canTurnPortToInt = int.TryParse(portText.Text, out nowEnterPort);
             if (canTurnPortToInt == false || nowEnterPort > 65535 || nowEnterPort < 1024) {
                 MessageBox.Show("端口号输入错误");
                 return;
             }
             var threadAccept = new Thread(AcceptClientConnect);
             threadAccept.Start();
-			button_StartServer.Content = "退出";
+            button_StartServer.Content = "退出";
 
-		}
+        }
 
-		private void button_Click(object sender, RoutedEventArgs e) {
-			if((string)button_StartServer.Content == "运行") {
-				MessageBox.Show("请先运行客户端");
-				return;
-			}
+        private void button_Click(object sender, RoutedEventArgs e) {
+            if ((string)button_StartServer.Content == "运行") {
+                MessageBox.Show("请先运行客户端");
+                return;
+            }
 
-		}
-	}
+        }
+    }
 }
