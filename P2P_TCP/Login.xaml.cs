@@ -27,26 +27,9 @@ namespace P2P_TCP {
 			//thread = new Thread(new ThreadStart(ListenThreadMethod));
 			//thread.IsBackground = true;
 			//thread.Start();
-			myIPAddress = IPAddress.Parse("127.0.0.1");
-			MyPort++; //一台计算机如果生成多个P2P终端,端口号应不同
-			for (int i = 0; i <= 100; i++) {
-				try {
-					tcpListener = new TcpListener(myIPAddress, MyPort);
-					tcpListener.Start();
-					textBlock.Text = "本机IP地址和端口号:" + myIPAddress.ToString() + ":" + MyPort.ToString();
-					break;
-				}
-				catch {
-					MyPort++; //已被使用,端口号加1
-				}
-				if (i == 100) {
-					MessageBox.Show("不能建立服务器,可能计算机网络有问题");
-					this.Close();
-				}
-			}
 		}
 
-		public Login(string UserID) {
+        public Login(string UserID) {
 			InitializeComponent();
 			textBox_id.Text = UserID;
 			//thread = new Thread(new ThreadStart(ListenThreadMethod));
@@ -97,7 +80,7 @@ namespace P2P_TCP {
 		private string ListenThreadMethod() {
 			//IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);
 			IPAddress ip = IPAddress.Parse("127.0.0.1");
-			var myListener = new TcpListener(ip, int.Parse(textBox_ip.Text.Split(':')[1]));//创建TcpListener实例
+			var myListener = new TcpListener(ip, int.Parse(textBox_ip.Text.Split(':')[1])+1);//创建TcpListener实例
 			myListener.Start();//start
 			var newClient = myListener.AcceptTcpClient();
 			var receiveByte = ReadFromTcpClient(newClient);
@@ -153,7 +136,7 @@ namespace P2P_TCP {
 				networkStream.Write(sendBytes, 0, sendBytes.Length);
 			}
 			*/
-			P2PClient client = new P2PClient(textBox_id.Text,port); //传入用户名
+			P2PClient client = new P2PClient(textBox_id.Text); //传入用户名
 			client.Show();
 			textBox_id.Text = sha256(passwordBox.Password);
 			Close();

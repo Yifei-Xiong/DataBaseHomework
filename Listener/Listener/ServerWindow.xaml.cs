@@ -142,6 +142,7 @@ namespace Listener
             tcpClient = new TcpClient(); //每次发送建立一个TcpClient类对象
             stateObject = new StateObject(); ////每次发送建立一个StateObject类对象
             stateObject.tcpClient = tcpClient;
+            port = (int.Parse(port) + 1).ToString();
             //stateObject.buffer = SendMsg;
             stateObject.friendIPAndPort = IP + ":" + port; //所选好友IP和端口号
             var chatData = new IMClassLibrary.SingleChatDataPackage("Server", "Server", message);

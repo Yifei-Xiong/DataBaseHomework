@@ -27,10 +27,10 @@ namespace P2P_TCP {
 	/// P2PClient.xaml 的交互逻辑
 	/// </summary>
 	public partial class P2PClient : Window {
-		public P2PClient(string ID,int port) {
+		public P2PClient(string ID) {
 			InitializeComponent();
 			//myIPAddress = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);
-			/*
+			
 			myIPAddress = IPAddress.Parse("127.0.0.1");
 			MyPort++; //一台计算机如果生成多个P2P终端,端口号应不同
 			for (int i = 0; i <= 100; i++) {
@@ -48,8 +48,7 @@ namespace P2P_TCP {
 					this.Close();
 				}
 			}
-			*/
-			MyPort = port;
+			
 			FriendListView.ItemsSource = myFriendIPAndPorts; //FriendListview的数据源
 			IPAndPort = myIPAddress.ToString() + ":" + MyPort.ToString();
 			ListenerThread = new Thread(new ThreadStart(ListenerthreadMethod));
