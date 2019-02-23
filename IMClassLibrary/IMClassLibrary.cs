@@ -43,6 +43,10 @@ namespace IMClassLibrary
 				if (loginDataPackage != null) {
 					this.Password = loginDataPackage.Password;
 					this.UserID = loginDataPackage.UserID;
+					this.Sender = loginDataPackage.Sender;
+					this.Receiver = loginDataPackage.Receiver;
+					this.sendTime = loginDataPackage.sendTime;
+					this.MessageType = loginDataPackage.MessageType;
 				}
 			}
 		} //构造函数 字节数组转化为数据包
@@ -64,6 +68,11 @@ namespace IMClassLibrary
 				LogoutDataPackage logoutDataPackage = formatter.Deserialize(ms) as LogoutDataPackage;
 				if (logoutDataPackage != null) {
 					this.UserID = logoutDataPackage.UserID;
+					this.UserID = logoutDataPackage.UserID;
+					this.Sender = logoutDataPackage.Sender;
+					this.Receiver = logoutDataPackage.Receiver;
+					this.sendTime = logoutDataPackage.sendTime;
+					this.MessageType = logoutDataPackage.MessageType;
 				}
 			}
 		} //构造函数 字节数组转化为数据包

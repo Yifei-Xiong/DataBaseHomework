@@ -27,12 +27,11 @@ namespace P2P_TCP {
 	/// P2PClient.xaml 的交互逻辑
 	/// </summary>
 	public partial class P2PClient : Window {
-		public P2PClient(string ID) {
+		public P2PClient(string ID, TcpListener tcpListener,int MyPort) {
 			InitializeComponent();
 			//myIPAddress = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);
-			
 			myIPAddress = IPAddress.Parse("127.0.0.1");
-			MyPort++; //一台计算机如果生成多个P2P终端,端口号应不同
+			/*
 			for (int i = 0; i <= 100; i++) {
 				try {
 					tcpListener = new TcpListener(myIPAddress, MyPort);
@@ -48,7 +47,7 @@ namespace P2P_TCP {
 					this.Close();
 				}
 			}
-			
+			*/
 			FriendListView.ItemsSource = myFriendIPAndPorts; //FriendListview的数据源
 			IPAndPort = myIPAddress.ToString() + ":" + MyPort.ToString();
 			ListenerThread = new Thread(new ThreadStart(ListenerthreadMethod));
@@ -56,10 +55,12 @@ namespace P2P_TCP {
 			ListenerThread.Start(); //启动线程
 			UserID = ID; //设置用户名
 			this.Title = "当前用户ID：" + ID;
+			this.MyPort = MyPort;
+			this.tcpListener = tcpListener;
 		}
 
 		string UserID; //用户ID
-		static int MyPort = 37528; //本程序侦听准备使用的端口号,为静态变量
+		int MyPort; //本程序侦听准备使用的端口号
 		IPAddress myIPAddress = null; //本程序侦听使用的IP地址
 		TcpListener tcpListener = null; //接收信息的侦听类对象,检查是否有信息
 		string IPAndPort; //记录本地IP和端口号

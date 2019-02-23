@@ -98,8 +98,9 @@ namespace Listener
         }
 
         private int nowEnterPort;
+		TcpListener myListener = null;
 
-        public byte[] ReadFromTcpClient(TcpClient tcpClient) {
+		public byte[] ReadFromTcpClient(TcpClient tcpClient) {
             List<byte> data = new List<byte>();
             NetworkStream netStream = null;
             byte[] bytes = new byte[tcpClient.ReceiveBufferSize]; //字节数组保存接收到的数据
@@ -142,19 +143,48 @@ namespace Listener
             tcpClient = new TcpClient(); //每次发送建立一个TcpClient类对象
             stateObject = new StateObject(); ////每次发送建立一个StateObject类对象
             stateObject.tcpClient = tcpClient;
-            port = (int.Parse(port) + 1).ToString();
             //stateObject.buffer = SendMsg;
             stateObject.friendIPAndPort = IP + ":" + port; //所选好友IP和端口号
             var chatData = new IMClassLibrary.SingleChatDataPackage("Server", "Server", message);
             stateObject.buffer = chatData.DataPackageToBytes(); //buffer为发送的数据包的字节数组
-            tcpClient.BeginConnect(IP, int.Parse(port), null, stateObject);
+            tcpClient.BeginConnect(IP, int.Parse(port), new AsyncCallback(SentCallBackF), stateObject);
         }
 
-        private void AcceptClientConnect() {
+		private void SentCallBackF(IAsyncResult ar) {
+			StateObject stateObject = (StateObject)ar.AsyncState;
+			TcpClient tcpClient = stateObject.tcpClient; //得到下载使用的类对象
+			NetworkStream netStream = null; //下载使用的流对象
+			try {
+				tcpClient.EndConnect(ar); //结束和下载服务器的连接，如下载错误将产生异常
+				netStream = tcpClient.GetStream();
+				if (netStream.CanWrite) {
+					netStream.Write(stateObject.buffer, 0, stateObject.buffer.Length); //传入要发送的信息
+				}
+				else {
+					MessageBox.Show("暂时无法与" + stateObject.friendIPAndPort + "通讯");
+				}
+			}
+			catch {
+				MessageBox.Show("暂时无法与" + stateObject.friendIPAndPort + "通讯");
+			}
+			finally {
+				if (netStream != null) {
+					netStream.Close();
+				}
+				tcpClient.Close();
+			}
+		} //不在主线程执行
+
+		private void AcceptClientConnect() {
 			//IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);//服务器端ip
 			IPAddress ip = IPAddress.Parse("127.0.0.1");
-			var myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
-            myListener.Start();//start
+			try {
+				myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
+				myListener.Start();//start
+			}
+			catch {
+				MessageBox.Show("TcpListener创建失败！");
+			}
             var newClient = new TcpClient();
             while (true) {
                 try {
@@ -166,7 +196,8 @@ namespace Listener
                 }
 
                 try {
-                    byte[] receiveBytes = ReadFromTcpClient(newClient);
+					var IP = newClient.Client.RemoteEndPoint.ToString();
+					byte[] receiveBytes = ReadFromTcpClient(newClient);
                     int type = 0;
                     using (MemoryStream ms = new MemoryStream(receiveBytes)) {
                         IFormatter formatter = new BinaryFormatter();
@@ -194,10 +225,10 @@ namespace Listener
                                         }
                                     }
                                     if (CanResiger == false) {
-                                        SendMessageTo(LogIn.Receiver.Split(':')[0], LogIn.Receiver.Split(':')[1], "注册失败");
+                                        SendMessageTo(LogIn.Sender.Split(':')[0], LogIn.Sender.Split(':')[1], "注册失败");
                                     } else {
                                         user.Add(newUser);
-                                        SendMessageTo(LogIn.Receiver.Split(':')[0], LogIn.Receiver.Split(':')[1], "注册成功");
+                                        SendMessageTo(LogIn.Sender.Split(':')[0], LogIn.Sender.Split(':')[1], "注册成功");
                                         ///////////////////////////
                                     }
                                     continue;
@@ -212,10 +243,10 @@ namespace Listener
                                     user[i] = nowUser;
                                 }
                                 if (SuccessLogin == false) {
-                                    SendMessageTo(LogIn.Receiver.Split(':')[0], LogIn.Receiver.Split(':')[1], "登录失败");
+                                    SendMessageTo(LogIn.Sender.Split(':')[0], LogIn.Sender.Split(':')[1], "登录失败");
                                     continue;
                                 } else {
-                                    SendMessageTo(LogIn.Receiver.Split(':')[0], LogIn.Receiver.Split(':')[1], "登录成功");
+                                    SendMessageTo(LogIn.Sender.Split(':')[0], LogIn.Sender.Split(':')[1], "登录成功");
                                     continue;
                                 }
                             }
