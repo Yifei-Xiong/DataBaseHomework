@@ -129,7 +129,7 @@ namespace P2P_TCP {
 				tcpClient.Close();
 			}
 			string msg = ListenThreadMethod();
-			if (msg == "成功") {
+			if (msg == "注册成功") {
 				MessageBox.Show("注册成功！");
 			}
 			else {
