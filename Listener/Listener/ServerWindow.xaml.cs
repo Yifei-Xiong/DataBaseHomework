@@ -32,15 +32,13 @@ namespace Listener
     public class UserClass
     {
         public string userId { get; set; }
-        public string name { get; set; }
         public string password { get; set; }
         public bool isOnline { get; set; }
         public ArrayList message { get; set; }
 
         public UserClass() { }
-        public UserClass(string ID, string Name, string Password) {
+        public UserClass(string ID, string Password) {
             userId = ID;
-            name = Name;
             password = Password;
             isOnline = false;
 			message = new ArrayList();
@@ -59,7 +57,7 @@ namespace Listener
             //////user(ArrayList) Serization
             GetSerizationUser();
             if (user.Count == 0) {
-                UserClass ADMIN = new UserClass(Convert.ToString(UserCnt++), "admin", "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918");
+                UserClass ADMIN = new UserClass("admin", "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918");
                 user.Add(ADMIN);
             }
         }
@@ -152,12 +150,28 @@ namespace Listener
                     switch (type) {
                         case 1: {
                                 var LogIn = new IMClassLibrary.LoginDataPackage(receiveBytes);
+                                if (LogIn.Receiver == "Server_Reg") {
+                                    var newUser = new UserClass(LogIn.UserID, LogIn.Password);
+                                    bool CanResiger = true;
+                                    foreach (UserClass nowUser in user) {
+                                        if (nowUser.userId == newUser.userId) {
+                                            CanResiger = false;
+                                            break;
+                                        }
+                                    }
+                                    if (CanResiger == false) {
+
+                                    } else {
+                                        user.Add(newUser);
+                                    }
+                                    continue;
+                                }
                                 bool SuccessLogin = false;
-                                foreach (UserClass nowUser in user) {
+                                for (int i = 0; i < user.Count; ++i) {
+                                    var nowUser = (UserClass)user[i];
                                     if (LogIn.UserID == nowUser.userId && LogIn.Password == nowUser.password) {
                                         SuccessLogin = true;
-                                        processUser = nowUser.userId;
-                                        index = int.Parse(processUser) - 1000;
+                                        index = i;
                                         nowUser.isOnline = true;
                                     }
                                 }
@@ -167,20 +181,16 @@ namespace Listener
                             break;
                         case 2: {
                                 var LogOut = new IMClassLibrary.LogoutDataPackage(receiveBytes);
-                                if (LogOut.UserID != processUser) {
-                                    MessageBox.Show("登出用户名非正确");
-                                    continue;
-                                }
-                                foreach (UserClass nowUser in user) {
-                                    if (nowUser.userId == processUser)
-                                        nowUser.isOnline = false;
-                                }
+                                var nowC = (UserClass)user[index];
+                                nowC.isOnline = false;
+                                user[index] = nowC;
                             }
                             break;
                         case 3: {
                                 MessageBox.Show("发送了父类聊天数据包");
                             }
                             break;
+                        /*
                         case 4: {
                                 var message = new IMClassLibrary.SingleChatDataPackage(receiveBytes);
                                 var receiver = message.Receiver;
@@ -192,10 +202,12 @@ namespace Listener
                                 }
                             }
                             break;
+                        */
                         case 5: {
 
                             }
                             break;
+                        /*
                         case 6: {
                                 var message = new IMClassLibrary.ChangeNameDataPackage(receiveBytes);
                                 var receiver = message.Receiver;
@@ -207,6 +219,7 @@ namespace Listener
                                 }
                             }
                             break;
+                        */
                     }
                 }
                 catch {

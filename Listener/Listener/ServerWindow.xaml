@@ -10,7 +10,7 @@
 
         <Button x:Name="button_StartServer" Content="运行" HorizontalAlignment="Left" Margin="150,140,0,0" VerticalAlignment="Top" Width="75" Click="button_StartServer_Click" />
         <!--<Button x:Name="button_StopServer" Content="关闭" HorizontalAlignment="Left" Margin="216,146,0,0" VerticalAlignment="Top" Width="75" Click="button_StopServer_Click" />-->
-        <TextBlock x:Name="port" HorizontalAlignment="Left" Margin="106,68,0,0" TextWrapping="Wrap" Text="请输入端口号(1024-65535)：" VerticalAlignment="Top" Width="89"/>
-        <TextBox x:Name="portText" HorizontalAlignment="Left" Height="23" Margin="205,70,0,0" TextWrapping="Wrap" Text="37529" VerticalAlignment="Top" Width="55" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        <TextBlock x:Name="port" HorizontalAlignment="Left" Margin="106,68,0,0" TextWrapping="Wrap" Text="请输入用于用户登录的端口号(1024-65535)：" VerticalAlignment="Top" Width="89"/>
+        <TextBox x:Name="portText" HorizontalAlignment="Left" Height="23" Margin="205,70,0,0" TextWrapping="Wrap" Text="1500" VerticalAlignment="Top" Width="55" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
     </Grid>
 </Window>
