@@ -286,7 +286,7 @@ namespace Listener
                 MessageBox.Show("请先运行客户端");
                 return;
             }
-
-        }
+			textBlock1.Text += textBox.Text + ", ";
+		}
     }
 }
