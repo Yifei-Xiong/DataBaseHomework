@@ -86,6 +86,7 @@ namespace IMClassLibrary
 	//聊天数据包类
 	[Serializable]
 	public class ChatDataPackage : DataPackage {
+		public ChatDataPackage () { }
 		public ChatDataPackage (byte[] Bytes) {
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
@@ -96,6 +97,7 @@ namespace IMClassLibrary
 					this.Receiver = chatDataPackage.Receiver;
 					this.sendTime = chatDataPackage.sendTime;
 					this.MessageType = chatDataPackage.MessageType;
+					this.SenderID = chatDataPackage.SenderID;
 				}
 			}
 		} //构造函数 字节数组转化为数据包
@@ -104,6 +106,7 @@ namespace IMClassLibrary
 			this.Message = message;
 		} //构造函数 接受发送者,接收者字符串,发送的消息
 		public string Message { get; set; } //发送的消息
+		public string SenderID { get; set; } //发送者的ID
 	}
 
 	//单人聊天数据包类
@@ -133,6 +136,7 @@ namespace IMClassLibrary
 	}
 
 	//更改名称数据包类
+	[Serializable]
 	public class ChangeNameDataPackage : DataPackage {
 		public ChangeNameDataPackage(byte[] Bytes) {
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
@@ -150,11 +154,29 @@ namespace IMClassLibrary
 	}
 
 	//文件数据包类
+	[Serializable]
 	public class FileDataPackage : ChatDataPackage {
-		public FileDataPackage(byte[] Bytes) : base(Bytes) {
+		public FileDataPackage(string sender, string receiver, string message, byte[] file) : base(sender, receiver, message) {
+			this.file = file;
+			MessageType = 7;
+		} //构造函数
+		public FileDataPackage(byte[] Bytes) {
+			using (MemoryStream ms = new MemoryStream(Bytes)) {
+				IFormatter formatter = new BinaryFormatter();
+				FileDataPackage fileDataPackage = formatter.Deserialize(ms) as FileDataPackage;
+				if (fileDataPackage != null) {
+					this.Message = fileDataPackage.Message;
+					this.Sender = fileDataPackage.Sender;
+					this.Receiver = fileDataPackage.Receiver;
+					this.sendTime = fileDataPackage.sendTime;
+					this.MessageType = fileDataPackage.MessageType;
+					this.SenderID = fileDataPackage.SenderID;
+					this.file = fileDataPackage.file;
+				}
+			}
 		} //构造函数 字节数组转化为数据包
 		public string FileName { get; set; } //文件名称
-		public FileStream fileStream; //文件流
+		public byte[] file; //文件流
 	}
 
 }

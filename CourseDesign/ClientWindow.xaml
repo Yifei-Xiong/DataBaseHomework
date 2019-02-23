@@ -17,27 +17,27 @@
             <TabItem Header="最近消息" Margin="-2,0,0,-1.8">
                 <Grid Background="#FFE5E5E5">
                     <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="372" VerticalAlignment="Top" Width="177" Margin="0,0,-0.2,0" SelectionChanged="listBox_SelectionChanged">
-                        <ListBoxItem Content="王小明" FontWeight="Medium"/>
-                        <ListBoxItem Content="增彩并" FontWeight="Medium"/>
-                        <ListBoxItem Content="无瑕" FontWeight="Medium"/>
+                        <ListBoxItem Content="小明" FontWeight="Medium"/>
+                        <ListBoxItem Content="小张" FontWeight="Medium"/>
+                        <ListBoxItem Content="小吴" FontWeight="Medium"/>
                     </ListBox>
                 </Grid>
             </TabItem>
             <TabItem Header="联系人" Margin="0,0,-17,-1.8">
                 <Grid Background="#FFE5E5E5">
                     <ListBox x:Name="listBox2" HorizontalAlignment="Left" Height="372" VerticalAlignment="Top" Width="177" Margin="0,0,-0.2,0" SelectionChanged="listBox_SelectionChanged">
-                        <ListBoxItem Content="王小明"/>
-                        <ListBoxItem Content="增彩并"/>
-                        <ListBoxItem Content="无瑕"/>
+                        <ListBoxItem Content="小明" FontWeight="Medium"/>
+                        <ListBoxItem Content="小张" FontWeight="Medium"/>
+                        <ListBoxItem Content="小吴" FontWeight="Medium"/>
                     </ListBox>
                 </Grid>
             </TabItem>
             <TabItem Header="群组" Margin="12.2,0,-37.2,-1.8">
                 <Grid Background="#FFE5E5E5">
                     <ListBox x:Name="listBox3" HorizontalAlignment="Left" Height="372" VerticalAlignment="Top" Width="177" Margin="0,0,-0.2,0" SelectionChanged="listBox_SelectionChanged">
-                        <ListBoxItem Content="王小明"/>
-                        <ListBoxItem Content="增彩并"/>
-                        <ListBoxItem Content="无瑕"/>
+                        <ListBoxItem Content="小明" FontWeight="Medium"/>
+                        <ListBoxItem Content="小张" FontWeight="Medium"/>
+                        <ListBoxItem Content="小吴" FontWeight="Medium"/>
                     </ListBox>
                 </Grid>
             </TabItem>

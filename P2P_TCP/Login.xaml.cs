@@ -44,12 +44,28 @@ namespace P2P_TCP {
 			}
 		}
 
-        public Login(string UserID) {
+        public Login(string UserID,string IP) {
 			InitializeComponent();
 			textBox_id.Text = UserID;
+			textBox_ip.Text = IP;
 			//thread = new Thread(new ThreadStart(ListenThreadMethod));
 			//thread.IsBackground = true;
 			//thread.Start();
+			myIPAddress = IPAddress.Parse("127.0.0.1");
+			for (int i = 0; i <= 100; i++) {
+				try {
+					tcpListener = new TcpListener(myIPAddress, MyPort);
+					tcpListener.Start();
+					break;
+				}
+				catch {
+					MyPort++; //已被使用,端口号加1
+				}
+				if (i == 100) {
+					MessageBox.Show("计算机存在问题！");
+					this.Close();
+				}
+			}
 		}
 
 		//Thread thread; //侦听的线程类变量
@@ -100,6 +116,7 @@ namespace P2P_TCP {
 			var newClient = tcpListener.AcceptTcpClient();
 			var receiveByte = ReadFromTcpClient(newClient);
 			var messageClass = new IMClassLibrary.SingleChatDataPackage(receiveByte);
+			newClient.Close();
 			return messageClass.Message;
 		}
 
@@ -138,23 +155,35 @@ namespace P2P_TCP {
 		}
 
 		private void button_login_Click(object sender, RoutedEventArgs e) {
-			/*
-			string[] ip = textBox_ip.Text.Split(':');
-			TcpClient tcpClient = new TcpClient();
-			IPAddress ServerIP = IPAddress.Parse(ip[0]);
-			tcpClient.Connect(ServerIP, int.Parse(ip[1])); //建立与服务器的连接
+			TcpClient tcpClient;
+			IPAddress ServerIP;
+			string msg = string.Empty;
+			try {
+				string[] ip = textBox_ip.Text.Split(':');
+				tcpClient = new TcpClient();
+				ServerIP = IPAddress.Parse(ip[0]);
+				tcpClient.Connect(ServerIP, int.Parse(ip[1])); //建立与服务器的连接
 
-			NetworkStream networkStream = tcpClient.GetStream();
-			if (networkStream.CanWrite) {
-				IMClassLibrary.LoginDataPackage loginDataPackage = new IMClassLibrary.LoginDataPackage(textBox_id.Text, "Server_Login", textBox_id.Text, sha256(passwordBox.Password)); //初始化登录数据包
-				Byte[] sendBytes = loginDataPackage.DataPackageToBytes(); //登录数据包转化为字节数组
-				networkStream.Write(sendBytes, 0, sendBytes.Length);
+				NetworkStream networkStream = tcpClient.GetStream();
+				if (networkStream.CanWrite) {
+					IMClassLibrary.LoginDataPackage loginDataPackage = new IMClassLibrary.LoginDataPackage("127.0.0.1:" + MyPort.ToString(), "Server_Login", textBox_id.Text, sha256(passwordBox.Password)); //初始化登录数据包
+					Byte[] sendBytes = loginDataPackage.DataPackageToBytes(); //登录数据包转化为字节数组
+					networkStream.Write(sendBytes, 0, sendBytes.Length);
+				}
+
+				msg = ListenThreadMethod();
 			}
-			*/
-			P2PClient client = new P2PClient(textBox_id.Text, tcpListener,MyPort); //传入用户名
-			client.Show();
-			textBox_id.Text = sha256(passwordBox.Password);
-			Close();
+			catch {
+				MessageBox.Show("与服务器连接失败！");
+			}
+			if (msg == "登录成功") {
+				P2PClient client = new P2PClient(textBox_id.Text, tcpListener, MyPort, textBox_ip.Text.Split(':')[1]); //传入用户名&登录端口
+				client.Show();
+				Close();
+			}
+			else {
+				MessageBox.Show("登录失败！");
+			}
 		}
 
 		private void button_about_Click(object sender, RoutedEventArgs e) {

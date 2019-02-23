@@ -55,8 +55,9 @@ namespace Listener
             //////user(ArrayList) Serization
             //textBlock3.Text += ((IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0)).ToString();
             textBlock3.Text += "127.0.0.1";
-            GetSerizationUser();
-            if (user.Count == 0) {
+			user = new ArrayList();
+			//GetSerizationUser();
+			if (user.Count == 0) {
                 UserClass ADMIN = new UserClass("admin", "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918");
                 user.Add(ADMIN);
             }
@@ -64,7 +65,7 @@ namespace Listener
         }
 
         ~ServerWindow() {
-            SerizationUser();
+            //SerizationUser();
         }
 
         private void SerizationUser() {
@@ -95,7 +96,7 @@ namespace Listener
                 user = new ArrayList();
                 return;
             }
-        }
+		}
 
         private int nowEnterPort;
 		TcpListener myListener = null;
@@ -175,6 +176,8 @@ namespace Listener
 			}
 		} //不在主线程执行
 
+		bool IsPortCanUse = true;
+
 		private void AcceptClientConnect() {
 			//IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);//服务器端ip
 			IPAddress ip = IPAddress.Parse("127.0.0.1");
@@ -183,7 +186,9 @@ namespace Listener
 				myListener.Start();//start
 			}
 			catch {
-				MessageBox.Show("TcpListener创建失败！");
+				MessageBox.Show("TcpListener创建失败，请更改端口号或检查计算机网络！");
+				Close();
+				return;
 			}
             var newClient = new TcpClient();
             while (true) {
@@ -330,11 +335,11 @@ namespace Listener
                 MessageBox.Show("端口号输入错误");
                 return;
             }
-            var threadAccept = new Thread(AcceptClientConnect);
+			button_StartServer.Content = "退出";
+			IsPortCanUse = true;
+			var threadAccept = new Thread(AcceptClientConnect);
             threadAccept.Start();
-            button_StartServer.Content = "退出";
-
-        }
+		}
 
         ArrayList AllGroupPort;
 
@@ -415,10 +420,12 @@ namespace Listener
                                 stateObject.tcpClient = tcpClient;
                                 //stateObject.buffer = SendMsg;
                                 stateObject.friendIPAndPort = send.IP; //所选好友IP和端口号
-                                IMClassLibrary.SingleChatDataPackage chatData = userMessage;
+                                var chatData = new IMClassLibrary.MultiChatDataPackage(nowEnterPort.ToString(), userMessage.Receiver, userMessage.Message);
+								chatData.SenderID = userMessage.Sender;
+								chatData.MessageType = 5;
                                 stateObject.buffer = chatData.DataPackageToBytes(); //buffer为发送的数据包的字节数组
-                                string[] SplitStr = userMessage.Receiver.Split(':');
-                                tcpClient.BeginConnect(SplitStr[0], int.Parse(SplitStr[1]), null, stateObject); //异步连接
+                                string[] SplitStr = send.IP.Split(':');
+                                tcpClient.BeginConnect(SplitStr[0], int.Parse(SplitStr[1]), new AsyncCallback(SentCallBackF), stateObject); //异步连接
                             }
                             isNewUser = false;
                             break;

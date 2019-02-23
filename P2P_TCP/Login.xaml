@@ -11,7 +11,7 @@
         <PasswordBox x:Name="passwordBox" HorizontalAlignment="Left" Height="23" Margin="196,64,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
         <TextBlock x:Name="textBlock_id" HorizontalAlignment="Left" Margin="76,33,0,0" TextWrapping="Wrap" Text="请输入用户ID" VerticalAlignment="Top" FontSize="14"/>
         <TextBlock x:Name="textBlock_pw" HorizontalAlignment="Left" Margin="83,69,0,0" TextWrapping="Wrap" Text="请输入密码" VerticalAlignment="Top" FontSize="14"/>
-        <TextBox x:Name="textBox_ip" HorizontalAlignment="Left" Height="23" Margin="196,100,0,0" TextWrapping="Wrap" Text="127.0.0.1:37528" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="textBox_ip" HorizontalAlignment="Left" Height="23" Margin="196,100,0,0" TextWrapping="Wrap" Text="127.0.0.1:1500" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
         <TextBlock x:Name="textBlock_ip" HorizontalAlignment="Left" Margin="60,105,0,0" TextWrapping="Wrap" Text="请输入服务器地址" VerticalAlignment="Top" FontSize="14"/>
         <Button x:Name="button_register" Content="注册账号" HorizontalAlignment="Left" Margin="60,146,0,0" VerticalAlignment="Top" Width="75" Click="button_register_Click"/>
         <Button x:Name="button_login" Content="登陆" HorizontalAlignment="Left" Margin="150,146,0,0" VerticalAlignment="Top" Width="75" Click="button_login_Click"/>
