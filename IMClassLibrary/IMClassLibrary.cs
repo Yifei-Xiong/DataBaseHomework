@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace IMClassLibrary
 {
 	//数据包类
+	[Serializable]
 	public abstract class DataPackage {
 		public DataPackage() {
 			sendTime = DateTime.Now;
@@ -26,16 +27,16 @@ namespace IMClassLibrary
 			this.Receiver = receiver;
 			sendTime = DateTime.Now;
 		} //构造函数 接受发送者与接收者字符串
-		public readonly DateTime sendTime; //消息的发送时间
+		public DateTime sendTime { get; set; } //消息的发送时间
 		public string Sender { get; set; }
 		public string Receiver { get; set; }
 		public int MessageType = 0; //数据包类Type为0
 	}
 
 	//登入数据包类
+	[Serializable]
 	public class LoginDataPackage : DataPackage {
 		public LoginDataPackage(byte[] Bytes) {
-			MessageType = 1;
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
 				LoginDataPackage loginDataPackage = formatter.Deserialize(ms) as LoginDataPackage;
@@ -55,9 +56,9 @@ namespace IMClassLibrary
 	}
 
 	//登出数据包类
+	[Serializable]
 	public class LogoutDataPackage : DataPackage {
 		public LogoutDataPackage(byte[] Bytes) {
-			MessageType = 2;
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
 				LogoutDataPackage logoutDataPackage = formatter.Deserialize(ms) as LogoutDataPackage;
@@ -74,14 +75,18 @@ namespace IMClassLibrary
 	}
 
 	//聊天数据包类
+	[Serializable]
 	public class ChatDataPackage : DataPackage {
 		public ChatDataPackage (byte[] Bytes) {
-			MessageType = 3;
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
 				ChatDataPackage chatDataPackage = formatter.Deserialize(ms) as ChatDataPackage;
 				if (chatDataPackage != null) {
 					this.Message = chatDataPackage.Message;
+					this.Sender = chatDataPackage.Sender;
+					this.Receiver = chatDataPackage.Receiver;
+					this.sendTime = chatDataPackage.sendTime;
+					this.MessageType = chatDataPackage.MessageType;
 				}
 			}
 		} //构造函数 字节数组转化为数据包
@@ -93,9 +98,9 @@ namespace IMClassLibrary
 	}
 
 	//单人聊天数据包类
+	[Serializable]
 	public class SingleChatDataPackage : ChatDataPackage {
 		public SingleChatDataPackage(byte[] Bytes) : base(Bytes) {
-			MessageType = 4;
 		} //构造函数 字节数组转化为数据包
 		public SingleChatDataPackage(string sender, string receiver, string message) : base(sender,receiver,message) {
 			MessageType = 4;
@@ -106,9 +111,9 @@ namespace IMClassLibrary
 	}
 
 	//多人聊天数据包类
+	[Serializable]
 	public class MultiChatDataPackage : ChatDataPackage {
 		public MultiChatDataPackage (byte[] Bytes) : base(Bytes) {
-			MessageType = 5;
 		} //构造函数 字节数组转化为数据包
 		public MultiChatDataPackage(string sender, string receiver, string message) : base(sender, receiver, message) {
 			MessageType = 5;
@@ -121,7 +126,6 @@ namespace IMClassLibrary
 	//更改名称数据包类
 	public class ChangeNameDataPackage : DataPackage {
 		public ChangeNameDataPackage(byte[] Bytes) {
-			MessageType = 6;
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
 				if (formatter.Deserialize(ms) is ChangeNameDataPackage changeNameDataPackage) {
@@ -139,7 +143,6 @@ namespace IMClassLibrary
 	//文件数据包类
 	public class FileDataPackage : ChatDataPackage {
 		public FileDataPackage(byte[] Bytes) : base(Bytes) {
-			MessageType = 7;
 		} //构造函数 字节数组转化为数据包
 		public string FileName { get; set; } //文件名称
 		public FileStream fileStream; //文件流

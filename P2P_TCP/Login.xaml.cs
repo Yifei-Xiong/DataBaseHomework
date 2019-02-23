@@ -66,7 +66,7 @@ namespace P2P_TCP {
 		}
 
 		private void button_login_Click(object sender, RoutedEventArgs e) {
-			
+			/*
 			string[] ip = textBox_ip.Text.Split(':');
 			TcpClient tcpClient = new TcpClient();
 			IPAddress ServerIP = IPAddress.Parse(ip[0]);
@@ -78,7 +78,7 @@ namespace P2P_TCP {
 				Byte[] sendBytes = loginDataPackage.DataPackageToBytes(); //登录数据包转化为字节数组
 				networkStream.Write(sendBytes, 0, sendBytes.Length);
 			}
-			
+			*/
 			P2PClient client = new P2PClient(textBox_id.Text); //传入用户名
 			client.Show();
 			textBox_id.Text = sha256(passwordBox.Password);

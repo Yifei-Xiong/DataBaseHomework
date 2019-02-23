@@ -94,12 +94,12 @@ namespace P2P_TCP {
 			for (int i = 0; i < myIPAndPorts.Length; i++) {
 				myIPAndPorts[i] = (FriendIPAndPort)FriendListView.SelectedItems[i];
 			} //得到所有要发送的好友IP和端口号
-			string s = IPAndPort + "说:" + SendMessageTextBox.Text; //要发送的字符串
+			//string s = IPAndPort + "说:" + SendMessageTextBox.Text; //要发送的字符串
 			FriendListBox.Items.Add(IPAndPort + "（本机）说:" + SendMessageTextBox.Text); //显示已发送的信息
-			UnicodeEncoding ascii = new UnicodeEncoding(); //以下将字符串转换为字节数组
-			int n = (ascii.GetBytes(s)).Length;
-			byte[] SendMsg = new byte[n];
-			SendMsg = ascii.GetBytes(s);
+			//UnicodeEncoding ascii = new UnicodeEncoding(); //以下将字符串转换为字节数组
+			//int n = (ascii.GetBytes(s)).Length;
+			//byte[] SendMsg = new byte[n];
+			//SendMsg = ascii.GetBytes(s);
 			string ip = null; //记录好友端IP
 			int port = 0; //记录好友端端口号
 			TcpClient tcpClient;
@@ -108,10 +108,12 @@ namespace P2P_TCP {
 				tcpClient = new TcpClient(); //每次发送建立一个TcpClient类对象
 				stateObject = new StateObject(); ////每次发送建立一个StateObject类对象
 				stateObject.tcpClient = tcpClient;
-				stateObject.buffer = SendMsg;
+				//stateObject.buffer = SendMsg;
 				ip = myIPAndPorts[i].friendIP; //所选好友IP地址字符串
 				port = int.Parse(myIPAndPorts[i].friendPort); //所选字符串好友端口号转换为数字
 				stateObject.friendIPAndPort = ip + ":" + port.ToString(); //所选好友IP和端口号
+				IMClassLibrary.SingleChatDataPackage chatData = new IMClassLibrary.SingleChatDataPackage(UserID, IPAndPort, SendMessageTextBox.Text);
+				stateObject.buffer = chatData.DataPackageToBytes(); //buffer为发送的数据包的字节数组
 				tcpClient.BeginConnect(ip, port, new AsyncCallback(SentCallBackF), stateObject); //异步连接
 			} //给选定所有好友发信息
 		}
@@ -124,7 +126,7 @@ namespace P2P_TCP {
 				tcpClient.EndConnect(ar); //结束和下载服务器的连接，如下载错误将产生异常
 				netStream = tcpClient.GetStream();
 				if (netStream.CanWrite) {
-					netStream.Write(stateObject.buffer, 0, stateObject.buffer.Length);
+					netStream.Write(stateObject.buffer, 0, stateObject.buffer.Length); //传入要发送的信息
 				}
 				else {
 					MessageBox.Show("发送到" + stateObject.friendIPAndPort + "的消息失败");
@@ -186,19 +188,38 @@ namespace P2P_TCP {
 		} //侦听线程执行的方法
 
 		public void readRevMsg(TcpClient tcpClient) {
-			byte[] bytes = ReadFromTcpClient(tcpClient);
-			UnicodeEncoding ascii = new UnicodeEncoding();
-			string s = ascii.GetString(bytes);
-			int i1 = s.IndexOf(":"); //第一个:
-			int i2 = s.IndexOf(":", i1 + 1); //第二个:
+			byte[] bytes = ReadFromTcpClient(tcpClient); //获取chatData
 			FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
-			friendIPAndPort.friendIP = s.Substring(0, i1); //提取IP字符串
-			friendIPAndPort.friendPort = s.Substring(i1 + 1, i2 - i1 - 2); //提取端口字符串
+			IMClassLibrary.ChatDataPackage chatData = new IMClassLibrary.ChatDataPackage(bytes);
+			string message = string.Empty;
+			switch (chatData.MessageType) {
+				case 4:
+					IMClassLibrary.SingleChatDataPackage chatData1 = new IMClassLibrary.SingleChatDataPackage(bytes);
+					friendIPAndPort.friendIP = chatData1.Receiver.Split(':')[0];
+					friendIPAndPort.friendPort = chatData1.Receiver.Split(':')[1];
+					message = chatData1.Receiver + "（用户ID:"+ chatData1.Sender + "）说:" + chatData1.Message;
+					break;
+				case 5:
+					IMClassLibrary.MultiChatDataPackage chatData2 = new IMClassLibrary.MultiChatDataPackage(bytes);
+					friendIPAndPort.friendIP = chatData2.Receiver.Split(':')[0];
+					friendIPAndPort.friendPort = chatData2.Receiver.Split(':')[1];
+					message = chatData2.Receiver + " 说:" + chatData2.Message;
+					break;
+				default:
+					MessageBox.Show("聊天数据包读取失败");
+					return;
+			}
+			//UnicodeEncoding ascii = new UnicodeEncoding();
+			//string s = ascii.GetString(bytes);
+			//int i1 = s.IndexOf(":"); //第一个:
+			//int i2 = s.IndexOf(":", i1 + 1); //第二个:
+			//friendIPAndPort.friendIP = s.Substring(0, i1); //提取IP字符串
+			//friendIPAndPort.friendPort = s.Substring(i1 + 1, i2 - i1 - 2); //提取端口字符串
 			int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
 			if (k == -1) {
 				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
 			} //未找到该ip与端口号，需要增加
-			this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new OneArgDelegate(SetFriendListBox), s); //接受信息在FriendListBox显示
+			this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new OneArgDelegate(SetFriendListBox), message); //接受信息在FriendListBox显示
 		} //被异步调用的方法
 
 		public byte[] ReadFromTcpClient(TcpClient tcpClient) {
