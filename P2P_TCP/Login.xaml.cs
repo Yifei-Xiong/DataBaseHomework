@@ -24,33 +24,81 @@ namespace P2P_TCP {
 	public partial class Login : Window {
 		public Login() {
 			InitializeComponent();
-			thread = new Thread(new ThreadStart(ListenThreadMethod));
-			thread.IsBackground = true;
-			thread.Start();
+			//thread = new Thread(new ThreadStart(ListenThreadMethod));
+			//thread.IsBackground = true;
+			//thread.Start();
 		}
 
 		public Login(string UserID) {
 			InitializeComponent();
 			textBox_id.Text = UserID;
-			thread = new Thread(new ThreadStart(ListenThreadMethod));
-			thread.IsBackground = true;
-			thread.Start();
+			//thread = new Thread(new ThreadStart(ListenThreadMethod));
+			//thread.IsBackground = true;
+			//thread.Start();
 		}
 
-		Thread thread; //侦听的线程类变量
+		//Thread thread; //侦听的线程类变量
+
+		public byte[] ReadFromTcpClient(TcpClient tcpClient) {
+			List<byte> data = new List<byte>();
+			NetworkStream netStream = null;
+			byte[] bytes = new byte[tcpClient.ReceiveBufferSize]; //字节数组保存接收到的数据
+			int n = 0;
+			try {
+				netStream = tcpClient.GetStream();
+				if (netStream.CanRead) {
+					do { //文件大小未知
+						n = netStream.Read(bytes, 0, (int)tcpClient.ReceiveBufferSize);
+						if (n == (int)tcpClient.ReceiveBufferSize) {
+							data.AddRange(bytes);
+						} //如果bytes被读入数据填满
+						else if (n != 0) {
+							byte[] bytes1 = new byte[n];
+							for (int i = 0; i < n; i++) {
+								bytes1[i] = bytes[i];
+							}
+							data.AddRange(bytes1);
+						} //读入的字节数不为0
+					} while (netStream.DataAvailable); //是否还有数据
+				} //判断数据是否可读
+				bytes = data.ToArray();
+			}
+			catch {
+				MessageBox.Show("读数据失败");
+				bytes = null;
+			}
+			finally {
+				if (netStream != null) {
+					netStream.Close();
+				}
+				tcpClient.Close();
+			}
+			return bytes;
+		}
 
 		//侦听线程执行的方法
-		private void ListenThreadMethod() {
-			TcpListener server = null;
-
+		private string ListenThreadMethod() {
+			IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);//服务器端ip
+			var myListener = new TcpListener(ip, int.Parse(textBox_ip.Text.Split(':')[1]));//创建TcpListener实例
+			myListener.Start();//start
+			var newClient = myListener.AcceptTcpClient();
+			var receiveByte = ReadFromTcpClient(newClient);
+			var messageClass = new IMClassLibrary.SingleChatDataPackage(receiveByte);
+			return messageClass.Message;
 		}
 
 		private void button_register_Click(object sender, RoutedEventArgs e) {
-			
-			string[] ip = textBox_ip.Text.Split(':');
-			TcpClient tcpClient = new TcpClient();
-			IPAddress ServerIP = IPAddress.Parse(ip[0]);
-			tcpClient.Connect(ServerIP, int.Parse(ip[1])); //建立与服务器的连接
+			TcpClient tcpClient;
+			try {
+				string[] ip = textBox_ip.Text.Split(':');
+				tcpClient = new TcpClient();
+				IPAddress ServerIP = IPAddress.Parse(ip[0]);
+				tcpClient.Connect(ServerIP, int.Parse(ip[1])); //建立与服务器的连接
+			}
+			catch {
+				MessageBox.Show("无法连接到服务器!");
+				return;
+			}
 
 			NetworkStream networkStream = tcpClient.GetStream();
 			if (networkStream.CanWrite) {
@@ -58,11 +106,14 @@ namespace P2P_TCP {
 				Byte[] sendBytes = loginDataPackage.DataPackageToBytes(); //注册数据包转化为字节数组
 				networkStream.Write(sendBytes, 0, sendBytes.Length);
 			}
-			
-			MessageBox.Show("注册成功！");
-			P2PClient client = new P2PClient(textBox_id.Text); //传入用户名
-			client.Show();
-			Close();
+
+			string msg = ListenThreadMethod();
+			if (msg == "成功") {
+				MessageBox.Show("注册成功！");
+			}
+			else {
+				MessageBox.Show("注册失败！");
+			}
 		}
 
 		private void button_login_Click(object sender, RoutedEventArgs e) {

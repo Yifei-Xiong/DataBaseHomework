@@ -79,7 +79,7 @@ namespace P2P_TCP {
 		private Thread ListenerThread; //接收信息的侦听线程类变量
 		private delegate void OneArgDelegate(string arg); //代表无返回值有一个string参数方法
 		private delegate void SetList(FriendIPAndPort arg); //代表无返回值 FriendIPAndPort参数方法
-		private delegate void ReadDataF(TcpClient tcpClient); //代表无返回值 Tcpclient参数方法
+		public delegate void ReadDataF(TcpClient tcpClient); //代表无返回值 Tcpclient参数方法
 
 		private void SendMessageButton_Click(object sender, RoutedEventArgs e) {
 			if (SendMessageTextBox.Text == "") {
@@ -295,7 +295,7 @@ namespace P2P_TCP {
 				MessageBox.Show("好友已在列表中");
 				return;
 			}
-
+			
 			TcpClient tcpClient;
 			StateObject stateObject;
 			tcpClient = new TcpClient(); //每次发送建立一个TcpClient类对象
