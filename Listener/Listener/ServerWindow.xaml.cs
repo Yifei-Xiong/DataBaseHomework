@@ -54,8 +54,10 @@ namespace Listener
         public ServerWindow()
         {
             InitializeComponent();
-            //////user(ArrayList) Serization
-            GetSerizationUser();
+			//////user(ArrayList) Serization
+			//textBlock3.Text += ((IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0)).ToString();
+			textBlock3.Text += "127.0.0.1";
+			GetSerizationUser();
             if (user.Count == 0) {
                 UserClass ADMIN = new UserClass("admin", "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918");
                 user.Add(ADMIN);
@@ -241,6 +243,14 @@ namespace Listener
             var threadAccept = new Thread(AcceptClientConnect);
             threadAccept.Start();
 			button_StartServer.Content = "退出";
+
+		}
+
+		private void button_Click(object sender, RoutedEventArgs e) {
+			if((string)button_StartServer.Content == "运行") {
+				MessageBox.Show("请先运行客户端");
+				return;
+			}
 
 		}
 	}
