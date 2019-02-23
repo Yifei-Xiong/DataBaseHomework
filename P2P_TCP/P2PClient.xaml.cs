@@ -57,7 +57,7 @@ namespace P2P_TCP {
 		}
 
 		string UserID; //用户ID
-		static int MyPort = 37529; //本程序侦听准备使用的端口号,为静态变量
+		static int MyPort = 37528; //本程序侦听准备使用的端口号,为静态变量
 		IPAddress myIPAddress = null; //本程序侦听使用的IP地址
 		TcpListener tcpListener = null; //接收信息的侦听类对象,检查是否有信息
 		string IPAndPort; //记录本地IP和端口号
