@@ -80,6 +80,7 @@ namespace P2P_TCP {
 			public string friendPort { get; set; }
 		}
 
+		List<IMClassLibrary.FileDataPackage> FileList = new List<IMClassLibrary.FileDataPackage>(); //接受文件列表
 		public class FriendIPAndPorts : ObservableCollection<FriendIPAndPort> { } //定义集合
 		FriendIPAndPorts myFriendIPAndPorts = new FriendIPAndPorts();
 		private Thread ListenerThread; //接收信息的侦听线程类变量
@@ -155,7 +156,7 @@ namespace P2P_TCP {
 			openFileDialog1.Filter = "所有文件(*.*)|*.*";
 			if (openFileDialog1.ShowDialog().Value) {
 				string s_FileName = openFileDialog1.FileName;
-				string FileExtension = System.IO.Path.GetExtension(s_FileName).ToUpper();
+				string FileExtension = System.IO.Path.GetExtension(s_FileName).ToLower();
 				using (FileStream fileStream = File.OpenRead(s_FileName)) {
 					if (FriendListView.SelectedItems.Count == 0) {
 						MessageBox.Show("请选择好友IP和端口号");
@@ -180,7 +181,7 @@ namespace P2P_TCP {
 						ip = myIPAndPorts[i].friendIP; //所选好友IP地址字符串
 						port = int.Parse(myIPAndPorts[i].friendPort); //所选字符串好友端口号转换为数字
 						stateObject.friendIPAndPort = ip + ":" + port.ToString(); //所选好友IP和端口号
-						data = new IMClassLibrary.FileDataPackage(UserID, IPAndPort, "发送了文件", bytes);
+						data = new IMClassLibrary.FileDataPackage(UserID, IPAndPort, "发送了文件", bytes, FileExtension);
 						stateObject.buffer = data.DataPackageToBytes(); //buffer为发送的数据包的字节数组
 						tcpClient.BeginConnect(ip, port, new AsyncCallback(SentCallBackF), stateObject); //异步连接
 					} //给选定所有好友发信息
@@ -189,6 +190,7 @@ namespace P2P_TCP {
 			}
 		} //发送文件
 
+		/*
 		public void DownLoadCallBackF(IAsyncResult ar) {
 			TcpClient tcpClient = (TcpClient)ar.AsyncState;
 			try {
@@ -212,7 +214,7 @@ namespace P2P_TCP {
 					fs.Close();
 				}
 			}
-		} //下载文件的异步方法
+		}*/ //下载文件的异步方法
 
 		private void ListenerthreadMethod() {
 			TcpClient tcpClient = null; //服务器和客户机连接的 TcpClient类对象
@@ -234,39 +236,24 @@ namespace P2P_TCP {
 			IMClassLibrary.ChatDataPackage chatData = new IMClassLibrary.ChatDataPackage(bytes);
 			string message = string.Empty;
 			switch (chatData.MessageType) {
-				case 4:
+				case 4: //单人聊天数据包
 					IMClassLibrary.SingleChatDataPackage chatData1 = new IMClassLibrary.SingleChatDataPackage(bytes);
 					friendIPAndPort.friendIP = chatData1.Receiver.Split(':')[0];
 					friendIPAndPort.friendPort = chatData1.Receiver.Split(':')[1];
 					message = chatData1.Receiver + "（用户ID:"+ chatData1.Sender + "）（"+chatData1.sendTime.ToString() +"）说:" + chatData1.Message;
 					break;
-				case 5:
+				case 5: //多人聊天数据包
 					IMClassLibrary.MultiChatDataPackage chatData2 = new IMClassLibrary.MultiChatDataPackage(bytes);
 					friendIPAndPort.friendIP = chatData2.Receiver.Split(':')[0];
 					friendIPAndPort.friendPort = chatData2.Receiver.Split(':')[1];
 					message = chatData2.sendTime.ToString() + chatData2.Receiver + "（来自群聊" + chatData2.Sender.ToString() + "，用户ID:" + chatData2.Sender + "）（" + chatData2.sendTime.ToString() + "）说:" + chatData2.Message;
 					break;
-				case 7:
-					var data = new IMClassLibrary.FileDataPackage(bytes);
-					string tempstr = Encoding.UTF8.GetString(data.file);
-
-
-					!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-						到这里都是正确的！！！！！！！
-					！！！！！！！！！！！！！！！！！
-
-
-
-					SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-					saveFileDialog1.Filter = "所有文件(*.*)|*.*";
-					if (saveFileDialog1.ShowDialog().Value) {
-						FileStream fs = new FileStream(saveFileDialog1.FileName, FileMode.Create);
-						StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8);
-						streamWriter.Write(data.file);
-						streamWriter.Flush();
-						streamWriter.Close();
-						fs.Close();
-					}
+				case 7: //文件传输数据包
+					IMClassLibrary.FileDataPackage chatData3 = new IMClassLibrary.FileDataPackage(bytes);
+					FileList.Add(chatData3); //加入List中待下载
+					friendIPAndPort.friendIP = chatData3.Receiver.Split(':')[0];
+					friendIPAndPort.friendPort = chatData3.Receiver.Split(':')[1];
+					message = chatData3.Receiver + "（用户ID:" + chatData3.Sender + "）（" + chatData3.sendTime.ToString() + "）给你发了一个文件，请接收";
 					break;
 				default:
 					MessageBox.Show("聊天数据包读取失败");
@@ -282,7 +269,9 @@ namespace P2P_TCP {
 			if (k == -1) {
 				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
 			} //未找到该ip与端口号，需要增加
-			this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new OneArgDelegate(SetFriendListBox), message); //接受信息在FriendListBox显示
+			if(message!=string.Empty) {
+				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new OneArgDelegate(SetFriendListBox), message); //接受信息在FriendListBox显示
+			}
 		} //被异步调用的方法
 
 		public byte[] ReadFromTcpClient(TcpClient tcpClient) {
@@ -504,5 +493,28 @@ namespace P2P_TCP {
 			about.ShowDialog();
 		} //关于
 
+		private void CheckReceiveFile_Click(object sender, RoutedEventArgs e) {
+			if (FileList.Count==0) {
+				MessageBox.Show("目前没有收到文件！");
+			} //无文件待保存
+			else {
+				IMClassLibrary.FileDataPackage data;
+				for (int i=0;i< FileList.Count; ++i) {
+					data = FileList[i];
+					SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+					saveFileDialog1.Filter = "接收文件(*" + data.FileExtension + ")|*" + data.FileExtension;
+					if (saveFileDialog1.ShowDialog().Value) {
+						FileStream fs = new FileStream(saveFileDialog1.FileName, FileMode.Create);
+						//StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8);
+						//streamWriter.Write(data.file);
+						//streamWriter.Flush();
+						//streamWriter.Close();
+						fs.Write(data.file, 0, data.file.Length);
+						fs.Close();
+					}
+				}
+				FileList.Clear();
+			}
+		}
 	}
 }

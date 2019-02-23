@@ -90,6 +90,7 @@ namespace IMClassLibrary
 		public ChatDataPackage (byte[] Bytes) {
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
+				ms.Position = 0;
 				ChatDataPackage chatDataPackage = formatter.Deserialize(ms) as ChatDataPackage;
 				if (chatDataPackage != null) {
 					this.Message = chatDataPackage.Message;
@@ -156,13 +157,15 @@ namespace IMClassLibrary
 	//文件数据包类
 	[Serializable]
 	public class FileDataPackage : ChatDataPackage {
-		public FileDataPackage(string sender, string receiver, string message, byte[] file) : base(sender, receiver, message) {
+		public FileDataPackage(string sender, string receiver, string message, byte[] file,string ext) : base(sender, receiver, message) {
 			this.file = file;
+			FileExtension = ext;
 			MessageType = 7;
 		} //构造函数
 		public FileDataPackage(byte[] Bytes) {
 			using (MemoryStream ms = new MemoryStream(Bytes)) {
 				IFormatter formatter = new BinaryFormatter();
+				ms.Position = 0;
 				FileDataPackage fileDataPackage = formatter.Deserialize(ms) as FileDataPackage;
 				if (fileDataPackage != null) {
 					this.Message = fileDataPackage.Message;
@@ -172,11 +175,12 @@ namespace IMClassLibrary
 					this.MessageType = fileDataPackage.MessageType;
 					this.SenderID = fileDataPackage.SenderID;
 					this.file = fileDataPackage.file;
+					this.FileExtension = fileDataPackage.FileExtension;
 				}
 			}
 		} //构造函数 字节数组转化为数据包
-		public string FileName { get; set; } //文件名称
 		public byte[] file; //文件流
+		public string FileExtension { get; set; } //文件后缀
 	}
 
 }
