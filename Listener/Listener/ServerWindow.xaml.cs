@@ -48,19 +48,19 @@ namespace Listener
 
     public partial class ServerWindow : Window
     {
-        int UserCnt = 1000;
         ArrayList user;
 
         public ServerWindow() {
             InitializeComponent();
             //////user(ArrayList) Serization
-            //textBlock3.Text += ((IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0)).ToString();
-            textBlock3.Text += "127.0.0.1";
+            textBlock3.Text += ((IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0)).ToString();
+            //textBlock3.Text += "127.0.0.1";
             GetSerizationUser();
             if (user.Count == 0) {
                 UserClass ADMIN = new UserClass("admin", "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918");
                 user.Add(ADMIN);
             }
+            AllGroupPort = new ArrayList();
         }
 
         ~ServerWindow() {
@@ -136,8 +136,21 @@ namespace Listener
             return bytes;
         }
 
+        public void SendMessageTo(string IP, string port, string message) {
+            TcpClient tcpClient;
+            StateObject stateObject;
+            tcpClient = new TcpClient(); //每次发送建立一个TcpClient类对象
+            stateObject = new StateObject(); ////每次发送建立一个StateObject类对象
+            stateObject.tcpClient = tcpClient;
+            //stateObject.buffer = SendMsg;
+            stateObject.friendIPAndPort = IP + ":" + port; //所选好友IP和端口号
+            var chatData = new IMClassLibrary.SingleChatDataPackage("Server", "Server", message);
+            stateObject.buffer = chatData.DataPackageToBytes(); //buffer为发送的数据包的字节数组
+            tcpClient.BeginConnect(IP, int.Parse(port), null, stateObject);
+        }
+
         private void AcceptClientConnect() {
-            IPAddress ip = IPAddress.Parse("127.0.0.1");//服务器端ip
+            IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);//服务器端ip
             var myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
             myListener.Start();//start
             var newClient = new TcpClient();
@@ -146,7 +159,8 @@ namespace Listener
                     newClient = myListener.AcceptTcpClient();//等待客户端连接
                 }
                 catch {
-                    return;
+                    if (newClient == null)
+                        return;
                 }
 
                 try {
@@ -178,9 +192,10 @@ namespace Listener
                                         }
                                     }
                                     if (CanResiger == false) {
-                                        ///////////////////////////
+                                        SendMessageTo(LogIn.Receiver.Split(':')[0], LogIn.Receiver.Split(':')[1], "注册失败");
                                     } else {
                                         user.Add(newUser);
+                                        SendMessageTo(LogIn.Receiver.Split(':')[0], LogIn.Receiver.Split(':')[1], "注册成功");
                                         ///////////////////////////
                                     }
                                     continue;
@@ -195,10 +210,10 @@ namespace Listener
                                     user[i] = nowUser;
                                 }
                                 if (SuccessLogin == false) {
-                                    ////////////////////////////
+                                    SendMessageTo(LogIn.Receiver.Split(':')[0], LogIn.Receiver.Split(':')[1], "登录失败");
                                     continue;
                                 } else {
-                                    /////////
+                                    SendMessageTo(LogIn.Receiver.Split(':')[0], LogIn.Receiver.Split(':')[1], "登录成功");
                                     continue;
                                 }
                             }
@@ -239,7 +254,14 @@ namespace Listener
                             break;
                         */
                         case 5: {
-
+                                var message = new IMClassLibrary.SingleChatDataPackage(receiveBytes);
+                                var receiver = message.Receiver;
+                                foreach (UserClass nowUser in user) {
+                                    if (receiver == nowUser.userId) {
+                                        //nowUser.message.Add(message);
+                                        break;
+                                    }
+                                }
                             }
                             break;
 
@@ -281,12 +303,104 @@ namespace Listener
 
         }
 
+        ArrayList AllGroupPort;
+
         private void button_Click(object sender, RoutedEventArgs e) {
             if ((string)button_StartServer.Content == "运行") {
                 MessageBox.Show("请先运行客户端");
                 return;
             }
-			textBlock1.Text += textBox.Text + ", ";
+            var nowEnterPort = 0;
+            bool canTurnPortToInt = int.TryParse(textBox.Text, out nowEnterPort);
+            if (canTurnPortToInt == false || nowEnterPort > 65535 || nowEnterPort < 1024) {
+                MessageBox.Show("端口号输入错误");
+                return;
+            }
+            foreach (int str in AllGroupPort) {
+                if (str == nowEnterPort) {
+                    MessageBox.Show("已经添加过该端口");
+                    return;
+                }
+            }
+            AllGroupPort.Add(nowEnterPort);
+		    textBlock1.Text += textBox.Text + ", ";
+            nowTextBoxText = textBox.Text;
+            var newThread = new Thread(GroupPortListener);
+            newThread.Start();
 		}
+
+        public struct GroupUserStruct
+        {
+            public string userID;
+            public string IP;
+            public IPAddress IpAddress;
+        }
+
+        public class StateObject
+        {
+            public TcpClient tcpClient = null;
+            public NetworkStream netstream = null;
+            public byte[] buffer;
+            public string friendIPAndPort = null; //记录好友的IP和端口号
+        }
+
+        string nowTextBoxText;
+
+        public void GroupPortListener() {
+            IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);//服务器端ip
+            var nowEnterPort = 0;
+            bool canTurnPortToInt = int.TryParse(nowTextBoxText, out nowEnterPort);
+            var myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
+            myListener.Start();//start
+            var newClient = new TcpClient();
+            var group = new ArrayList();
+            while (true) {
+                try {
+                    newClient = myListener.AcceptTcpClient();//等待客户端连接
+                }
+                catch {
+                    if (newClient == null)
+                        return;
+                }
+
+                try {
+                    byte[] receiveBytes = ReadFromTcpClient(newClient);
+                    var userMessage = new IMClassLibrary.SingleChatDataPackage(receiveBytes);
+                    bool isNewUser = true;
+                    for (int i = 0; i < group.Count; ++i) {
+                        var t = (GroupUserStruct)group[i];
+                        if (t.IP == userMessage.Receiver && t.userID == userMessage.Sender) {
+                            TcpClient tcpClient;
+                            StateObject stateObject;
+                            for (int j = 0; j < group.Count; ++j) {
+                                if (i == j)
+                                    continue;
+                                var send = (GroupUserStruct)group[j];
+                                tcpClient = new TcpClient(); //每次发送建立一个TcpClient类对象
+                                stateObject = new StateObject(); ////每次发送建立一个StateObject类对象
+                                stateObject.tcpClient = tcpClient;
+                                //stateObject.buffer = SendMsg;
+                                stateObject.friendIPAndPort = send.IP; //所选好友IP和端口号
+                                IMClassLibrary.SingleChatDataPackage chatData = userMessage;
+                                stateObject.buffer = chatData.DataPackageToBytes(); //buffer为发送的数据包的字节数组
+                                string[] SplitStr = userMessage.Receiver.Split(':');
+                                tcpClient.BeginConnect(SplitStr[0], int.Parse(SplitStr[1]), null, stateObject); //异步连接
+                            }
+                            isNewUser = false;
+                            break;
+                        }
+                    }
+                    if (isNewUser == true) {
+                        var newGroupuserStruct = new GroupUserStruct();
+                        newGroupuserStruct.userID = userMessage.Sender;
+                        newGroupuserStruct.IP = userMessage.Receiver;
+                        group.Add(newGroupuserStruct);
+                    }
+                }
+                catch {
+                    break;
+                }
+            }
+        }
     }
 }
