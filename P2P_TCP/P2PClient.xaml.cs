@@ -129,11 +129,11 @@ namespace P2P_TCP {
 					netStream.Write(stateObject.buffer, 0, stateObject.buffer.Length); //传入要发送的信息
 				}
 				else {
-					MessageBox.Show("发送到" + stateObject.friendIPAndPort + "的消息失败");
+					MessageBox.Show("暂时无法与" + stateObject.friendIPAndPort + "通讯");
 				}
 			}
 			catch {
-				MessageBox.Show("发送到" + stateObject.friendIPAndPort + "的消息失败");
+				MessageBox.Show("暂时无法与" + stateObject.friendIPAndPort + "通讯");
 			}
 			finally {
 				if (netStream != null) {
@@ -293,7 +293,20 @@ namespace P2P_TCP {
 			} //未找到该ip与端口号，需要增加
 			else {
 				MessageBox.Show("好友已在列表中");
+				return;
 			}
+
+			TcpClient tcpClient;
+			StateObject stateObject;
+			tcpClient = new TcpClient(); //每次发送建立一个TcpClient类对象
+			stateObject = new StateObject(); ////每次发送建立一个StateObject类对象
+			stateObject.tcpClient = tcpClient;
+			//stateObject.buffer = SendMsg;
+			stateObject.friendIPAndPort = friendIPAndPort.friendIP + ":" + friendIPAndPort.friendPort; //所选好友IP和端口号
+			IMClassLibrary.SingleChatDataPackage chatData = new IMClassLibrary.SingleChatDataPackage(UserID, IPAndPort, "添加您为好友");
+			stateObject.buffer = chatData.DataPackageToBytes(); //buffer为发送的数据包的字节数组
+			tcpClient.BeginConnect(friendIPAndPort.friendIP, myFriendPort, new AsyncCallback(SentCallBackF), stateObject); //异步连接
+			//发送添加好友信息
 		}
 
 		private void DeleteFriendButton_Click(object sender, RoutedEventArgs e) {
