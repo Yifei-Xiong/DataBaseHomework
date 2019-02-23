@@ -53,8 +53,8 @@ namespace Listener
         public ServerWindow() {
             InitializeComponent();
             //////user(ArrayList) Serization
-            textBlock3.Text += ((IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0)).ToString();
-            //textBlock3.Text += "127.0.0.1";
+            //textBlock3.Text += ((IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0)).ToString();
+            textBlock3.Text += "127.0.0.1";
             GetSerizationUser();
             if (user.Count == 0) {
                 UserClass ADMIN = new UserClass("admin", "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918");
@@ -150,8 +150,9 @@ namespace Listener
         }
 
         private void AcceptClientConnect() {
-            IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);//服务器端ip
-            var myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
+			//IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);//服务器端ip
+			IPAddress ip = IPAddress.Parse("127.0.0.1");
+			var myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
             myListener.Start();//start
             var newClient = new TcpClient();
             while (true) {
@@ -347,8 +348,9 @@ namespace Listener
         string nowTextBoxText;
 
         public void GroupPortListener() {
-            IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);//服务器端ip
-            var nowEnterPort = 0;
+            //IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);//服务器端ip
+			IPAddress ip = IPAddress.Parse("127.0.0.1");
+			var nowEnterPort = 0;
             bool canTurnPortToInt = int.TryParse(nowTextBoxText, out nowEnterPort);
             var myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
             myListener.Start();//start

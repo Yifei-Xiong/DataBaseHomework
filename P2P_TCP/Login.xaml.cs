@@ -27,6 +27,23 @@ namespace P2P_TCP {
 			//thread = new Thread(new ThreadStart(ListenThreadMethod));
 			//thread.IsBackground = true;
 			//thread.Start();
+			myIPAddress = IPAddress.Parse("127.0.0.1");
+			MyPort++; //一台计算机如果生成多个P2P终端,端口号应不同
+			for (int i = 0; i <= 100; i++) {
+				try {
+					tcpListener = new TcpListener(myIPAddress, MyPort);
+					tcpListener.Start();
+					textBlock.Text = "本机IP地址和端口号:" + myIPAddress.ToString() + ":" + MyPort.ToString();
+					break;
+				}
+				catch {
+					MyPort++; //已被使用,端口号加1
+				}
+				if (i == 100) {
+					MessageBox.Show("不能建立服务器,可能计算机网络有问题");
+					this.Close();
+				}
+			}
 		}
 
 		public Login(string UserID) {
@@ -78,7 +95,8 @@ namespace P2P_TCP {
 
 		//侦听线程执行的方法
 		private string ListenThreadMethod() {
-			IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);//服务器端ip
+			//IPAddress ip = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);
+			IPAddress ip = IPAddress.Parse("127.0.0.1");
 			var myListener = new TcpListener(ip, int.Parse(textBox_ip.Text.Split(':')[1]));//创建TcpListener实例
 			myListener.Start();//start
 			var newClient = myListener.AcceptTcpClient();
@@ -88,25 +106,30 @@ namespace P2P_TCP {
 		}
 
 		private void button_register_Click(object sender, RoutedEventArgs e) {
-			TcpClient tcpClient;
+			TcpClient tcpClient = null;
+			NetworkStream networkStream = null;
 			try {
 				string[] ip = textBox_ip.Text.Split(':');
 				tcpClient = new TcpClient();
 				IPAddress ServerIP = IPAddress.Parse(ip[0]);
 				tcpClient.Connect(ServerIP, int.Parse(ip[1])); //建立与服务器的连接
+				networkStream = tcpClient.GetStream();
+				if (networkStream.CanWrite) {
+					IMClassLibrary.LoginDataPackage loginDataPackage = new IMClassLibrary.LoginDataPackage(textBox_id.Text, "Server_Reg", textBox_id.Text, sha256(passwordBox.Password)); //初始化登录数据包
+					byte[] sendBytes = loginDataPackage.DataPackageToBytes(); //注册数据包转化为字节数组
+					networkStream.Write(sendBytes, 0, sendBytes.Length);
+				}
 			}
 			catch {
 				MessageBox.Show("无法连接到服务器!");
 				return;
 			}
-
-			NetworkStream networkStream = tcpClient.GetStream();
-			if (networkStream.CanWrite) {
-				IMClassLibrary.LoginDataPackage loginDataPackage = new IMClassLibrary.LoginDataPackage(textBox_id.Text, "Server_Reg", textBox_id.Text, sha256(passwordBox.Password)); //初始化登录数据包
-				Byte[] sendBytes = loginDataPackage.DataPackageToBytes(); //注册数据包转化为字节数组
-				networkStream.Write(sendBytes, 0, sendBytes.Length);
+			finally {
+				if (networkStream != null) {
+					networkStream.Close();
+				}
+				tcpClient.Close();
 			}
-
 			string msg = ListenThreadMethod();
 			if (msg == "成功") {
 				MessageBox.Show("注册成功！");
@@ -130,7 +153,7 @@ namespace P2P_TCP {
 				networkStream.Write(sendBytes, 0, sendBytes.Length);
 			}
 			*/
-			P2PClient client = new P2PClient(textBox_id.Text); //传入用户名
+			P2PClient client = new P2PClient(textBox_id.Text,port); //传入用户名
 			client.Show();
 			textBox_id.Text = sha256(passwordBox.Password);
 			Close();
