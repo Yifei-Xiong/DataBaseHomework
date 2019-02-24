@@ -246,7 +246,7 @@ namespace P2P_TCP {
 					IMClassLibrary.MultiChatDataPackage chatData2 = new IMClassLibrary.MultiChatDataPackage(bytes);
 					friendIPAndPort.friendIP = chatData2.Receiver.Split(':')[0];
 					friendIPAndPort.friendPort = chatData2.Receiver.Split(':')[1];
-					message = chatData2.sendTime.ToString() + chatData2.Receiver + "（来自群聊" + chatData2.Sender.ToString() + "，用户ID:" + chatData2.Sender + "）（" + chatData2.sendTime.ToString() + "）说:" + chatData2.Message;
+					message = chatData2.Receiver + "（用户ID:" + chatData2.SenderID + ",来自群聊" + chatData2.Sender.ToString() + "）（" + chatData2.sendTime.ToString() + "）说:" + chatData2.Message;
 					break;
 				case 7: //文件传输数据包
 					IMClassLibrary.FileDataPackage chatData3 = new IMClassLibrary.FileDataPackage(bytes);

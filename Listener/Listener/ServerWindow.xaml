@@ -5,20 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Listener"
         mc:Ignorable="d"
-        Title="服务端登陆 - IM by BMP136 &amp; Night_Wso" Height="233.041" Width="430.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="137*"/>
-            <ColumnDefinition Width="244*"/>
-        </Grid.ColumnDefinitions>
-        <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="41,168,0,0" TextWrapping="Wrap" Text="本机IP地址:" VerticalAlignment="Top" Width="323" TextAlignment="Center" Grid.ColumnSpan="2"/>
-        <Button x:Name="button_StartServer" Content="运行" HorizontalAlignment="Left" Margin="62,128,0,0" VerticalAlignment="Top" Width="75" Click="button_StartServer_Click" Grid.ColumnSpan="2" />
-        <!--<Button x:Name="button_StopServer" Content="关闭" HorizontalAlignment="Left" Margin="216,146,0,0" VerticalAlignment="Top" Width="75" Click="button_StopServer_Click" />-->
-        <TextBlock x:Name="port" HorizontalAlignment="Left" Margin="17,51,0,0" TextWrapping="Wrap" Text="请输入用于用户登录的端口号(1024-65535)：" VerticalAlignment="Top" Width="89"/>
-        <TextBox x:Name="portText" HorizontalAlignment="Left" Height="23" Margin="116,53,0,0" TextWrapping="Wrap" Text="1500" VerticalAlignment="Top" Width="55" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.ColumnSpan="2"/>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="71.2,57,0,0" TextWrapping="Wrap" Text="群聊端口号" VerticalAlignment="Top" Grid.Column="1"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="144.2,51,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86" Grid.Column="1"/>
-        <Button x:Name="button" Content="添加群聊" HorizontalAlignment="Left" Margin="125.2,128,0,0" VerticalAlignment="Top" Width="75" Click="button_Click" Grid.Column="1"/>
-        <TextBlock x:Name="textBlock1" Grid.Column="1" HorizontalAlignment="Left" Margin="60.2,80,0,0" TextWrapping="Wrap" Text="已添加群聊端口:" VerticalAlignment="Top" Height="43" Width="189"/>
-    </Grid>
+        Title="服务端登陆 - IM by 孙宇鹏 &amp; 熊逸飞" Height="247.974" Width="430.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <DockPanel  LastChildFill="True">
+        <Menu x:Name="menu" VerticalAlignment="Center"  DockPanel.Dock="Top" >
+            <MenuItem Header="文件(_F)" InputGestureText="Ctrl+F" Name="MenuItem_File" >
+                <MenuItem Header="账号信息保存到文件" HorizontalAlignment="Left" Click="MenuItem_Click" />
+                <MenuItem Header="从文件导入账号信息" HorizontalAlignment="Left" Click="MenuItem_Click_1" />
+            </MenuItem>
+            <MenuItem Header="退出(_E)" InputGestureText="Ctrl+E" Name="MenuItem_Exit" Click="MenuItem_Exit_Click" />
+            <MenuItem Header="关于(_A)" InputGestureText="Ctrl+A" Name="MenuItem_About" Click="MenuItem_About_Click"  />
+        </Menu>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="137*"/>
+                <ColumnDefinition Width="244*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="41,168,0,0" TextWrapping="Wrap" Text="本机IP地址:" VerticalAlignment="Top" Width="323" TextAlignment="Center" Grid.ColumnSpan="2"/>
+            <Button x:Name="button_StartServer" Content="运行" HorizontalAlignment="Left" Margin="53,128,0,0" VerticalAlignment="Top" Width="75" Click="button_StartServer_Click" />
+            <!--<Button x:Name="button_StopServer" Content="关闭" HorizontalAlignment="Left" Margin="216,146,0,0" VerticalAlignment="Top" Width="75" Click="button_StopServer_Click" />-->
+            <TextBlock x:Name="port" HorizontalAlignment="Left" Margin="17,51,0,0" TextWrapping="Wrap" Text="请输入用于用户登录的端口号(1024-65535)：" VerticalAlignment="Top" Width="89"/>
+            <TextBox x:Name="portText" HorizontalAlignment="Left" Height="23" Margin="116,53,0,0" TextWrapping="Wrap" Text="1500" VerticalAlignment="Top" Width="55" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.ColumnSpan="2"/>
+            <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="71.2,57,0,0" TextWrapping="Wrap" Text="群聊端口号" VerticalAlignment="Top" Grid.Column="1"/>
+            <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="144.2,51,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86" Grid.Column="1"/>
+            <Button x:Name="button" Content="添加群聊" HorizontalAlignment="Left" Margin="125.2,128,0,0" VerticalAlignment="Top" Width="75" Click="button_Click" Grid.Column="1"/>
+            <TextBlock x:Name="textBlock1" Grid.Column="1" HorizontalAlignment="Left" Margin="60.2,80,0,0" TextWrapping="Wrap" Text="已添加群聊端口:" VerticalAlignment="Top" Height="43" Width="189"/>
+        </Grid>
+    </DockPanel>
 </Window>

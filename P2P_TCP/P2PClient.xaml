@@ -48,5 +48,4 @@
             <Button x:Name="CheckReceiveFile" Content="查看接收文件" Grid.Column="1" HorizontalAlignment="Left" Margin="552.8,344,0,0" VerticalAlignment="Top" Width="121" Click="CheckReceiveFile_Click"/>
         </Grid>
     </DockPanel>
-
 </Window>

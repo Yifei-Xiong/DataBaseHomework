@@ -1,0 +1,14 @@
+﻿<Window x:Class="Listener.About"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Listener"
+        mc:Ignorable="d"
+        Title="关于此程序" Height="214.945" Width="360.325" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="135" Width="334"><Run Text="本程序为：面向对象程序设计-课程设计："/><Span><Run Text="即时通讯"/></Span><Run Text="(IM)"/><LineBreak/><Run/><LineBreak/><Run Text="默认用户ID：admin&#x9;默认密码：admin"/><LineBreak/><Run/><LineBreak/><Run Text="Github项目地址：https://github.com/Night1611/CSharpCourseDesign"/><LineBreak/><Run/><LineBreak/><Run Text="制作By Night_Wso"/><Run Text="(熊逸飞)"/><Run Text=" &amp; BPM136"/><Run Text="(孙宇鹏)"/></TextBlock>
+        <Button x:Name="button" Content="确定" HorizontalAlignment="Left" Margin="153,150,0,0" VerticalAlignment="Top" Width="50" Click="button_Click" />
+
+    </Grid>
+</Window>
