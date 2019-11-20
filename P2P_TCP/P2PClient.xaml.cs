@@ -488,6 +488,11 @@ namespace P2P_TCP {
 			Close();
 		} //退出
 
+		private void MenuItem_About_Search(object sender, RoutedEventArgs e) {
+			Search search = new Search();
+			search.ShowDialog();
+		} //查询窗口
+
 		private void MenuItem_About_Click(object sender, RoutedEventArgs e) {
 			About about = new About();
 			about.ShowDialog();

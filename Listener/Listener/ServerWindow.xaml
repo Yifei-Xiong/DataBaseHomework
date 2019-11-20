@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Listener"
         mc:Ignorable="d"
-        Title="服务端登陆 - IM by 孙宇鹏 &amp; 熊逸飞" Height="247.974" Width="430.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="服务端登陆 - IM by 熊逸飞 &amp; 程子齐 &amp; 刘雨乔" Height="247.974" Width="430.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <DockPanel  LastChildFill="True">
         <Menu x:Name="menu" VerticalAlignment="Center"  DockPanel.Dock="Top" >
             <MenuItem Header="文件(_F)" InputGestureText="Ctrl+F" Name="MenuItem_File" >

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:P2P_TCP"
         mc:Ignorable="d"
-        Title="客户端登陆 - IM by 孙宇鹏 &amp; 熊逸飞" Height="233.041" Width="386.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="客户端登陆 - IM by 熊逸飞 &amp; 程子齐 &amp; 刘雨乔" Height="233.041" Width="386.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <TextBox x:Name="textBox_id" HorizontalAlignment="Left" Height="23" Margin="196,28,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
         <PasswordBox x:Name="passwordBox" HorizontalAlignment="Left" Height="23" Margin="196,64,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
