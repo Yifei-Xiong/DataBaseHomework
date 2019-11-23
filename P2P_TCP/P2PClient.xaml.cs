@@ -78,6 +78,7 @@ namespace P2P_TCP {
 		public struct FriendIPAndPort {
 			public string friendIP { get; set; }
 			public string friendPort { get; set; }
+			public string friendID { get; set; }
 		}
 
 		List<IMClassLibrary.FileDataPackage> FileList = new List<IMClassLibrary.FileDataPackage>(); //接受文件列表

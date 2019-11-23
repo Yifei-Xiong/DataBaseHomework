@@ -19,11 +19,11 @@ namespace P2P_TCP {
 	/// Search.xaml 的交互逻辑
 	/// </summary>
 	
-	private static ObservableCollection<UserData> List = new ObservableCollection<UserData>();
+	//private static ObservableCollection<UserData> List = new ObservableCollection<UserData>();
 	public partial class Search : Window {
 		public Search() {
 			InitializeComponent();
-			UserList.ItemsSource = List;
+			//UserList.ItemsSource = List;
 		}
 
 		private void UserList_SelectionChanged(object sender, SelectionChangedEventArgs e) {
