@@ -24,7 +24,7 @@ namespace P2P_TCP {
 		public Search() {
 			InitializeComponent();
 			//UserList.ItemsSource = List;
-		}
+		} 
 
 		private void UserList_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 

@@ -16,7 +16,10 @@
             </MenuItem>
             <MenuItem Header="登出(_L)" InputGestureText="Ctrl+L" Name="MenuItem_Logout" Click="MenuItem_Logout_Click"  />
             <MenuItem Header="退出(_E)" InputGestureText="Ctrl+E" Name="MenuItem_Exit" Click="MenuItem_Exit_Click" />
-            <MenuItem Header="查询(_F)" InputGestureText="Ctrl+A" Name="MenuItem_Search" Click="MenuItem_About_Search"  />
+            <MenuItem Header="查询(_F)" InputGestureText="Ctrl+A" Name="MenuItem_Search" >
+                <MenuItem Header="查询联系人信息" HorizontalAlignment="Left" Click="MenuItem_About_Search1" />
+                <MenuItem Header="查询聊天记录" HorizontalAlignment="Left" Click="MenuItem_About_Search2" />
+            </MenuItem>
             <MenuItem Header="关于(_A)" InputGestureText="Ctrl+A" Name="MenuItem_About" Click="MenuItem_About_Click"  />
         </Menu>
         <Grid HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="907"  DockPanel.Dock="Left" Margin="0,-394,0,0">

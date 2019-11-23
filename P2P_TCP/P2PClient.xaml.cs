@@ -81,12 +81,27 @@ namespace P2P_TCP {
 			public string friendID { get; set; }
 		}
 
+		public struct Msg {
+			public string MsgID { get; set; }
+			public string MsgTime { get; set; }
+			public string UserIP { get; set; }
+			public string UserPort { get; set; }
+			public string UserName { get; set; }
+			public string ChatMsg { get; set; }
+			public string IsGroup { get; set; }
+			public string OriginPort { get; set; }
+			public int Type { get; set; }
+		}
+
 		List<IMClassLibrary.FileDataPackage> FileList = new List<IMClassLibrary.FileDataPackage>(); //接受文件列表
 		public class FriendIPAndPorts : ObservableCollection<FriendIPAndPort> { } //定义集合
 		FriendIPAndPorts myFriendIPAndPorts = new FriendIPAndPorts();
+		public class AllMsg : ObservableCollection<Msg> { } //定义集合
+		AllMsg allMsg = new AllMsg();
 		private Thread ListenerThread; //接收信息的侦听线程类变量
 		private delegate void OneArgDelegate(string arg); //代表无返回值有一个string参数方法
 		private delegate void SetList(FriendIPAndPort arg); //代表无返回值 FriendIPAndPort参数方法
+		private delegate void SetMsg(Msg msg); //代表无返回值 增加Msg参数方法
 		public delegate void ReadDataF(TcpClient tcpClient); //代表无返回值 Tcpclient参数方法
 
 		private void SendMessageButton_Click(object sender, RoutedEventArgs e) {
@@ -242,12 +257,35 @@ namespace P2P_TCP {
 					friendIPAndPort.friendIP = chatData1.Receiver.Split(':')[0];
 					friendIPAndPort.friendPort = chatData1.Receiver.Split(':')[1];
 					message = chatData1.Receiver + "（用户ID:"+ chatData1.Sender + "）（"+chatData1.sendTime.ToString() +"）说:" + chatData1.Message;
+					Msg msg = new Msg();
+					msg.MsgID = (allMsg.Count + 1).ToString();
+					msg.MsgTime = chatData1.sendTime.ToString();
+					msg.UserIP = friendIPAndPort.friendIP;
+					msg.UserPort = friendIPAndPort.friendPort;
+					msg.UserName = chatData1.Sender;
+					msg.ChatMsg = chatData1.Message;
+					msg.IsGroup = "个人聊天";
+					msg.Type = chatData.MessageType;
+					//allMsg.Add(msg);
+					this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetMsg(SetMsgViewSource), msg);
 					break;
 				case 5: //多人聊天数据包
 					IMClassLibrary.MultiChatDataPackage chatData2 = new IMClassLibrary.MultiChatDataPackage(bytes);
 					friendIPAndPort.friendIP = chatData2.Receiver.Split(':')[0];
 					friendIPAndPort.friendPort = chatData2.Receiver.Split(':')[1];
 					message = chatData2.Receiver + "（用户ID:" + chatData2.SenderID + ",来自群聊" + chatData2.Sender.ToString() + "）（" + chatData2.sendTime.ToString() + "）说:" + chatData2.Message;
+					Msg msg2 = new Msg();
+					msg2.MsgID = (allMsg.Count + 1).ToString();
+					msg2.MsgTime = chatData2.sendTime.ToString();
+					msg2.UserIP = friendIPAndPort.friendIP;
+					msg2.OriginPort = friendIPAndPort.friendPort;
+					msg2.UserPort = chatData2.Sender.ToString();
+					msg2.UserName = chatData2.SenderID;
+					msg2.ChatMsg = chatData2.Message;
+					msg2.IsGroup = "群组聊天";
+					msg2.Type = chatData.MessageType;
+					this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetMsg(SetMsgViewSource), msg2);
+					//allMsg.Add(msg2);
 					break;
 				case 7: //文件传输数据包
 					IMClassLibrary.FileDataPackage chatData3 = new IMClassLibrary.FileDataPackage(bytes);
@@ -255,6 +293,17 @@ namespace P2P_TCP {
 					friendIPAndPort.friendIP = chatData3.Receiver.Split(':')[0];
 					friendIPAndPort.friendPort = chatData3.Receiver.Split(':')[1];
 					message = chatData3.Receiver + "（用户ID:" + chatData3.Sender + "）（" + chatData3.sendTime.ToString() + "）给你发了一个文件，请接收";
+					Msg msg3 = new Msg();
+					msg3.MsgID = (allMsg.Count + 1).ToString();
+					msg3.MsgTime = chatData3.sendTime.ToString();
+					msg3.UserIP = friendIPAndPort.friendIP;
+					msg3.UserPort = friendIPAndPort.friendPort;
+					msg3.UserName = chatData3.Sender;
+					msg3.ChatMsg = "文件消息";
+					msg3.IsGroup = "个人聊天";
+					msg3.Type = chatData.MessageType;
+					this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetMsg(SetMsgViewSource), msg3);
+					//allMsg.Add(msg3);
 					break;
 				default:
 					MessageBox.Show("聊天数据包读取失败");
@@ -271,6 +320,7 @@ namespace P2P_TCP {
 				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
 			} //未找到该ip与端口号，需要增加
 			if(message!=string.Empty) {
+				//FriendListBox.Items.Add(message);
 				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new OneArgDelegate(SetFriendListBox), message); //接受信息在FriendListBox显示
 			}
 		} //被异步调用的方法
@@ -319,6 +369,43 @@ namespace P2P_TCP {
 		private void SetListViewSource(FriendIPAndPort arg) {
 			myFriendIPAndPorts.Add(arg);
 		} //修改FriendListView的方法
+
+		private void SetMsgViewSource(Msg msg) {
+			allMsg.Add(msg);
+		} //修改allMsg的方法
+
+		private void ChatDataSync(AllMsg allmsg) {
+			FriendListBox.Items.Clear();
+			for (int i=0; i < allmsg.Count; i++) {
+				string message = string.Empty;
+				switch (allmsg[i].Type) {
+					case 4: //单人聊天数据包
+						message = allmsg[i].UserIP+":"+ allmsg[i].UserPort + "（用户ID:" + allmsg[i].UserName + "）（" + allmsg[i].MsgTime + "）说:" + allmsg[i].ChatMsg;
+						break;
+					case 5: //多人聊天数据包
+						message = allmsg[i].UserIP + ":" + allmsg[i].OriginPort + "（用户ID:" + allmsg[i].UserName + ",来自群聊" + allmsg[i].UserPort + "）（" + allmsg[i].MsgTime + "）说:" + allmsg[i].ChatMsg;
+						break;
+					case 7: //文件传输数据包
+						message = allmsg[i].UserIP + ":" + allmsg[i].UserPort + "（用户ID:" + allmsg[i].UserName + "）（" + allmsg[i].MsgTime + "）给你发了一个文件，请接收";
+						break;
+					default:
+						MessageBox.Show("聊天数据同步失败");
+						return;
+				}
+				FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
+				friendIPAndPort.friendPort = allmsg[i].UserPort;
+				friendIPAndPort.friendIP = allmsg[i].UserIP;
+				int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
+				if (k == -1) {
+					myFriendIPAndPorts.Add(friendIPAndPort);
+					//this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
+				} //未找到该ip与端口号，需要增加
+				if (message != string.Empty) {
+					//this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new OneArgDelegate(SetFriendListBox), message); //接受信息在FriendListBox显示
+					FriendListBox.Items.Add(message);
+				}
+			}
+		}
 
 		private void AddFriendButton_Click(object sender, RoutedEventArgs e) {
 			IPAddress myFriendIpAdress;
@@ -489,10 +576,16 @@ namespace P2P_TCP {
 			Close();
 		} //退出
 
-		private void MenuItem_About_Search(object sender, RoutedEventArgs e) {
+		private void MenuItem_About_Search1(object sender, RoutedEventArgs e) {
 			Search search = new Search();
 			search.ShowDialog();
-		} //查询窗口
+		} //查询联系人
+
+		private void MenuItem_About_Search2(object sender, RoutedEventArgs e) {
+			Search2 search2 = new Search2(allMsg);
+			search2.ShowDialog();
+			ChatDataSync(allMsg);
+		} //查询消息
 
 		private void MenuItem_About_Click(object sender, RoutedEventArgs e) {
 			About about = new About();
