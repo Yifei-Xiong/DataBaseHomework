@@ -92,8 +92,9 @@ namespace P2P_TCP {
 			public string OriginPort { get; set; }
 			public int Type { get; set; }
 		}
+        // ObservableCollection<Msg> msg; 
 
-		List<IMClassLibrary.FileDataPackage> FileList = new List<IMClassLibrary.FileDataPackage>(); //接受文件列表
+        List<IMClassLibrary.FileDataPackage> FileList = new List<IMClassLibrary.FileDataPackage>(); //接受文件列表
 		public class FriendIPAndPorts : ObservableCollection<FriendIPAndPort> { } //定义集合
 		FriendIPAndPorts myFriendIPAndPorts = new FriendIPAndPorts();
 		public class AllMsg : ObservableCollection<Msg> { } //定义集合
@@ -140,7 +141,18 @@ namespace P2P_TCP {
 				tcpClient.BeginConnect(ip, port, new AsyncCallback(SentCallBackF), stateObject); //异步连接
 			} //给选定所有好友发信息
 			FriendListBox.Items.Add(IPAndPort + "（本机）（" + chatData.sendTime.ToString() + "）说:" + SendMessageTextBox.Text); //显示已发送的信息
-		}
+            Msg msg = new Msg();
+            msg.MsgID = (allMsg.Count + 1).ToString();
+            msg.MsgTime = chatData.sendTime.ToString();
+            msg.UserIP = myIPAddress.ToString();
+            msg.UserPort = MyPort.ToString();
+            msg.UserName = UserID;
+            msg.ChatMsg = chatData.Message;
+            msg.IsGroup = "本机";
+            msg.Type = chatData.MessageType;
+            //allMsg.Add(msg);
+            this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetMsg(SetMsgViewSource), msg);
+        }
 
 		private void SentCallBackF(IAsyncResult ar) {
 			StateObject stateObject = (StateObject)ar.AsyncState;
@@ -202,7 +214,18 @@ namespace P2P_TCP {
 						tcpClient.BeginConnect(ip, port, new AsyncCallback(SentCallBackF), stateObject); //异步连接
 					} //给选定所有好友发信息
 					FriendListBox.Items.Add(IPAndPort + "（本机）("+ data.sendTime.ToString() + "）发送了一个文件"); //显示已发送的信息
-				}
+                    Msg msg = new Msg();
+                    msg.MsgID = (allMsg.Count + 1).ToString();
+                    msg.MsgTime = data.sendTime.ToString();
+                    msg.UserIP = myIPAddress.ToString();
+                    msg.UserPort = MyPort.ToString();
+                    msg.UserName = UserID;
+                    msg.ChatMsg = "发送了一个文件";
+                    msg.IsGroup = "本机";
+                    msg.Type = data.MessageType;
+                    //allMsg.Add(msg);
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetMsg(SetMsgViewSource), msg);
+                }
 			}
 		} //发送文件
 
@@ -299,8 +322,8 @@ namespace P2P_TCP {
 					msg3.UserIP = friendIPAndPort.friendIP;
 					msg3.UserPort = friendIPAndPort.friendPort;
 					msg3.UserName = chatData3.Sender;
-					msg3.ChatMsg = "文件消息";
-					msg3.IsGroup = "个人聊天";
+					msg3.ChatMsg = "发送了一个文件";
+					msg3.IsGroup = "文件消息";
 					msg3.Type = chatData.MessageType;
 					this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetMsg(SetMsgViewSource), msg3);
 					//allMsg.Add(msg3);
@@ -372,6 +395,7 @@ namespace P2P_TCP {
 
 		private void SetMsgViewSource(Msg msg) {
 			allMsg.Add(msg);
+            SQLDocker = allMsg;
 		} //修改allMsg的方法
 
 		private void ChatDataSync(AllMsg allmsg) {
@@ -380,13 +404,23 @@ namespace P2P_TCP {
 				string message = string.Empty;
 				switch (allmsg[i].Type) {
 					case 4: //单人聊天数据包
+                        if (allmsg[i].IsGroup == "本机")
+                        {
+                            message = allmsg[i].UserIP + ":" + allmsg[i].UserPort + "（本机）（" + allmsg[i].MsgTime + "）说:" + allmsg[i].ChatMsg;
+                            break;
+                        }
 						message = allmsg[i].UserIP+":"+ allmsg[i].UserPort + "（用户ID:" + allmsg[i].UserName + "）（" + allmsg[i].MsgTime + "）说:" + allmsg[i].ChatMsg;
 						break;
 					case 5: //多人聊天数据包
 						message = allmsg[i].UserIP + ":" + allmsg[i].OriginPort + "（用户ID:" + allmsg[i].UserName + ",来自群聊" + allmsg[i].UserPort + "）（" + allmsg[i].MsgTime + "）说:" + allmsg[i].ChatMsg;
 						break;
 					case 7: //文件传输数据包
-						message = allmsg[i].UserIP + ":" + allmsg[i].UserPort + "（用户ID:" + allmsg[i].UserName + "）（" + allmsg[i].MsgTime + "）给你发了一个文件，请接收";
+                        if (allmsg[i].IsGroup == "本机")
+                        {
+                            message = allmsg[i].UserIP + ":" + allmsg[i].UserPort + "（本机）（" + allmsg[i].MsgTime + "）发送了一个文件";
+                            break;
+                        }
+                        message = allmsg[i].UserIP + ":" + allmsg[i].UserPort + "（用户ID:" + allmsg[i].UserName + "）（" + allmsg[i].MsgTime + "）给你发了一个文件，请接收";
 						break;
 					default:
 						MessageBox.Show("聊天数据同步失败");
@@ -585,6 +619,7 @@ namespace P2P_TCP {
 			Search2 search2 = new Search2(allMsg);
 			search2.ShowDialog();
 			ChatDataSync(allMsg);
+            SQLDocker = allMsg;
 		} //查询消息
 
 		private void MenuItem_About_Click(object sender, RoutedEventArgs e) {
@@ -615,5 +650,16 @@ namespace P2P_TCP {
 				FileList.Clear();
 			}
 		}
-	}
+        public AllMsg SQLDocker
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+
+            }
+        }
+    }
 }
