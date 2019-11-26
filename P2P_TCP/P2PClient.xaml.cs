@@ -79,7 +79,9 @@ namespace P2P_TCP {
 			public string friendIP { get; set; }
 			public string friendPort { get; set; }
 			public string friendID { get; set; }
-		}
+			public int Type { get; set; }
+			public string IsGroup { get; set; }
+		} //好友IP和端口
 
 		public struct Msg {
 			public string MsgID { get; set; }
@@ -91,14 +93,14 @@ namespace P2P_TCP {
 			public string IsGroup { get; set; }
 			public string OriginPort { get; set; }
 			public int Type { get; set; }
-		}
-        // ObservableCollection<Msg> msg; 
+		} //消息
 
-        List<IMClassLibrary.FileDataPackage> FileList = new List<IMClassLibrary.FileDataPackage>(); //接受文件列表
+
+		List<IMClassLibrary.FileDataPackage> FileList = new List<IMClassLibrary.FileDataPackage>(); //接受文件列表
 		public class FriendIPAndPorts : ObservableCollection<FriendIPAndPort> { } //定义集合
 		FriendIPAndPorts myFriendIPAndPorts = new FriendIPAndPorts();
 		public class AllMsg : ObservableCollection<Msg> { } //定义集合
-		AllMsg allMsg = new AllMsg();
+		AllMsg allMsg = new AllMsg(); // ObservableCollection<Msg> msg; 
 		private Thread ListenerThread; //接收信息的侦听线程类变量
 		private delegate void OneArgDelegate(string arg); //代表无返回值有一个string参数方法
 		private delegate void SetList(FriendIPAndPort arg); //代表无返回值 FriendIPAndPort参数方法
@@ -338,8 +340,10 @@ namespace P2P_TCP {
 			//int i2 = s.IndexOf(":", i1 + 1); //第二个:
 			//friendIPAndPort.friendIP = s.Substring(0, i1); //提取IP字符串
 			//friendIPAndPort.friendPort = s.Substring(i1 + 1, i2 - i1 - 2); //提取端口字符串
+			friendIPAndPort = GetContact(friendIPAndPort);
 			int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
 			if (k == -1) {
+				friendIPAndPort.Type = Convert.ToInt32(int.Parse(friendIPAndPort.friendPort) >= 37529 && int.Parse(friendIPAndPort.friendPort) <= 37559);
 				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
 			} //未找到该ip与端口号，需要增加
 			if(message!=string.Empty) {
@@ -429,6 +433,7 @@ namespace P2P_TCP {
 				FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
 				friendIPAndPort.friendPort = allmsg[i].UserPort;
 				friendIPAndPort.friendIP = allmsg[i].UserIP;
+				friendIPAndPort = GetContact(friendIPAndPort);
 				int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
 				if (k == -1) {
 					myFriendIPAndPorts.Add(friendIPAndPort);
@@ -439,6 +444,10 @@ namespace P2P_TCP {
 					FriendListBox.Items.Add(message);
 				}
 			}
+		}
+
+		private void ContactsDataSync(FriendIPAndPorts myFriendIPAndPorts) {
+
 		}
 
 		private void AddFriendButton_Click(object sender, RoutedEventArgs e) {
@@ -461,6 +470,7 @@ namespace P2P_TCP {
 			FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
 			friendIPAndPort.friendIP = addFriendIPTextBox.Text; //IP字符串
 			friendIPAndPort.friendPort = addFriendPortTextBox.Text; //端口字符串
+			friendIPAndPort = GetContact(friendIPAndPort);
 			int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
 			if (k == -1) {
 				myFriendIPAndPorts.Add(friendIPAndPort);
@@ -559,6 +569,7 @@ namespace P2P_TCP {
 								MessageBox.Show("联系人文件端口号格式不正确！");
 								return;
 							}
+							friendIPAndPort = GetContact(friendIPAndPort);
 							int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
 							if (k == -1) {
 								myFriendIPAndPorts.Add(friendIPAndPort); //增加此好友
@@ -611,21 +622,38 @@ namespace P2P_TCP {
 		} //退出
 
 		private void MenuItem_About_Search1(object sender, RoutedEventArgs e) {
-			Search search = new Search();
+			Search search = new Search(myFriendIPAndPorts);
 			search.ShowDialog();
+			ContactsDataSync(myFriendIPAndPorts);
+			//SQLDocker2 = allContacts;
 		} //查询联系人
 
 		private void MenuItem_About_Search2(object sender, RoutedEventArgs e) {
 			Search2 search2 = new Search2(allMsg);
 			search2.ShowDialog();
 			ChatDataSync(allMsg);
-            SQLDocker = allMsg;
+            //SQLDocker = allMsg;
 		} //查询消息
 
 		private void MenuItem_About_Click(object sender, RoutedEventArgs e) {
 			About about = new About();
 			about.ShowDialog();
 		} //关于
+
+		private FriendIPAndPort GetContact(FriendIPAndPort arg) {
+			FriendIPAndPort ret = new FriendIPAndPort();
+			ret.friendID = arg.friendID;
+			ret.friendIP = arg.friendIP;
+			ret.friendPort = arg.friendPort;
+			ret.Type = Convert.ToInt32(int.Parse(arg.friendPort) >= 37529 && int.Parse(arg.friendPort) <= 37559);
+			if (ret.Type == 0) {
+				ret.IsGroup = "群聊";
+			}
+			else {
+				ret.IsGroup = "好友";
+			}
+			return ret;
+		}
 
 		private void CheckReceiveFile_Click(object sender, RoutedEventArgs e) {
 			if (FileList.Count==0) {

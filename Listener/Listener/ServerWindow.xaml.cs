@@ -397,8 +397,10 @@ namespace Listener {
 					newClient = myListener.AcceptTcpClient();//等待客户端连接
 				}
 				catch {
-					if (newClient == null)
+					if (newClient == null) {
+						MessageBox.Show("无法在该端口建立群组，该端口已被占用, Error 401");
 						return;
+					}	
 				}
 
 				try {
@@ -438,6 +440,8 @@ namespace Listener {
 					}
 				}
 				catch {
+					MessageBox.Show("无法在该端口建立群组，该端口已被占用，Error 443");
+					return;
 					break;
 				}
 			}

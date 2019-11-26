@@ -72,33 +72,31 @@ namespace P2P_TCP {
 					break;
 				}
 			}
-
-            for (int i = 0; i < SearchMsg.Count; i++)
-            {
-                if (SearchMsg[i].MsgID == ((P2PClient.Msg)UserList.SelectedItem).MsgID)
-                {
-                    P2PClient.Msg msg = new P2PClient.Msg();
-                    msg = SearchMsg[i];
-                    //msg.MsgID = allMsg[i].MsgID;
-                    //msg.MsgTime = allMsg[i].MsgTime;
-                    //msg.IsGroup = allMsg[i].IsGroup;
-                    msg.UserIP = textBox.Text;
-                    msg.UserPort = textBox1.Text;
-                    msg.UserName = textBox2.Text;
-                    msg.ChatMsg = textBox3.Text;
-                    SearchMsg[i] = msg;
-                    break;
-                }
-            }
+			if (SearchMsg!=null) {
+				for (int i = 0; i < SearchMsg.Count; i++) {
+					if (SearchMsg[i].MsgID == ((P2PClient.Msg)UserList.SelectedItem).MsgID) {
+						P2PClient.Msg msg = new P2PClient.Msg();
+						msg = SearchMsg[i];
+						//msg.MsgID = allMsg[i].MsgID;
+						//msg.MsgTime = allMsg[i].MsgTime;
+						//msg.IsGroup = allMsg[i].IsGroup;
+						msg.UserIP = textBox.Text;
+						msg.UserPort = textBox1.Text;
+						msg.UserName = textBox2.Text;
+						msg.ChatMsg = textBox3.Text;
+						SearchMsg[i] = msg;
+						break;
+					}
+				}
+			}
         } //修改消息记录
 
 		private void button1_Click(object sender, RoutedEventArgs e) {
 			if (UserList.SelectedItems.Count == 0) {
-				MessageBox.Show("未选择删除的联系人");
+				MessageBox.Show("未选择删除的消息记录");
 			}
 			P2PClient.Msg msg = (P2PClient.Msg)UserList.SelectedItem;
 			allMsg.Remove(msg);
-            allMsg.Remove(msg);
             SearchMsg.Remove(msg);
 			for (int i = 0; i < allMsg.Count; i++) {
 				P2PClient.Msg msg1 = new P2PClient.Msg();
@@ -198,7 +196,9 @@ namespace P2P_TCP {
             textBox_Copy3.Clear();
             textBox_Copy5.Clear();
             textBox_Copy6.Clear();
-            UserList.ItemsSource = allMsg;
+			checkBox.IsChecked = true;
+			checkBox1.IsChecked = true;
+			UserList.ItemsSource = allMsg;
         } //清空
     }
 }
