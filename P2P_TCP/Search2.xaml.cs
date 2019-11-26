@@ -29,7 +29,7 @@ namespace P2P_TCP {
 	public partial class Search2 : Window {
 		public Search2() {
 			InitializeComponent();
-		}
+		} 
 		public Search2(P2PClient.AllMsg allMsg) {
 			InitializeComponent();
 			this.allMsg = allMsg;
