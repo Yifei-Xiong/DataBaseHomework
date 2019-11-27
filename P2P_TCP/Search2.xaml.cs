@@ -185,7 +185,26 @@ namespace P2P_TCP {
                     }
                 }
             } //ChatMsg
-            UserList.ItemsSource = SearchMsg;
+
+			if (checkBox.IsChecked==false) {
+				for (int i = 0; i < SearchMsg.Count; i++) {
+					if (SearchMsg[i].IsGroup != "群组聊天") {
+						SearchMsg.Remove(SearchMsg[i]);
+						i--;
+					}
+				}
+			} //IsGroup
+
+			if (checkBox1.IsChecked == false) {
+				for (int i = 0; i < SearchMsg.Count; i++) {
+					if (SearchMsg[i].IsGroup != "个人聊天") {
+						SearchMsg.Remove(SearchMsg[i]);
+						i--;
+					}
+				}
+			} //IsFrirnd
+
+			UserList.ItemsSource = SearchMsg;
         }
 
         private void Button2_Copy_Click(object sender, RoutedEventArgs e)

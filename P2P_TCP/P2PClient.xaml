@@ -32,9 +32,10 @@
             <ListView x:Name="FriendListView" SelectionMode="Multiple" HorizontalAlignment="Left" Height="240" Margin="33,31,0,0" VerticalAlignment="Top" Width="229" Grid.ColumnSpan="2">
                 <ListView.View>
                     <GridView AllowsColumnReorder="True">
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=friendIP}" Header="联系人IP" Width="100"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=friendIP}" Header="联系人IP" Width="70"/>
                         <GridViewColumn DisplayMemberBinding="{Binding Path=friendPort}" Header="端口" Width="60"/>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=IsGroup}" Header="类型" Width="60"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=friendID}" Header="名称" Width="52"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=IsGroup}" Header="类型" Width="40"/>
                     </GridView>
                 </ListView.View>
             </ListView>

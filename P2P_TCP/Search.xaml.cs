@@ -107,6 +107,25 @@ namespace P2P_TCP {
 					}
 				}
 			} //friendID
+
+			if (checkBox.IsChecked == false) {
+				for (int i = 0; i < SearchContacts.Count; i++) {
+					if (SearchContacts[i].IsGroup != "群聊") {
+						SearchContacts.Remove(SearchContacts[i]);
+						i--;
+					}
+				}
+			} //IsGroup
+
+			if (checkBox1.IsChecked == false) {
+				for (int i = 0; i < SearchContacts.Count; i++) {
+					if (SearchContacts[i].IsGroup != "好友") {
+						SearchContacts.Remove(SearchContacts[i]);
+						i--;
+					}
+				}
+			} //IsFriend
+
 			ContactList.ItemsSource = SearchContacts;
 		} //查询
 

@@ -279,8 +279,21 @@ namespace P2P_TCP {
 			switch (chatData.MessageType) {
 				case 4: //单人聊天数据包
 					IMClassLibrary.SingleChatDataPackage chatData1 = new IMClassLibrary.SingleChatDataPackage(bytes);
+					if (chatData1.Message == "添加您为好友") {
+						TcpClient tcpClient1;
+						StateObject stateObject;
+						tcpClient1 = new TcpClient(); //每次发送建立一个TcpClient类对象
+						stateObject = new StateObject(); ////每次发送建立一个StateObject类对象
+						stateObject.tcpClient = tcpClient1;
+						//stateObject.buffer = SendMsg;
+						stateObject.friendIPAndPort = chatData1.Receiver; //所选好友IP和端口号
+						IMClassLibrary.SingleChatDataPackage addFriendData = new IMClassLibrary.SingleChatDataPackage(UserID, IPAndPort, "已收到添加请求");
+						stateObject.buffer = addFriendData.DataPackageToBytes(); //buffer为发送的数据包的字节数组
+						tcpClient1.BeginConnect(chatData1.Receiver.Split(':')[0], int.Parse(chatData1.Receiver.Split(':')[1]), new AsyncCallback(SentCallBackF), stateObject); //异步连接
+					}
 					friendIPAndPort.friendIP = chatData1.Receiver.Split(':')[0];
 					friendIPAndPort.friendPort = chatData1.Receiver.Split(':')[1];
+					friendIPAndPort.friendID = chatData1.Sender;
 					message = chatData1.Receiver + "（用户ID:"+ chatData1.Sender + "）（"+chatData1.sendTime.ToString() +"）说:" + chatData1.Message;
 					Msg msg = new Msg();
 					msg.MsgID = (allMsg.Count + 1).ToString();
@@ -298,6 +311,7 @@ namespace P2P_TCP {
 					IMClassLibrary.MultiChatDataPackage chatData2 = new IMClassLibrary.MultiChatDataPackage(bytes);
 					friendIPAndPort.friendIP = chatData2.Receiver.Split(':')[0];
 					friendIPAndPort.friendPort = chatData2.Receiver.Split(':')[1];
+					friendIPAndPort.friendID = chatData2.Sender;
 					message = chatData2.Receiver + "（用户ID:" + chatData2.SenderID + ",来自群聊" + chatData2.Sender.ToString() + "）（" + chatData2.sendTime.ToString() + "）说:" + chatData2.Message;
 					Msg msg2 = new Msg();
 					msg2.MsgID = (allMsg.Count + 1).ToString();
@@ -317,6 +331,7 @@ namespace P2P_TCP {
 					FileList.Add(chatData3); //加入List中待下载
 					friendIPAndPort.friendIP = chatData3.Receiver.Split(':')[0];
 					friendIPAndPort.friendPort = chatData3.Receiver.Split(':')[1];
+					friendIPAndPort.friendID = chatData3.Sender;
 					message = chatData3.Receiver + "（用户ID:" + chatData3.Sender + "）（" + chatData3.sendTime.ToString() + "）给你发了一个文件，请接收";
 					Msg msg3 = new Msg();
 					msg3.MsgID = (allMsg.Count + 1).ToString();
@@ -340,10 +355,14 @@ namespace P2P_TCP {
 			//int i2 = s.IndexOf(":", i1 + 1); //第二个:
 			//friendIPAndPort.friendIP = s.Substring(0, i1); //提取IP字符串
 			//friendIPAndPort.friendPort = s.Substring(i1 + 1, i2 - i1 - 2); //提取端口字符串
-			friendIPAndPort = GetContact(friendIPAndPort);
-			int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
-			if (k == -1) {
-				friendIPAndPort.Type = Convert.ToInt32(int.Parse(friendIPAndPort.friendPort) >= 37529 && int.Parse(friendIPAndPort.friendPort) <= 37559);
+			int i;
+			for (i = 0; i < myFriendIPAndPorts.Count; i++) {
+				if (friendIPAndPort.friendPort == myFriendIPAndPorts[i].friendPort && friendIPAndPort.friendIP == myFriendIPAndPorts[i].friendIP) {
+					break;
+				}
+			}
+			if (i == myFriendIPAndPorts.Count) {
+				friendIPAndPort = GetContact(friendIPAndPort);
 				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
 			} //未找到该ip与端口号，需要增加
 			if(message!=string.Empty) {
@@ -435,7 +454,7 @@ namespace P2P_TCP {
 				friendIPAndPort.friendIP = allmsg[i].UserIP;
 				friendIPAndPort = GetContact(friendIPAndPort);
 				int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
-				if (k == -1) {
+				if (k == -1 && friendIPAndPort.friendPort!=MyPort.ToString() && friendIPAndPort.friendID !=UserID) {
 					myFriendIPAndPorts.Add(friendIPAndPort);
 					//this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
 				} //未找到该ip与端口号，需要增加
@@ -467,30 +486,35 @@ namespace P2P_TCP {
 					return;
 				}
 			}
-			FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
-			friendIPAndPort.friendIP = addFriendIPTextBox.Text; //IP字符串
-			friendIPAndPort.friendPort = addFriendPortTextBox.Text; //端口字符串
-			friendIPAndPort = GetContact(friendIPAndPort);
-			int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
-			if (k == -1) {
-				myFriendIPAndPorts.Add(friendIPAndPort);
+			int i;
+			for (i=0; i < myFriendIPAndPorts.Count; i++) {
+				if (addFriendPortTextBox.Text == myFriendIPAndPorts[i].friendPort && addFriendIPTextBox.Text == myFriendIPAndPorts[i].friendIP) {
+					break;
+				}
+			}
+			if (i == myFriendIPAndPorts.Count) {
+				FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
+				friendIPAndPort.friendIP = addFriendIPTextBox.Text; //IP字符串
+				friendIPAndPort.friendPort = addFriendPortTextBox.Text; //端口字符串
+				friendIPAndPort = GetContact(friendIPAndPort);
+				if (!(myFriendPort >= 37529 && myFriendPort <= 37559)) {
+					myFriendIPAndPorts.Add(friendIPAndPort);
+				} //group
+				TcpClient tcpClient;
+				StateObject stateObject;
+				tcpClient = new TcpClient(); //每次发送建立一个TcpClient类对象
+				stateObject = new StateObject(); ////每次发送建立一个StateObject类对象
+				stateObject.tcpClient = tcpClient;
+				//stateObject.buffer = SendMsg;
+				stateObject.friendIPAndPort = friendIPAndPort.friendIP + ":" + friendIPAndPort.friendPort; //所选好友IP和端口号
+				IMClassLibrary.SingleChatDataPackage chatData = new IMClassLibrary.SingleChatDataPackage(UserID, IPAndPort, "添加您为好友");
+				stateObject.buffer = chatData.DataPackageToBytes(); //buffer为发送的数据包的字节数组
+				tcpClient.BeginConnect(friendIPAndPort.friendIP, myFriendPort, new AsyncCallback(SentCallBackF), stateObject); //异步连接
 			} //未找到该ip与端口号，需要增加
 			else {
 				MessageBox.Show("好友已在列表中");
 				return;
 			}
-			
-			TcpClient tcpClient;
-			StateObject stateObject;
-			tcpClient = new TcpClient(); //每次发送建立一个TcpClient类对象
-			stateObject = new StateObject(); ////每次发送建立一个StateObject类对象
-			stateObject.tcpClient = tcpClient;
-			//stateObject.buffer = SendMsg;
-			stateObject.friendIPAndPort = friendIPAndPort.friendIP + ":" + friendIPAndPort.friendPort; //所选好友IP和端口号
-			IMClassLibrary.SingleChatDataPackage chatData = new IMClassLibrary.SingleChatDataPackage(UserID, IPAndPort, "添加您为好友");
-			stateObject.buffer = chatData.DataPackageToBytes(); //buffer为发送的数据包的字节数组
-			tcpClient.BeginConnect(friendIPAndPort.friendIP, myFriendPort, new AsyncCallback(SentCallBackF), stateObject); //异步连接
-			//发送添加好友信息
 		}
 
 		private void DeleteFriendButton_Click(object sender, RoutedEventArgs e) {
@@ -642,15 +666,17 @@ namespace P2P_TCP {
 
 		private FriendIPAndPort GetContact(FriendIPAndPort arg) {
 			FriendIPAndPort ret = new FriendIPAndPort();
-			ret.friendID = arg.friendID;
+			
 			ret.friendIP = arg.friendIP;
 			ret.friendPort = arg.friendPort;
 			ret.Type = Convert.ToInt32(int.Parse(arg.friendPort) >= 37529 && int.Parse(arg.friendPort) <= 37559);
 			if (ret.Type == 0) {
 				ret.IsGroup = "群聊";
+				ret.friendID = arg.friendPort;
 			}
 			else {
 				ret.IsGroup = "好友";
+				ret.friendID = arg.friendID;
 			}
 			return ret;
 		}
