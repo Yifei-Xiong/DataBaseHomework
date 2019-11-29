@@ -21,6 +21,7 @@ using System.Windows.Threading;
 using Microsoft.Win32;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using MySql.Data.MySqlClient;
 
 namespace P2P_TCP {
 	/// <summary>
@@ -650,15 +651,50 @@ namespace P2P_TCP {
 				FileList.Clear();
 			}
 		}
+
+        private MySqlConnection connection;
+        public void InitSQLDocker()
+        {
+            connection = new MySqlConnection("server=106.14.44.67;user=root;password=0000;database=clientdb1;");
+            connection.Open();
+        }
         public AllMsg SQLDocker
         {
             get
             {
-                return null;
+                if (connection.State != System.Data.ConnectionState.Open)
+                    InitSQLDocker();
+                MySqlCommand sql = new MySqlCommand("SELECT * FROM chatmsg");
+                MySqlDataReader reader = sql.ExecuteReader();
+                AllMsg result = new AllMsg();
+                while (reader.Read())
+                {
+                    Msg msg = new Msg();
+                    msg.MsgID = reader[0].ToString();
+                    msg.MsgTime = reader[1].ToString();
+                    msg.UserIP = reader[2].ToString();
+                    msg.UserPort = reader[3].ToString();
+                    msg.UserName = reader[4].ToString();
+                    msg.ChatMsg = reader[5].ToString();
+                    msg.IsGroup = reader[6].ToString();
+                    msg.OriginPort = reader[7].ToString();
+                    msg.Type = int.Parse(reader[8].ToString());
+                    result.Add(msg);
+                }
+                reader.Close();
+                return result;
             }
             set
             {
-
+                if (connection.State != System.Data.ConnectionState.Open)
+                    InitSQLDocker();
+                new MySqlCommand("DELETE FROM chatmsg").ExecuteNonQuery();
+                foreach(Msg msg in value)
+                {
+                    MySqlCommand sql = new MySqlCommand("INSERT INTO chatmsg(MsgID, MsgTime, UserIP, UserPort, UserName, ChagMsg, IsGRoup, OriginPort, Typ) "
+                        + "VALUES(\"" + msg.MsgID + "\", \"" + msg.MsgTime + "\", \"" + msg.UserIP + "\", \"" + msg.UserPort + "\", \"" + msg.UserName + "\", \"" + msg.ChatMsg + "\", \"" + msg.IsGroup + "\", \"" + msg.OriginPort + "\", \"" + msg.Type.ToString(), connection);
+                    sql.ExecuteNonQuery();
+                }
             }
         }
     }
