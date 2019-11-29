@@ -152,6 +152,7 @@ namespace P2P_TCP {
             msg.ChatMsg = chatData.Message;
             msg.IsGroup = "本机";
             msg.Type = chatData.MessageType;
+			SendMessageTextBox.Clear();
             //allMsg.Add(msg);
             this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetMsg(SetMsgViewSource), msg);
         }
@@ -476,6 +477,7 @@ namespace P2P_TCP {
 				return;
 			}
 			int myFriendPort;
+			string msg = "添加您为好友";
 			if (int.TryParse(addFriendPortTextBox.Text, out myFriendPort) == false) {
 				MessageBox.Show("端口号格式不正确！");
 				return;
@@ -499,6 +501,7 @@ namespace P2P_TCP {
 				friendIPAndPort = GetContact(friendIPAndPort);
 				if (!(myFriendPort >= 37529 && myFriendPort <= 37559)) {
 					myFriendIPAndPorts.Add(friendIPAndPort);
+					msg = UserID + "加入了群聊";
 				} //group
 				TcpClient tcpClient;
 				StateObject stateObject;
@@ -507,7 +510,8 @@ namespace P2P_TCP {
 				stateObject.tcpClient = tcpClient;
 				//stateObject.buffer = SendMsg;
 				stateObject.friendIPAndPort = friendIPAndPort.friendIP + ":" + friendIPAndPort.friendPort; //所选好友IP和端口号
-				IMClassLibrary.SingleChatDataPackage chatData = new IMClassLibrary.SingleChatDataPackage(UserID, IPAndPort, "添加您为好友");
+				
+				IMClassLibrary.SingleChatDataPackage chatData = new IMClassLibrary.SingleChatDataPackage(UserID, IPAndPort, msg);
 				stateObject.buffer = chatData.DataPackageToBytes(); //buffer为发送的数据包的字节数组
 				tcpClient.BeginConnect(friendIPAndPort.friendIP, myFriendPort, new AsyncCallback(SentCallBackF), stateObject); //异步连接
 			} //未找到该ip与端口号，需要增加
