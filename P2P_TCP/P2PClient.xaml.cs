@@ -715,5 +715,21 @@ namespace P2P_TCP {
 
             }
         }
-    }
+
+		private void MenuItem_Click_Sync1(object sender, RoutedEventArgs e) {
+
+		}
+
+		private void MenuItem_Click_Sync2(object sender, RoutedEventArgs e) {
+
+		}
+
+		private void MenuItem_Click_Sync3(object sender, RoutedEventArgs e) {
+
+		}
+
+		private void MenuItem_Click_Sync4(object sender, RoutedEventArgs e) {
+
+		}
+	}
 }
