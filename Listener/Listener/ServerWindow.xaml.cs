@@ -22,6 +22,7 @@ using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.Win32;
+using System.Collections.ObjectModel;
 
 namespace Listener {
 	/// <summary>
@@ -50,6 +51,32 @@ namespace Listener {
 		private int nowEnterPort;
 		TcpListener myListener = null;
 		bool IsPortCanUse = true;
+		public struct MessageInfo {
+			public string MsgIP { get; set; }
+			public string MsgPort { get; set; }
+			public string UserID { get; set; }
+			public string Msg { get; set; }
+			public string MsgTime { get; set; }
+			public string MsgID { get; set; }
+		} //单条消息
+		public struct UserInfo {
+			public string UserIP { get; set; }
+			public string UserPort { get; set; }
+			public string UserID { get; set; }
+		} //单个用户
+		public class GroupMsg : ObservableCollection<MessageInfo> { } //定义一个群组的聊天数据集合 
+		public class GroupUser : ObservableCollection<UserInfo> { } //定义一个群组的成员集合 
+		public class GroupInfo {
+			public GroupInfo() {
+				this.groupMsg = new GroupMsg();
+				this.groupUser = new GroupUser();
+			}
+			public GroupMsg groupMsg { get; set; }
+			public GroupUser groupUser { get; set; }
+			public int GroupPort { get; set; }
+		}
+		public class AllGroup : ObservableCollection<GroupInfo> { } //定义所有群组的集合 
+		AllGroup allGroup;
 		ArrayList AllGroupPort;
 
 		public ServerWindow() {
@@ -63,6 +90,7 @@ namespace Listener {
 				UserClass ADMIN = new UserClass("admin", "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918");
 				user.Add(ADMIN);
 			}
+			allGroup = new AllGroup();
 			AllGroupPort = new ArrayList();
 		}
 
@@ -362,6 +390,7 @@ namespace Listener {
 			}
 			AllGroupPort.Add(nowEnterPort);
 			textBlock1.Text += textBox.Text + ", ";
+			textBox.Clear(); //清空输入框
 			nowTextBoxText = textBox.Text;
 			var newThread = new Thread(GroupPortListener);
 			newThread.IsBackground = true;
@@ -392,18 +421,33 @@ namespace Listener {
 			myListener.Start();//start
 			var newClient = new TcpClient();
 			var group = new ArrayList();
+			GroupInfo groupInfo = new GroupInfo();
+			groupInfo.GroupPort = nowEnterPort;
+			allGroup.Add(groupInfo);
 			while (true) {
 				try {
 					newClient = myListener.AcceptTcpClient();//等待客户端连接
 				}
 				catch {
-					if (newClient == null)
+					if (newClient == null) {
+						MessageBox.Show("无法在该端口建立群组，该端口已被占用, Error 401");
 						return;
+					}	
 				}
 
 				try {
 					byte[] receiveBytes = ReadFromTcpClient(newClient);
 					var userMessage = new IMClassLibrary.SingleChatDataPackage(receiveBytes);
+
+					MessageInfo msg = new MessageInfo();
+					msg.MsgID = (groupInfo.groupMsg.Count + 1).ToString();
+					msg.MsgTime = userMessage.sendTime.ToString();
+					msg.MsgIP = userMessage.Receiver.Split(':')[0];
+					msg.MsgPort = userMessage.Receiver.Split(':')[1];
+					msg.UserID = userMessage.Sender;
+					msg.Msg = userMessage.Message;
+					groupInfo.groupMsg.Add(msg);
+
 					bool isNewUser = true;
 					for (int i = 0; i < group.Count; ++i) {
 						var t = (GroupUserStruct)group[i];
@@ -435,9 +479,16 @@ namespace Listener {
 						newGroupuserStruct.userID = userMessage.Sender;
 						newGroupuserStruct.IP = userMessage.Receiver;
 						group.Add(newGroupuserStruct);
+						UserInfo info = new UserInfo();
+						info.UserID = userMessage.Sender;
+						info.UserIP = userMessage.Receiver.Split(':')[0];
+						info.UserPort = userMessage.Receiver.Split(':')[1];
+						groupInfo.groupUser.Add(info);
 					}
 				}
 				catch {
+					MessageBox.Show("无法在该端口建立群组，该端口已被占用，Error 443");
+					return;
 					break;
 				}
 			}
@@ -508,6 +559,33 @@ namespace Listener {
 			About about = new About();
 			about.ShowDialog();
 		} //关于
+
+		private void MenuItem_Click_2(object sender, RoutedEventArgs e) {
+
+		} //查询用户信息
+
+		private void MenuItem_Click_3(object sender, RoutedEventArgs e) {
+			SearchGroup searchGroup = new SearchGroup(allGroup);
+			searchGroup.ShowDialog();
+			//ChatDataSync(allMsg);
+			//SQLDocker = allGroup;
+		} //查询群组信息
+
+		private void MenuItem_Click_Sync1(object sender, RoutedEventArgs e) {
+
+		}
+
+		private void MenuItem_Click_Sync2(object sender, RoutedEventArgs e) {
+
+		}
+
+		private void MenuItem_Click_Sync3(object sender, RoutedEventArgs e) {
+
+		}
+
+		private void MenuItem_Click_Sync4(object sender, RoutedEventArgs e) {
+
+		}
 
 	}
 }

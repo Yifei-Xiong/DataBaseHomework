@@ -16,40 +16,51 @@
             </MenuItem>
             <MenuItem Header="登出(_L)" InputGestureText="Ctrl+L" Name="MenuItem_Logout" Click="MenuItem_Logout_Click"  />
             <MenuItem Header="退出(_E)" InputGestureText="Ctrl+E" Name="MenuItem_Exit" Click="MenuItem_Exit_Click" />
-            <MenuItem Header="查询(_F)" InputGestureText="Ctrl+A" Name="MenuItem_Search" >
+            <MenuItem Header="查询(_Q)" InputGestureText="Ctrl+Q" Name="MenuItem_Search" >
                 <MenuItem Header="查询联系人信息" HorizontalAlignment="Left" Click="MenuItem_About_Search1" />
                 <MenuItem Header="查询聊天记录" HorizontalAlignment="Left" Click="MenuItem_About_Search2" />
+            </MenuItem>
+            <MenuItem Header="同步(_S)" InputGestureText="Ctrl+S" Name="MenuItem_Sync" >
+                <MenuItem Header="同步联系人列表至数据库" HorizontalAlignment="Left" Click="MenuItem_Click_Sync1" />
+                <MenuItem Header="同步消息记录至数据库" HorizontalAlignment="Left" Click="MenuItem_Click_Sync2" />
+                <MenuItem Header="同步数据库至联系人列表" HorizontalAlignment="Left" Click="MenuItem_Click_Sync3" />
+                <MenuItem Header="同步数据库至消息记录" HorizontalAlignment="Left" Click="MenuItem_Click_Sync4" />
             </MenuItem>
             <MenuItem Header="关于(_A)" InputGestureText="Ctrl+A" Name="MenuItem_About" Click="MenuItem_About_Click"  />
         </Menu>
         <Grid HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="907"  DockPanel.Dock="Left" Margin="0,-394,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="25*"/>
+                <ColumnDefinition Width="35*"/>
+                <ColumnDefinition Width="211*"/>
+                <ColumnDefinition Width="661*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="261.8,372,0,0" TextWrapping="Wrap" Text="本机IP地址和端口号:" VerticalAlignment="Top" Width="578" TextAlignment="Center" Grid.Column="1"/>
-            <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="35,0,0,373" TextWrapping="Wrap" Text="联系人列表" VerticalAlignment="Bottom" Width="227" TextAlignment="Center" Grid.ColumnSpan="2"/>
-            <ListView x:Name="FriendListView" SelectionMode="Multiple" HorizontalAlignment="Left" Height="240" Margin="33,31,0,0" VerticalAlignment="Top" Width="229" Grid.ColumnSpan="2">
+            <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="51.2,372,0,0" TextWrapping="Wrap" Text="本机IP地址和端口号:" VerticalAlignment="Top" Width="578" TextAlignment="Center" Grid.Column="2"/>
+            <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="35,0,0,372" TextWrapping="Wrap" Text="联系人列表" VerticalAlignment="Bottom" Width="227" TextAlignment="Center" Grid.ColumnSpan="3"/>
+            <ListView x:Name="FriendListView" SelectionMode="Multiple" HorizontalAlignment="Left" Height="240" Margin="33,31,0,0" VerticalAlignment="Top" Width="229" Grid.ColumnSpan="3">
                 <ListView.View>
                     <GridView AllowsColumnReorder="True">
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=friendIP}" Header="联系人IP" Width="160"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=friendIP}" Header="联系人IP" Width="70"/>
                         <GridViewColumn DisplayMemberBinding="{Binding Path=friendPort}" Header="端口" Width="60"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=friendID}" Header="名称" Width="52"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=IsGroup}" Header="类型" Width="40"/>
                     </GridView>
                 </ListView.View>
             </ListView>
-            <TextBlock x:Name="SendMessageTextBlock" HorizontalAlignment="Left" Margin="301.8,293,0,0" TextWrapping="Wrap" Text="发送内容" VerticalAlignment="Top" Width="86" TextAlignment="Center" Grid.Column="1"/>
-            <TextBox x:Name="SendMessageTextBox" HorizontalAlignment="Left" Height="23" Margin="428.8,288,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="245" Grid.Column="1"/>
-            <Button x:Name="SendMessageButton" Content="发送信息" HorizontalAlignment="Left" Margin="427.8,319,0,0" VerticalAlignment="Top" Width="246" Click="SendMessageButton_Click" Grid.Column="1"/>
-            <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="260.8,0,0,373" TextWrapping="Wrap" Text="收到的信息" VerticalAlignment="Bottom" TextAlignment="Center" Width="579" Grid.Column="1"/>
-            <ListBox x:Name="FriendListBox" HorizontalAlignment="Left" Height="240" Margin="247.8,31,0,0" VerticalAlignment="Top" Width="592" Grid.Column="1"/>
+            <TextBlock x:Name="SendMessageTextBlock" HorizontalAlignment="Left" Margin="91.2,293,0,0" TextWrapping="Wrap" Text="发送内容" VerticalAlignment="Top" Width="86" TextAlignment="Center" Grid.Column="2"/>
+            <TextBox x:Name="SendMessageTextBox" HorizontalAlignment="Left" Height="23" Margin="218.2,288,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="245" Grid.Column="2"/>
+            <Button x:Name="SendMessageButton" Content="发送信息" HorizontalAlignment="Left" Margin="217.2,319,0,0" VerticalAlignment="Top" Width="246" Click="SendMessageButton_Click" Grid.Column="2"/>
+            <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="50.2,0,0,372" TextWrapping="Wrap" Text="收到的信息" VerticalAlignment="Bottom" TextAlignment="Center" Width="579" Grid.Column="2"/>
+            <ListBox x:Name="FriendListBox" HorizontalAlignment="Left" Height="240" Margin="37.2,31,0,0" VerticalAlignment="Top" Width="592" Grid.Column="2"/>
             <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="33,293,0,0" TextWrapping="Wrap" Text="增加的联系人IP" VerticalAlignment="Top" TextAlignment="Center" Height="17" Width="104" Grid.ColumnSpan="2"/>
-            <TextBox x:Name="addFriendIPTextBox" HorizontalAlignment="Left" Height="23" Margin="114.8,288,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="112" Grid.Column="1"/>
+            <TextBox x:Name="addFriendIPTextBox" HorizontalAlignment="Left" Height="23" Margin="114.8,288,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="112" Grid.Column="1" Grid.ColumnSpan="2"/>
             <TextBlock x:Name="textBlock4" Margin="28,321,0,0" TextWrapping="Wrap" Text="增加的联系人端口号" Height="23" Width="112" TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-            <TextBox x:Name="addFriendPortTextBox" HorizontalAlignment="Left" Height="23" Margin="114.8,316,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="112" Grid.Column="1"/>
-            <Button x:Name="AddFriendButton" Content="添加联系人至列表" HorizontalAlignment="Left" Margin="114.8,344,0,0" VerticalAlignment="Top" Width="112" Click="AddFriendButton_Click" Grid.Column="1"/>
-            <Button x:Name="SendFileButton" Content="发送文件" HorizontalAlignment="Left" Margin="427.8,344,0,0" VerticalAlignment="Top" Width="118" Grid.Column="1" Click="SendFileButton_Click"/>
+            <TextBox x:Name="addFriendPortTextBox" HorizontalAlignment="Left" Height="23" Margin="114.8,316,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="112" Grid.Column="1" Grid.ColumnSpan="2"/>
+            <Button x:Name="AddFriendButton" Content="添加联系人至列表" HorizontalAlignment="Left" Margin="114.8,344,0,0" VerticalAlignment="Top" Width="112" Click="AddFriendButton_Click" Grid.Column="1" Grid.ColumnSpan="2"/>
+            <Button x:Name="SendFileButton" Content="发送文件" HorizontalAlignment="Left" Margin="217.2,344,0,0" VerticalAlignment="Top" Width="118" Grid.Column="2" Click="SendFileButton_Click"/>
             <Button x:Name="DeleteFriendButton" Content="删除选中的联系人" HorizontalAlignment="Left" Margin="35,344,0,0" VerticalAlignment="Top" Width="102" Click="DeleteFriendButton_Click" Grid.ColumnSpan="2"/>
-            <Button x:Name="CheckReceiveFile" Content="查看接收文件" Grid.Column="1" HorizontalAlignment="Left" Margin="552.8,344,0,0" VerticalAlignment="Top" Width="121" Click="CheckReceiveFile_Click"/>
+            <Button x:Name="CheckReceiveFile" Content="查看接收文件" Grid.Column="2" HorizontalAlignment="Left" Margin="342.2,344,0,0" VerticalAlignment="Top" Width="121" Click="CheckReceiveFile_Click"/>
+            <CheckBox x:Name="checkBox" Content="联系人信息更改自动同步至数据库" HorizontalAlignment="Left" Margin="9.8,376,0,0" VerticalAlignment="Top" Grid.Column="1" IsChecked="True"/>
+            <CheckBox x:Name="checkBox_Copy" Content="聊天信息更改自动同步至数据库" HorizontalAlignment="Left" Margin="37.2,376,0,0" VerticalAlignment="Top" Grid.Column="2" IsChecked="True"/>
         </Grid>
     </DockPanel>
 </Window>

@@ -1,23 +1,40 @@
-﻿<Window x:Class="P2P_TCP.Search"
+﻿<Window x:Name="size" x:Class="P2P_TCP.Search"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:P2P_TCP"
         mc:Ignorable="d"
-        Title="查询" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="联系人查询" Height="463.029" Width="490.4" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
-        <ListView x:Name="UserList" HorizontalAlignment="Left" Height="350" Margin="10,10,0,0" VerticalAlignment="Top" Width="766" SelectionChanged="UserList_SelectionChanged">       
+        <ListView x:Name="ContactList" HorizontalAlignment="Left" Height="215" Margin="15,83,0,0" VerticalAlignment="Top" Width="454" SelectionChanged="ContactList_SelectionChanged">       
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="序号" Width="50" DisplayMemberBinding="{Binding MsgID}"/>
-                    <GridViewColumn Header="时间" Width="50" DisplayMemberBinding="{Binding MsgTime}"/>
-                    <GridViewColumn Header="用户地址" Width="100" DisplayMemberBinding="{Binding UserIP}"/>
-                    <GridViewColumn Header="用户端口" Width="100" DisplayMemberBinding="{Binding UserPort}"/>
-                    <GridViewColumn Header="用户昵称" Width="100" DisplayMemberBinding="{Binding UserID}"/>
-                    <GridViewColumn Header="消息内容" Width="200" DisplayMemberBinding="{Binding ChatMsg}"/>
+                    <GridViewColumn Header="IP地址" Width="120" DisplayMemberBinding="{Binding friendIP}"/>
+                    <GridViewColumn Header="端口号" Width="100" DisplayMemberBinding="{Binding friendPort}"/>
+                    <GridViewColumn Header="联系人名称" Width="120" DisplayMemberBinding="{Binding friendID}"/>
+                    <GridViewColumn Header="联系人类型" Width="100" DisplayMemberBinding="{Binding IsGroup}"/>
                 </GridView>
             </ListView.View>
         </ListView>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="139,309,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="123"/>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="139,350,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="123"/>
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="17,317,0,0" TextWrapping="Wrap" Text="联系人/群组IP: " VerticalAlignment="Top" RenderTransformOrigin="0.063,0.434"/>
+        <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="139,388,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="123"/>
+        <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="17,353,0,0" TextWrapping="Wrap" Text="联系人/群组端口号: " VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock5" HorizontalAlignment="Left" Margin="18,392,0,0" TextWrapping="Wrap" Text="用户昵称: " VerticalAlignment="Top"/>
+        <Button x:Name="button" Content="修改该记录" HorizontalAlignment="Left" Margin="338,349,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+        <Button x:Name="button1" Content="删除该记录" HorizontalAlignment="Left" Margin="338,388,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
+        <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" Margin="45,21,0,0" TextWrapping="Wrap" Text="IP地址" VerticalAlignment="Top" RenderTransformOrigin="-0.183,-0.662"/>
+        <TextBlock x:Name="textBlock1_Copy" HorizontalAlignment="Left" Margin="139,21,0,0" TextWrapping="Wrap" Text="端口号" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox_Copy" HorizontalAlignment="Left" Height="23" Margin="15,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="99"/>
+        <TextBox x:Name="textBox_Copy1" HorizontalAlignment="Left" Height="23" Margin="119,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="79"/>
+        <Button x:Name="button2" Content="筛选" HorizontalAlignment="Left" Margin="394,46,0,0" VerticalAlignment="Top" Width="75" Click="Button2_Click"/>
+        <CheckBox x:Name="checkBox" Content="搜索群组" HorizontalAlignment="Left" Margin="304,27,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <CheckBox x:Name="checkBox1" Content="搜索联系人" HorizontalAlignment="Left" Margin="303,50,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <Button x:Name="button2_Copy" Content="清空" HorizontalAlignment="Left" Margin="394,17,0,0" VerticalAlignment="Top" Width="75" Click="Button2_Copy_Click" />
+        <TextBlock x:Name="textBlock5_Copy" HorizontalAlignment="Left" Margin="299,315,0,0" TextWrapping="Wrap" Text="联系人类型: " VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox_Copy2" HorizontalAlignment="Left" Height="23" Margin="203,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="91"/>
+        <TextBlock x:Name="textBlock1_Copy1" HorizontalAlignment="Left" Margin="218,21,0,0" TextWrapping="Wrap" Text="联系人名称" VerticalAlignment="Top"/>
     </Grid>
 </Window>

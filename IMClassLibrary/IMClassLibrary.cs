@@ -123,6 +123,19 @@ namespace IMClassLibrary
 		}
 	}
 
+	//添加好友数据包类
+	[Serializable]
+	public class AddFriendChatDataPackage : ChatDataPackage {
+		public AddFriendChatDataPackage(byte[] Bytes) : base(Bytes) {
+		} //构造函数 字节数组转化为数据包
+		public AddFriendChatDataPackage(string sender, string receiver, string message) : base(sender, receiver, message) {
+			MessageType = 8;
+		} //构造函数 接受发送者,接收者字符串,发送的消息
+		public static string operator +(string str, AddFriendChatDataPackage data) {
+			return str + data.Message;
+		}
+	}
+
 	//多人聊天数据包类
 	[Serializable]
 	public class MultiChatDataPackage : ChatDataPackage {
