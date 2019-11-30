@@ -7,15 +7,15 @@
         mc:Ignorable="d"
         Title="群组信息查询" Height="623.029" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
-        <ListView x:Name="UserList" HorizontalAlignment="Left" Height="369" Margin="15,83,0,0" VerticalAlignment="Top" Width="766">       
+        <ListView x:Name="MsgList" HorizontalAlignment="Left" Height="369" Margin="15,83,0,0" VerticalAlignment="Top" Width="766">       
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="序号" Width="50" DisplayMemberBinding="{Binding MsgID}"/>
                     <GridViewColumn Header="时间" Width="150" DisplayMemberBinding="{Binding MsgTime}"/>
-                    <GridViewColumn Header="消息IP" Width="100" DisplayMemberBinding="{Binding UserIP}"/>
-                    <GridViewColumn Header="消息端口" Width="80" DisplayMemberBinding="{Binding UserPort}"/>
-                    <GridViewColumn Header="用户昵称" Width="100" DisplayMemberBinding="{Binding UserName}"/>
-                    <GridViewColumn Header="消息内容" Width="275" DisplayMemberBinding="{Binding ChatMsg}"/>
+                    <GridViewColumn Header="消息IP" Width="100" DisplayMemberBinding="{Binding MsgIP}"/>
+                    <GridViewColumn Header="消息端口" Width="80" DisplayMemberBinding="{Binding MsgPort}"/>
+                    <GridViewColumn Header="用户昵称" Width="100" DisplayMemberBinding="{Binding UserID}"/>
+                    <GridViewColumn Header="消息内容" Width="275" DisplayMemberBinding="{Binding Msg}"/>
                 </GridView>
             </ListView.View>
         </ListView>
@@ -45,7 +45,7 @@
         <TextBox x:Name="textBox_Copy6" HorizontalAlignment="Left" Height="23" Margin="529,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="166"/>
         <Button x:Name="button2" Content="筛选" HorizontalAlignment="Left" Margin="706,48,0,0" VerticalAlignment="Top" Width="75" Click="Button2_Click"/>
         <Button x:Name="button2_Copy" Content="清空" HorizontalAlignment="Left" Margin="706,21,0,0" VerticalAlignment="Top" Width="75" Click="Button2_Copy_Click" />
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="15,44,0,0" VerticalAlignment="Top" Width="101" Height="23"/>
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="15,44,0,0" VerticalAlignment="Top" Width="101" Height="23" SelectionChanged="comboBox_SelectionChanged"/>
         <TextBlock x:Name="textBlock_Copy1" HorizontalAlignment="Left" Margin="32,23,0,0" TextWrapping="Wrap" Text="选择群聊端口" VerticalAlignment="Top" RenderTransformOrigin="-0.183,-0.662"/>
     </Grid>
 </Window>

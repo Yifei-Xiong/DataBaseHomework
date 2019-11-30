@@ -390,8 +390,8 @@ namespace Listener {
 			}
 			AllGroupPort.Add(nowEnterPort);
 			textBlock1.Text += textBox.Text + ", ";
-			textBox.Clear(); //清空输入框
 			nowTextBoxText = textBox.Text;
+			textBox.Clear(); //清空输入框
 			var newThread = new Thread(GroupPortListener);
 			newThread.IsBackground = true;
 			newThread.Start();

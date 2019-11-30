@@ -420,7 +420,10 @@ namespace P2P_TCP {
 
 		private void SetMsgViewSource(Msg msg) {
 			allMsg.Add(msg);
-            SQLDocker = allMsg;
+			if (checkBox_Copy.IsChecked == true) {
+				//SQLDocker = allMsg;
+			}
+
 		} //修改allMsg的方法
 
 		private void ChatDataSync(AllMsg allmsg) {
@@ -661,7 +664,7 @@ namespace P2P_TCP {
 			Search2 search2 = new Search2(allMsg);
 			search2.ShowDialog();
 			ChatDataSync(allMsg);
-            //SQLDocker = allMsg;
+            SQLDocker = allMsg;
 		} //查询消息
 
 		private void MenuItem_About_Click(object sender, RoutedEventArgs e) {
@@ -720,9 +723,9 @@ namespace P2P_TCP {
         {
             get
             {
-                if (connection.State != System.Data.ConnectionState.Open)
+                if (connection == null || connection.State != System.Data.ConnectionState.Open)
                     InitSQLDocker();
-                MySqlCommand sql = new MySqlCommand("SELECT * FROM chatmsg");
+                MySqlCommand sql = new MySqlCommand("SELECT * FROM chatmsg",connection);
                 MySqlDataReader reader = sql.ExecuteReader();
                 AllMsg result = new AllMsg();
                 while (reader.Read())
@@ -744,13 +747,14 @@ namespace P2P_TCP {
             }
             set
             {
-                if (connection.State != System.Data.ConnectionState.Open)
+                if (connection == null || connection.State != System.Data.ConnectionState.Open)
                     InitSQLDocker();
-                new MySqlCommand("DELETE FROM chatmsg").ExecuteNonQuery();
-                foreach(Msg msg in value)
+				var query = new MySqlCommand("DELETE FROM chatmsg",connection);
+				query.ExecuteNonQuery();
+				foreach (Msg msg in value)
                 {
                     MySqlCommand sql = new MySqlCommand("INSERT INTO chatmsg(MsgID, MsgTime, UserIP, UserPort, UserName, ChagMsg, IsGRoup, OriginPort, Typ) "
-                        + "VALUES(\"" + msg.MsgID + "\", \"" + msg.MsgTime + "\", \"" + msg.UserIP + "\", \"" + msg.UserPort + "\", \"" + msg.UserName + "\", \"" + msg.ChatMsg + "\", \"" + msg.IsGroup + "\", \"" + msg.OriginPort + "\", \"" + msg.Type.ToString(), connection);
+                        + "VALUES(\"" + msg.MsgID + "\", \"" + msg.MsgTime + "\", \"" + msg.UserIP + "\", \"" + msg.UserPort + "\", \"" + msg.UserName + "\", \"" + msg.ChatMsg + "\", \"" + msg.IsGroup + "\", \"" + msg.OriginPort + "\", \"" + msg.Type.ToString() + "\")", connection);
                     sql.ExecuteNonQuery();
                 }
             }
@@ -758,18 +762,18 @@ namespace P2P_TCP {
 
 		private void MenuItem_Click_Sync1(object sender, RoutedEventArgs e) {
 
-		}
+		} //同步联系人列表至数据库
 
 		private void MenuItem_Click_Sync2(object sender, RoutedEventArgs e) {
-
-		}
+			SQLDocker = allMsg;
+		} //同步消息记录至数据库
 
 		private void MenuItem_Click_Sync3(object sender, RoutedEventArgs e) {
 
-		}
+		} //数据库2联系人列表
 
 		private void MenuItem_Click_Sync4(object sender, RoutedEventArgs e) {
-
-		}
+			allMsg = SQLDocker;
+		} //数据库2消息记录
 	}
 }

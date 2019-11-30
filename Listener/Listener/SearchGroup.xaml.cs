@@ -28,7 +28,8 @@ namespace Listener {
 			}
 		}
 
-		ServerWindow.AllGroup allGroup;
+		ServerWindow.AllGroup allGroup; //全部群聊与用户
+		ServerWindow.GroupMsg currentGroupMsg; //显示在list里的聊天记录
 
 		private void Button2_Copy_Click(object sender, RoutedEventArgs e) {
 
@@ -45,5 +46,20 @@ namespace Listener {
 		private void button1_Click(object sender, RoutedEventArgs e) {
 
 		} //删除
+
+		private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			int i;
+			for(i=0; i<allGroup.Count; i++) {
+				if (allGroup[i].GroupPort==(int)comboBox.SelectedItem) {
+					MsgList.ItemsSource = allGroup[i].groupMsg;
+					currentGroupMsg = allGroup[i].groupMsg;
+					break;
+				}
+			}
+			if (i== allGroup.Count) {
+				MessageBox.Show("Port Error");
+			}
+			
+		} //选择一个端口
 	}
 }
