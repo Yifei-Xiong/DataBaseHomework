@@ -587,5 +587,28 @@ namespace Listener {
 
 		}
 
+        GroupMsg SQLDocker_groupmsg
+        {
+            get
+            {
+
+            }
+            set
+            {
+
+            }
+        }
+
+        GroupUser SQLDocker_groupuser
+        {
+            get
+            {
+
+            }
+            set
+            {
+
+            }
+        }
 	}
 }

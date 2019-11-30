@@ -664,7 +664,7 @@ namespace P2P_TCP {
 			Search2 search2 = new Search2(allMsg);
 			search2.ShowDialog();
 			ChatDataSync(allMsg);
-            SQLDocker = allMsg;
+            SQLDocker_chagmsg = allMsg;
 		} //查询消息
 
 		private void MenuItem_About_Click(object sender, RoutedEventArgs e) {
@@ -766,7 +766,7 @@ namespace P2P_TCP {
             {
                 if (connection == null || connection.State != System.Data.ConnectionState.Open)
                     InitSQLDocker();
-                MySqlCommand sql = new MySqlCommand("SELECT * FROM friend");
+                MySqlCommand sql = new MySqlCommand("SELECT * FROM friend", connection);
                 MySqlDataReader reader = sql.ExecuteReader();
                 FriendIPAndPorts result = new FriendIPAndPorts();
                 while (reader.Read())
@@ -784,7 +784,16 @@ namespace P2P_TCP {
             }
             set
             {
-
+                if (connection == null || connection.State != System.Data.ConnectionState.Open)
+                    InitSQLDocker();
+                var query = new MySqlCommand("DELETE FROM friend", connection);
+                query.ExecuteNonQuery();
+                foreach (FriendIPAndPort friend in value)
+                {
+                    MySqlCommand sql = new MySqlCommand("INSERT INTO friend(friendIP, friendPort, friendID, Typ, IsGroup) "
+                        + "VALUES(\"" + friend.friendIP + "\", \"" + friend.friendPort + "\", \"" + friend.friendID + "\", \"" + friend.Type + "\", \"" + friend.IsGroup + "\")", connection);
+                    sql.ExecuteNonQuery();
+                }
             }
         }
 
@@ -793,7 +802,7 @@ namespace P2P_TCP {
 		} //同步联系人列表至数据库
 
 		private void MenuItem_Click_Sync2(object sender, RoutedEventArgs e) {
-			SQLDocker = allMsg;
+            SQLDocker_chagmsg = allMsg;
 		} //同步消息记录至数据库
 
 		private void MenuItem_Click_Sync3(object sender, RoutedEventArgs e) {
@@ -801,7 +810,7 @@ namespace P2P_TCP {
 		} //数据库2联系人列表
 
 		private void MenuItem_Click_Sync4(object sender, RoutedEventArgs e) {
-			allMsg = SQLDocker;
+			allMsg = SQLDocker_chagmsg;
 		} //数据库2消息记录
 	}
 }
