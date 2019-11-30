@@ -716,11 +716,11 @@ namespace P2P_TCP {
             connection = new MySqlConnection("server=106.14.44.67;user=root;password=0000;database=clientdb1;");
             connection.Open();
         }
-        public AllMsg SQLDocker
+        public AllMsg SQLDocker_chagmsg
         {
             get
             {
-                if (connection.State != System.Data.ConnectionState.Open)
+                if (connection == null || connection.State != System.Data.ConnectionState.Open)
                     InitSQLDocker();
                 MySqlCommand sql = new MySqlCommand("SELECT * FROM chatmsg");
                 MySqlDataReader reader = sql.ExecuteReader();
@@ -744,7 +744,7 @@ namespace P2P_TCP {
             }
             set
             {
-                if (connection.State != System.Data.ConnectionState.Open)
+                if (connection == null || connection.State != System.Data.ConnectionState.Open)
                     InitSQLDocker();
                 new MySqlCommand("DELETE FROM chatmsg").ExecuteNonQuery();
                 foreach(Msg msg in value)
@@ -753,6 +753,34 @@ namespace P2P_TCP {
                         + "VALUES(\"" + msg.MsgID + "\", \"" + msg.MsgTime + "\", \"" + msg.UserIP + "\", \"" + msg.UserPort + "\", \"" + msg.UserName + "\", \"" + msg.ChatMsg + "\", \"" + msg.IsGroup + "\", \"" + msg.OriginPort + "\", \"" + msg.Type.ToString(), connection);
                     sql.ExecuteNonQuery();
                 }
+            }
+        }
+
+        public FriendIPAndPorts SQLDocker_friend
+        {
+            get
+            {
+                if (connection == null || connection.State != System.Data.ConnectionState.Open)
+                    InitSQLDocker();
+                MySqlCommand sql = new MySqlCommand("SELECT * FROM friend");
+                MySqlDataReader reader = sql.ExecuteReader();
+                FriendIPAndPorts result = new FriendIPAndPorts();
+                while (reader.Read())
+                {
+                    FriendIPAndPort friend = new FriendIPAndPort();
+                    friend.friendIP = reader[0].ToString();
+                    friend.friendPort = reader[1].ToString();
+                    friend.friendID = reader[2].ToString();
+                    friend.Type = int.Parse(reader[3].ToString());
+                    friend.IsGroup = reader[4].ToString();
+                    result.Add(friend);
+                }
+                reader.Close();
+                return result;
+            }
+            set
+            {
+
             }
         }
 
