@@ -30,11 +30,12 @@
         <TextBox x:Name="textBox_Copy" HorizontalAlignment="Left" Height="23" Margin="15,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="99"/>
         <TextBox x:Name="textBox_Copy1" HorizontalAlignment="Left" Height="23" Margin="119,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="79"/>
         <Button x:Name="button2" Content="筛选" HorizontalAlignment="Left" Margin="394,46,0,0" VerticalAlignment="Top" Width="75" Click="Button2_Click"/>
-        <CheckBox x:Name="checkBox" Content="搜索群组" HorizontalAlignment="Left" Margin="304,27,0,0" VerticalAlignment="Top" IsChecked="True"/>
-        <CheckBox x:Name="checkBox1" Content="搜索联系人" HorizontalAlignment="Left" Margin="303,50,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <CheckBox x:Name="checkBox" Content="搜索群组" HorizontalAlignment="Left" Margin="303,17,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <CheckBox x:Name="checkBox1" Content="搜索联系人" HorizontalAlignment="Left" Margin="303,37,0,0" VerticalAlignment="Top" IsChecked="True"/>
         <Button x:Name="button2_Copy" Content="清空" HorizontalAlignment="Left" Margin="394,17,0,0" VerticalAlignment="Top" Width="75" Click="Button2_Copy_Click" />
         <TextBlock x:Name="textBlock5_Copy" HorizontalAlignment="Left" Margin="299,315,0,0" TextWrapping="Wrap" Text="联系人类型: " VerticalAlignment="Top"/>
         <TextBox x:Name="textBox_Copy2" HorizontalAlignment="Left" Height="23" Margin="203,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="91"/>
         <TextBlock x:Name="textBlock1_Copy1" HorizontalAlignment="Left" Margin="218,21,0,0" TextWrapping="Wrap" Text="联系人名称" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBox2" Content="精确搜索" HorizontalAlignment="Left" Margin="303,57,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

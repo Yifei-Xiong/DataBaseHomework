@@ -114,95 +114,153 @@ namespace P2P_TCP {
                 SearchMsg.Add(allMsg[i]);
             } //Copy
 
-            if(textBox_Copy.Text!=string.Empty)
-            {
-                for (int i = 0; i < SearchMsg.Count; i++)
-                {
-                    if (SearchMsg[i].MsgID != textBox_Copy.Text)
-                    {
-                        SearchMsg.Remove(SearchMsg[i]);
-                        i--;
-                    }
-                }
-            } //MsgID
-
-            if (textBox_Copy1.Text != string.Empty)
-            {
-                for (int i = 0; i < SearchMsg.Count; i++)
-                {
-                    if (SearchMsg[i].MsgTime != textBox_Copy1.Text)
-                    {
-                        SearchMsg.Remove(SearchMsg[i]);
-                        i--;
-                    }
-                }
-            } //MsgTime
-
-            if (textBox_Copy2.Text != string.Empty)
-            {
-                for (int i = 0; i < SearchMsg.Count; i++)
-                {
-                    if (SearchMsg[i].UserIP != textBox_Copy2.Text)
-                    {
-                        SearchMsg.Remove(SearchMsg[i]);
-                        i--;
-                    }
-                }
-            } //UserIP
-
-            if (textBox_Copy3.Text != string.Empty)
-            {
-                for (int i = 0; i < SearchMsg.Count; i++)
-                {
-                    if (SearchMsg[i].UserPort != textBox_Copy3.Text)
-                    {
-                        SearchMsg.Remove(SearchMsg[i]);
-                        i--;
-                    }
-                }
-            } //UserPort
-
-            if (textBox_Copy5.Text != string.Empty)
-            {
-                for (int i = 0; i < SearchMsg.Count; i++)
-                {
-                    if (SearchMsg[i].UserName != textBox_Copy5.Text)
-                    {
-                        SearchMsg.Remove(SearchMsg[i]);
-                        i--;
-                    }
-                }
-            } //UserName
-
-            if (textBox_Copy6.Text != string.Empty)
-            {
-                for (int i = 0; i < SearchMsg.Count; i++)
-                {
-                    if (SearchMsg[i].ChatMsg != textBox_Copy6.Text)
-                    {
-                        SearchMsg.Remove(SearchMsg[i]);
-                        i--;
-                    }
-                }
-            } //ChatMsg
-
-			if (checkBox.IsChecked==false) {
-				for (int i = 0; i < SearchMsg.Count; i++) {
-					if (SearchMsg[i].IsGroup != "群组聊天") {
-						SearchMsg.Remove(SearchMsg[i]);
-						i--;
+			if (checkBox2.IsChecked == true) {
+				if (textBox_Copy.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].MsgID.IndexOf(textBox_Copy.Text) == -1) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
 					}
-				}
-			} //IsGroup
+				} //MsgID
 
-			if (checkBox1.IsChecked == false) {
-				for (int i = 0; i < SearchMsg.Count; i++) {
-					if (SearchMsg[i].IsGroup != "个人聊天") {
-						SearchMsg.Remove(SearchMsg[i]);
-						i--;
+				if (textBox_Copy1.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].MsgTime.IndexOf(textBox_Copy1.Text) == -1) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
 					}
-				}
-			} //IsFrirnd
+				} //MsgTime
+
+				if (textBox_Copy2.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].UserIP.IndexOf(textBox_Copy2.Text) == -1) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //UserIP
+
+				if (textBox_Copy3.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].UserPort.IndexOf(textBox_Copy3.Text) == -1) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //UserPort
+
+				if (textBox_Copy5.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].UserName.IndexOf(textBox_Copy5.Text) == -1) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //UserName
+
+				if (textBox_Copy6.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].ChatMsg.IndexOf(textBox_Copy6.Text) == -1) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //ChatMsg
+
+				if (checkBox.IsChecked == false) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].IsGroup != "群组聊天") {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //IsGroup
+
+				if (checkBox1.IsChecked == false) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].IsGroup != "个人聊天") {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //IsFrirnd
+			} //精确搜索
+
+			if (checkBox2.IsChecked == true) {
+				if (textBox_Copy.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].MsgID != textBox_Copy.Text) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //MsgID
+
+				if (textBox_Copy1.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].MsgTime != textBox_Copy1.Text) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //MsgTime
+
+				if (textBox_Copy2.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].UserIP != textBox_Copy2.Text) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //UserIP
+
+				if (textBox_Copy3.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].UserPort != textBox_Copy3.Text) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //UserPort
+
+				if (textBox_Copy5.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].UserName != textBox_Copy5.Text) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //UserName
+
+				if (textBox_Copy6.Text != string.Empty) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].ChatMsg != textBox_Copy6.Text) {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //ChatMsg
+
+				if (checkBox.IsChecked == false) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].IsGroup != "群组聊天") {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //IsGroup
+
+				if (checkBox1.IsChecked == false) {
+					for (int i = 0; i < SearchMsg.Count; i++) {
+						if (SearchMsg[i].IsGroup != "个人聊天") {
+							SearchMsg.Remove(SearchMsg[i]);
+							i--;
+						}
+					}
+				} //IsFrirnd
+			} //模糊搜索
 
 			UserList.ItemsSource = SearchMsg;
         }

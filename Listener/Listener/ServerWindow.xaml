@@ -15,7 +15,8 @@
             <MenuItem Header="退出(_E)" InputGestureText="Ctrl+E" Name="MenuItem_Exit" Click="MenuItem_Exit_Click" />
             <MenuItem Header="查询(_Q)" InputGestureText="Ctrl+Q" Name="MenuItem_Search" >
                 <MenuItem Header="查询用户信息" HorizontalAlignment="Left" Click="MenuItem_Click_2"/>
-                <MenuItem Header="查询群组信息" HorizontalAlignment="Left" Click="MenuItem_Click_3"/>
+                <MenuItem Header="查询群组用户" HorizontalAlignment="Left" Click="MenuItem_Click_4"/>
+                <MenuItem Header="查询群组聊天" HorizontalAlignment="Left" Click="MenuItem_Click_3"/>
             </MenuItem>
             <MenuItem Header="同步(_S)" InputGestureText="Ctrl+S" Name="MenuItem_Sync" >
                 <MenuItem Header="同步用户信息列表至数据库" HorizontalAlignment="Left" Click="MenuItem_Click_Sync1" />

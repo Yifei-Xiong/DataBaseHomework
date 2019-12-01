@@ -1,0 +1,51 @@
+﻿<Window x:Class="Listener.SearchUserInGroup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Listener"
+        mc:Ignorable="d"
+        Title="群组用户查询" Height="593.162" Width="542.4" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Grid>
+        <ListView x:Name="UserList" HorizontalAlignment="Left" Height="369" Margin="15,83,0,0" VerticalAlignment="Top" Width="511" SelectionChanged="UserList_SelectionChanged">       
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="用户IP" Width="90" DisplayMemberBinding="{Binding UserIP}"/>
+                    <GridViewColumn Header="用户端口" Width="70" DisplayMemberBinding="{Binding UserPort}"/>
+                    <GridViewColumn Header="用户昵称" Width="110" DisplayMemberBinding="{Binding UserID}"/>
+                    <GridViewColumn Header="发言次数" Width="70" DisplayMemberBinding="{Binding MsgTimes}"/>
+                    <GridViewColumn Header="最后活跃时间" Width="150" DisplayMemberBinding="{Binding LastMsgTime}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <TextBlock x:Name="textBlock2_Copy" HorizontalAlignment="Left" Margin="113,20,0,0" TextWrapping="Wrap" Text="用户IP" VerticalAlignment="Top" RenderTransformOrigin="0.063,0.434"/>
+        <TextBlock x:Name="textBlock3_Copy" HorizontalAlignment="Left" Margin="177,20,0,0" TextWrapping="Wrap" Text="用户端口" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock5_Copy" HorizontalAlignment="Left" Margin="249,20,0,0" TextWrapping="Wrap" Text="用户昵称" VerticalAlignment="Top" RenderTransformOrigin="0.393,0.138"/>
+        <TextBox x:Name="textBox_Copy2" HorizontalAlignment="Left" Height="23" Margin="89,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="textBox_Copy3" HorizontalAlignment="Left" Height="23" Margin="174,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="54"/>
+        <TextBox x:Name="textBox_Copy5" HorizontalAlignment="Left" Height="23" Margin="233,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="80"/>
+        <Button x:Name="button2" Content="筛选" HorizontalAlignment="Left" Margin="450,57,0,0" VerticalAlignment="Top" Width="75" Click="Button2_Click"/>
+        <Button x:Name="button2_Copy" Content="清空" HorizontalAlignment="Left" Margin="450,34,0,0" VerticalAlignment="Top" Width="75" Click="Button2_Copy_Click" />
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="15,41,0,0" VerticalAlignment="Top" Width="70" Height="23" SelectionChanged="comboBox_SelectionChanged"/>
+        <TextBlock x:Name="textBlock_Copy1" HorizontalAlignment="Left" Margin="14,23,0,0" TextWrapping="Wrap" Text="选择群聊端口" VerticalAlignment="Top" RenderTransformOrigin="-0.183,-0.662"/>
+        <CheckBox x:Name="checkBox" Content="精确搜索" HorizontalAlignment="Left" Margin="450,13,0,0" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock2_Copy1" HorizontalAlignment="Left" Margin="36,461,0,0" TextWrapping="Wrap" Text="用户IP: " VerticalAlignment="Top" RenderTransformOrigin="0.063,0.434"/>
+        <TextBlock x:Name="textBlock3_Copy1" HorizontalAlignment="Left" Margin="23,491,0,0" TextWrapping="Wrap" Text="用户端口: " VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock5_Copy1" HorizontalAlignment="Left" Margin="23,521,0,0" TextWrapping="Wrap" Text="用户昵称: " VerticalAlignment="Top" RenderTransformOrigin="0.393,0.138"/>
+        <TextBlock x:Name="textBlock3_Copy2" HorizontalAlignment="Left" Margin="311,20,0,0" TextWrapping="Wrap" Text="发言次数" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock5_Copy2" HorizontalAlignment="Left" Margin="367,20,0,0" TextWrapping="Wrap" Text="最后活跃时间" VerticalAlignment="Top" RenderTransformOrigin="0.393,0.138"/>
+        <TextBox x:Name="textBox_Copy" HorizontalAlignment="Left" Height="23" Margin="318,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="36"/>
+        <TextBox x:Name="textBox_Copy1" HorizontalAlignment="Left" Height="23" Margin="359,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="80"/>
+        <TextBlock x:Name="textBlock3_Copy3" HorizontalAlignment="Left" Margin="254,461,0,0" TextWrapping="Wrap" Text="发言次数: " VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock5_Copy3" HorizontalAlignment="Left" Margin="230,491,0,0" TextWrapping="Wrap" Text="最后活跃时间: " VerticalAlignment="Top" RenderTransformOrigin="0.393,0.138"/>
+        <Button x:Name="button" Content="修改用户信息" HorizontalAlignment="Left" Margin="422,462,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+        <Button x:Name="button1" Content="删除用户信息" HorizontalAlignment="Left" Margin="422,507,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="89,460,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="button_Copy" Content="修改用户信息" HorizontalAlignment="Left" Margin="708,338,-247,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+        <Button x:Name="button1_Copy" Content="删除用户信息" HorizontalAlignment="Left" Margin="708,377,-247,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
+        <TextBox x:Name="textBox_Copy4" HorizontalAlignment="Left" Height="23" Margin="89,488,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="textBox_Copy6" HorizontalAlignment="Left" Height="23" Margin="89,516,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+    </Grid>
+</Window>
+
+

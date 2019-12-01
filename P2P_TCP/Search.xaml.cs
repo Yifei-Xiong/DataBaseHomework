@@ -80,51 +80,100 @@ namespace P2P_TCP {
 			for (int i = 0; i < allContacts.Count; i++) {
 				SearchContacts.Add(allContacts[i]);
 			} //Copy
-
-			if (textBox_Copy.Text != string.Empty) {
-				for (int i = 0; i < SearchContacts.Count; i++) {
-					if (SearchContacts[i].friendIP != textBox_Copy.Text) {
-						SearchContacts.Remove(SearchContacts[i]);
-						i--;
+			if (checkBox2.IsChecked == true) {
+				if (textBox_Copy.Text != string.Empty) {
+					for (int i = 0; i < SearchContacts.Count; i++) {
+						if (SearchContacts[i].friendIP != textBox_Copy.Text) {
+							SearchContacts.Remove(SearchContacts[i]);
+							i--;
+						}
 					}
-				}
-			} //friendIP
+				} //friendIP
 
-			if (textBox_Copy1.Text != string.Empty) {
-				for (int i = 0; i < SearchContacts.Count; i++) {
-					if (SearchContacts[i].friendPort != textBox_Copy1.Text) {
-						SearchContacts.Remove(SearchContacts[i]);
-						i--;
+				if (textBox_Copy1.Text != string.Empty) {
+					for (int i = 0; i < SearchContacts.Count; i++) {
+						if (SearchContacts[i].friendPort != textBox_Copy1.Text) {
+							SearchContacts.Remove(SearchContacts[i]);
+							i--;
+						}
 					}
-				}
-			} //friendPort
+				} //friendPort
 
-			if (textBox_Copy2.Text != string.Empty) {
-				for (int i = 0; i < SearchContacts.Count; i++) {
-					if (SearchContacts[i].friendID != textBox_Copy2.Text) {
-						SearchContacts.Remove(SearchContacts[i]);
-						i--;
+				if (textBox_Copy2.Text != string.Empty) {
+					for (int i = 0; i < SearchContacts.Count; i++) {
+						if (SearchContacts[i].friendID != textBox_Copy2.Text) {
+							SearchContacts.Remove(SearchContacts[i]);
+							i--;
+						}
 					}
-				}
-			} //friendID
+				} //friendID
 
-			if (checkBox.IsChecked == false) {
-				for (int i = 0; i < SearchContacts.Count; i++) {
-					if (SearchContacts[i].IsGroup != "群聊") {
-						SearchContacts.Remove(SearchContacts[i]);
-						i--;
+				if (checkBox.IsChecked == false) {
+					for (int i = 0; i < SearchContacts.Count; i++) {
+						if (SearchContacts[i].IsGroup != "群聊") {
+							SearchContacts.Remove(SearchContacts[i]);
+							i--;
+						}
 					}
-				}
-			} //IsGroup
+				} //IsGroup
 
-			if (checkBox1.IsChecked == false) {
-				for (int i = 0; i < SearchContacts.Count; i++) {
-					if (SearchContacts[i].IsGroup != "好友") {
-						SearchContacts.Remove(SearchContacts[i]);
-						i--;
+				if (checkBox1.IsChecked == false) {
+					for (int i = 0; i < SearchContacts.Count; i++) {
+						if (SearchContacts[i].IsGroup != "好友") {
+							SearchContacts.Remove(SearchContacts[i]);
+							i--;
+						}
 					}
-				}
-			} //IsFriend
+				} //IsFriend
+			} //模糊搜索
+
+			if (checkBox2.IsChecked == false) {
+				if (textBox_Copy.Text != string.Empty) {
+					for (int i = 0; i < SearchContacts.Count; i++) {
+						if (SearchContacts[i].friendIP.IndexOf(textBox_Copy.Text) == -1) {
+							SearchContacts.Remove(SearchContacts[i]);
+							i--;
+						}
+					}
+				} //friendIP
+
+				if (textBox_Copy1.Text != string.Empty) {
+					for (int i = 0; i < SearchContacts.Count; i++) {
+						if (SearchContacts[i].friendPort.IndexOf(textBox_Copy1.Text) == -1) {
+							SearchContacts.Remove(SearchContacts[i]);
+							i--;
+						}
+					}
+				} //friendPort
+
+				if (textBox_Copy2.Text != string.Empty) {
+					for (int i = 0; i < SearchContacts.Count; i++) {
+						if (SearchContacts[i].friendID.IndexOf(textBox_Copy2.Text) == -1) {
+							SearchContacts.Remove(SearchContacts[i]);
+							i--;
+						}
+					}
+				} //friendID
+
+				if (checkBox.IsChecked == false) {
+					for (int i = 0; i < SearchContacts.Count; i++) {
+						if (SearchContacts[i].IsGroup != "群聊") {
+							SearchContacts.Remove(SearchContacts[i]);
+							i--;
+						}
+					}
+				} //IsGroup
+
+				if (checkBox1.IsChecked == false) {
+					for (int i = 0; i < SearchContacts.Count; i++) {
+						if (SearchContacts[i].IsGroup != "好友") {
+							SearchContacts.Remove(SearchContacts[i]);
+							i--;
+						}
+					}
+				} //IsFriend
+			} //精确搜索
+			
 
 			ContactList.ItemsSource = SearchContacts;
 		} //查询

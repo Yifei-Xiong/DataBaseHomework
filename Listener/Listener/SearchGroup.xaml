@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Listener"
         mc:Ignorable="d"
-        Title="群组信息查询" Height="623.029" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="群组信息查询" Height="495.829" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <ListView x:Name="MsgList" HorizontalAlignment="Left" Height="369" Margin="15,83,0,0" VerticalAlignment="Top" Width="766">       
             <ListView.View>
@@ -19,34 +19,23 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="45,468,0,0" TextWrapping="Wrap" Text="消息序号: " VerticalAlignment="Top" RenderTransformOrigin="-0.183,-0.662"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="325,467,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="45,509,0,0" TextWrapping="Wrap" Text="发送时间: " VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="325,511,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="269,471,0,0" TextWrapping="Wrap" Text="消息IP: " VerticalAlignment="Top" RenderTransformOrigin="0.063,0.434"/>
-        <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="636,508,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="textBox3" HorizontalAlignment="Left" Height="23" Margin="117,556,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="328"/>
-        <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="256,512,0,0" TextWrapping="Wrap" Text="消息端口: " VerticalAlignment="Top"/>
-        <TextBlock x:Name="textBlock5" HorizontalAlignment="Left" Margin="572,509,0,0" TextWrapping="Wrap" Text="用户昵称: " VerticalAlignment="Top"/>
-        <TextBlock x:Name="textBlock6" HorizontalAlignment="Left" Margin="45,556,0,0" TextWrapping="Wrap" Text="消息内容: " VerticalAlignment="Top"/>
-        <Button x:Name="button" Content="修改该记录" HorizontalAlignment="Left" Margin="551,554,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
-        <Button x:Name="button1" Content="删除该记录" HorizontalAlignment="Left" Margin="681,552,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
-        <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" Margin="117,23,0,0" TextWrapping="Wrap" Text="消息序号" VerticalAlignment="Top" RenderTransformOrigin="-0.183,-0.662"/>
-        <TextBlock x:Name="textBlock1_Copy" HorizontalAlignment="Left" Margin="206,23,0,0" TextWrapping="Wrap" Text="发送时间" VerticalAlignment="Top"/>
-        <TextBlock x:Name="textBlock2_Copy" HorizontalAlignment="Left" Margin="323,23,0,0" TextWrapping="Wrap" Text="消息IP" VerticalAlignment="Top" RenderTransformOrigin="0.063,0.434"/>
-        <TextBlock x:Name="textBlock3_Copy" HorizontalAlignment="Left" Margin="388,23,0,0" TextWrapping="Wrap" Text="消息端口" VerticalAlignment="Top"/>
-        <TextBlock x:Name="textBlock5_Copy" HorizontalAlignment="Left" Margin="460,23,0,0" TextWrapping="Wrap" Text="用户昵称" VerticalAlignment="Top" RenderTransformOrigin="0.393,0.138"/>
-        <TextBlock x:Name="textBlock6_Copy" HorizontalAlignment="Left" Margin="590,23,0,0" TextWrapping="Wrap" Text="消息内容" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox_Copy" HorizontalAlignment="Left" Height="23" Margin="121,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="38" RenderTransformOrigin="0.839,0.475"/>
-        <TextBox x:Name="textBox_Copy1" HorizontalAlignment="Left" Height="23" Margin="164,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="130"/>
-        <TextBox x:Name="textBox_Copy2" HorizontalAlignment="Left" Height="23" Margin="300,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="80"/>
-        <TextBox x:Name="textBox_Copy3" HorizontalAlignment="Left" Height="23" Margin="385,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="54"/>
-        <TextBox x:Name="textBox_Copy5" HorizontalAlignment="Left" Height="23" Margin="444,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="80"/>
-        <TextBox x:Name="textBox_Copy6" HorizontalAlignment="Left" Height="23" Margin="529,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="166"/>
+        <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" Margin="90,23,0,0" TextWrapping="Wrap" Text="消息序号" VerticalAlignment="Top" RenderTransformOrigin="-0.183,-0.662"/>
+        <TextBlock x:Name="textBlock1_Copy" HorizontalAlignment="Left" Margin="175,23,0,0" TextWrapping="Wrap" Text="发送时间" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock2_Copy" HorizontalAlignment="Left" Margin="292,23,0,0" TextWrapping="Wrap" Text="消息IP" VerticalAlignment="Top" RenderTransformOrigin="0.063,0.434"/>
+        <TextBlock x:Name="textBlock3_Copy" HorizontalAlignment="Left" Margin="357,23,0,0" TextWrapping="Wrap" Text="消息端口" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock5_Copy" HorizontalAlignment="Left" Margin="429,23,0,0" TextWrapping="Wrap" Text="用户昵称" VerticalAlignment="Top" RenderTransformOrigin="0.393,0.138"/>
+        <TextBlock x:Name="textBlock6_Copy" HorizontalAlignment="Left" Margin="542,23,0,0" TextWrapping="Wrap" Text="消息内容" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox_Copy" HorizontalAlignment="Left" Height="23" Margin="90,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="38" RenderTransformOrigin="0.839,0.475"/>
+        <TextBox x:Name="textBox_Copy1" HorizontalAlignment="Left" Height="23" Margin="133,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="130"/>
+        <TextBox x:Name="textBox_Copy2" HorizontalAlignment="Left" Height="23" Margin="269,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="textBox_Copy3" HorizontalAlignment="Left" Height="23" Margin="354,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="54"/>
+        <TextBox x:Name="textBox_Copy5" HorizontalAlignment="Left" Height="23" Margin="413,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="textBox_Copy6" HorizontalAlignment="Left" Height="23" Margin="498,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="140"/>
         <Button x:Name="button2" Content="筛选" HorizontalAlignment="Left" Margin="706,48,0,0" VerticalAlignment="Top" Width="75" Click="Button2_Click"/>
         <Button x:Name="button2_Copy" Content="清空" HorizontalAlignment="Left" Margin="706,21,0,0" VerticalAlignment="Top" Width="75" Click="Button2_Copy_Click" />
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="15,44,0,0" VerticalAlignment="Top" Width="101" Height="23" SelectionChanged="comboBox_SelectionChanged"/>
-        <TextBlock x:Name="textBlock_Copy1" HorizontalAlignment="Left" Margin="32,23,0,0" TextWrapping="Wrap" Text="选择群聊端口" VerticalAlignment="Top" RenderTransformOrigin="-0.183,-0.662"/>
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="15,44,0,0" VerticalAlignment="Top" Width="70" Height="23" SelectionChanged="comboBox_SelectionChanged"/>
+        <TextBlock x:Name="textBlock_Copy1" HorizontalAlignment="Left" Margin="13,23,0,0" TextWrapping="Wrap" Text="选择群聊端口" VerticalAlignment="Top" RenderTransformOrigin="-0.183,-0.662"/>
+        <CheckBox x:Name="checkBox" Content="精确搜索" HorizontalAlignment="Left" Margin="626,23,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
 

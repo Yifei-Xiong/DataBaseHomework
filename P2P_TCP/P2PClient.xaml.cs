@@ -365,6 +365,7 @@ namespace P2P_TCP {
 			}
 			if (i == myFriendIPAndPorts.Count) {
 				friendIPAndPort = GetContact(friendIPAndPort);
+				//myFriendIPAndPorts.Add(friendIPAndPort);
 				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
 			} //未找到该ip与端口号，需要增加
 			if(message!=string.Empty) {
@@ -421,7 +422,7 @@ namespace P2P_TCP {
 		private void SetMsgViewSource(Msg msg) {
 			allMsg.Add(msg);
 			if (checkBox_Copy.IsChecked == true) {
-				//SQLDocker = allMsg;
+				SQLDocker_chagmsg = allMsg;
 			}
 
 		} //修改allMsg的方法
@@ -457,11 +458,23 @@ namespace P2P_TCP {
 				FriendIPAndPort friendIPAndPort = new FriendIPAndPort();
 				friendIPAndPort.friendPort = allmsg[i].UserPort;
 				friendIPAndPort.friendIP = allmsg[i].UserIP;
+				friendIPAndPort.friendID = allmsg[i].UserName;
 				friendIPAndPort = GetContact(friendIPAndPort);
 				int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
 				if (k == -1 && friendIPAndPort.friendPort!=MyPort.ToString() && friendIPAndPort.friendID !=UserID) {
-					myFriendIPAndPorts.Add(friendIPAndPort);
-					//this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
+					//myFriendIPAndPorts.Add(friendIPAndPort);
+					int j;
+					for (j = 0; j < myFriendIPAndPorts.Count; j++) {
+						if (friendIPAndPort.friendPort == myFriendIPAndPorts[j].friendPort && friendIPAndPort.friendIP == myFriendIPAndPorts[j].friendIP) {
+							break;
+						}
+					}
+					if (j == myFriendIPAndPorts.Count) {
+						friendIPAndPort = GetContact(friendIPAndPort);
+						myFriendIPAndPorts.Add(friendIPAndPort);
+						//this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
+					} //未找到该ip与端口号，需要增加
+					  //this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
 				} //未找到该ip与端口号，需要增加
 				if (message != string.Empty) {
 					//this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new OneArgDelegate(SetFriendListBox), message); //接受信息在FriendListBox显示
@@ -664,7 +677,9 @@ namespace P2P_TCP {
 			Search2 search2 = new Search2(allMsg);
 			search2.ShowDialog();
 			ChatDataSync(allMsg);
-            SQLDocker_chagmsg = allMsg;
+			if (checkBox_Copy.IsChecked == true) {
+				SQLDocker_chagmsg = allMsg;
+			}
 		} //查询消息
 
 		private void MenuItem_About_Click(object sender, RoutedEventArgs e) {

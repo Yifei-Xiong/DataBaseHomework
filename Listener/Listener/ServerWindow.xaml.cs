@@ -23,6 +23,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 namespace Listener {
 	/// <summary>
@@ -50,7 +51,15 @@ namespace Listener {
 		ArrayList user;
 		private int nowEnterPort;
 		TcpListener myListener = null;
-		bool IsPortCanUse = true;
+		//bool IsPortCanUse = true;
+		public struct UserPw {
+			public string UserID { get; set; }
+			public string Password { get; set; }
+			public string Online { get; set; }
+			public string LogInTime { get; set; }
+			public string LogInIP { get; set; }
+			public string LogInPort { get; set; }
+		}
 		public struct MessageInfo {
 			public string MsgIP { get; set; }
 			public string MsgPort { get; set; }
@@ -63,7 +72,10 @@ namespace Listener {
 			public string UserIP { get; set; }
 			public string UserPort { get; set; }
 			public string UserID { get; set; }
+			public string LastMsgTime { get; set; }
+			public int MsgTimes { get; set; }
 		} //单个用户
+		public class AllUser : ObservableCollection<UserPw> { }
 		public class GroupMsg : ObservableCollection<MessageInfo> { } //定义一个群组的聊天数据集合 
 		public class GroupUser : ObservableCollection<UserInfo> { } //定义一个群组的成员集合 
 		public class GroupInfo {
@@ -76,8 +88,95 @@ namespace Listener {
 			public int GroupPort { get; set; }
 		}
 		public class AllGroup : ObservableCollection<GroupInfo> { } //定义所有群组的集合 
+		AllUser allUser;
 		AllGroup allGroup;
 		ArrayList AllGroupPort;
+		private delegate void SetGroupMsg(MessageInfo arg, int port);
+		private delegate void SetGroupUser(UserInfo arg, int port);
+		private delegate void SetGroupUser2(UserInfo arg, int port); //modify
+		private delegate void SetAllGroup(GroupInfo arg);
+		private delegate void SetUser(UserPw arg);
+		private void SetGroupMsgSource(MessageInfo arg, int port) {
+			int i;
+			for(i=0; i< allGroup.Count; i++) {
+				if (allGroup[i].GroupPort == port) {
+					break;
+				}
+			}
+			if (i== allGroup.Count) {
+				MessageBox.Show("异步消息修改错误!");
+			}
+			else {
+				allGroup[i].groupMsg.Add(arg);
+			}
+		}
+		private void SetGroupUserSource(UserInfo arg, int port) {
+			int i;
+			for (i = 0; i < allGroup.Count; i++) {
+				if (allGroup[i].GroupPort == port) {
+					break;
+				}
+			}
+			if (i == allGroup.Count) {
+				MessageBox.Show("异步用户修改错误!");
+			}
+			else {
+				allGroup[i].groupUser.Add(arg);
+			}
+		}
+
+		private void SetGroupUserSource2(UserInfo arg, int port) {
+			int i;
+			for (i = 0; i < allGroup.Count; i++) {
+				if (allGroup[i].GroupPort == port) {
+					break;
+				}
+			}
+			if (i == allGroup.Count) {
+				MessageBox.Show("异步用户修改错误!");
+			}
+			else {
+				var se = allGroup[i].groupUser;
+				int j;
+				for (j = 0; j < allGroup[i].groupUser.Count; i++) {
+					if (allGroup[i].groupUser[j].UserID == arg.UserID) {
+						break;
+					}
+				}
+				if (j == allGroup.Count) {
+					MessageBox.Show("异步用户修改查询错误!");
+				}
+				var vr = allGroup[i].groupUser[j];
+				vr.LastMsgTime = DateTime.Now.ToString();
+				vr.MsgTimes++;
+				allGroup[i].groupUser[j] = vr;////
+			}
+		}
+
+		private void SetAllGroupSource(GroupInfo arg) {
+			allGroup.Add(arg);
+		}
+		private void SetUserSource(UserPw arg) {
+			int i;
+			for (i=0; i<allUser.Count; i++) {
+				if (allUser[i].Password==arg.Password) {
+					break;
+				}
+			}
+			if (i == allUser.Count) {
+				allUser.Add(arg);
+			}
+			else {
+				UserPw up = new UserPw();
+				up = allUser[i];
+				up.LogInIP = arg.LogInIP;
+				up.LogInPort = arg.LogInPort;
+				up.LogInTime = arg.LogInTime;
+				up.Online = "在线";
+				allUser.RemoveAt(i);
+				allUser.Add(up);
+			}
+		}
 
 		public ServerWindow() {
 			InitializeComponent();
@@ -85,10 +184,15 @@ namespace Listener {
 			//textBlock3.Text += ((IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0)).ToString();
 			textBlock3.Text += "127.0.0.1";
 			user = new ArrayList();
+			allUser = new AllUser();
 			//GetSerizationUser();
 			if (user.Count == 0) {
 				UserClass ADMIN = new UserClass("admin", "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918");
 				user.Add(ADMIN);
+				UserPw admin = new UserPw();
+				admin.UserID = "admin";
+				admin.Password = "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918";
+				allUser.Add(admin);
 			}
 			allGroup = new AllGroup();
 			AllGroupPort = new ArrayList();
@@ -249,9 +353,12 @@ namespace Listener {
 								var LogIn = new IMClassLibrary.LoginDataPackage(receiveBytes);
 								if (LogIn.Receiver == "Server_Reg") {
 									var newUser = new UserClass(LogIn.UserID, LogIn.Password);
+									UserPw up = new UserPw();
+									up.UserID = LogIn.UserID;
+									up.Password = LogIn.Password;
 									bool CanResiger = true;
-									foreach (UserClass nowUser in user) {
-										if (nowUser.userId == newUser.userId) {
+									foreach (UserPw up1 in allUser) {
+										if (up1.UserID == newUser.userId) {
 											CanResiger = false;
 											break;
 										}
@@ -261,19 +368,27 @@ namespace Listener {
 									}
 									else {
 										user.Add(newUser);
+										this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetUser(SetUserSource), up);
+										//allUser.Add(up);
 										SendMessageTo(LogIn.Sender.Split(':')[0], LogIn.Sender.Split(':')[1], "注册成功");
 										///////////////////////////
 									}
 									continue;
 								}
 								bool SuccessLogin = false;
-								for (int i = 0; i < user.Count; ++i) {
-									var nowUser = (UserClass)user[i];
-									if (LogIn.UserID == nowUser.userId && LogIn.Password == nowUser.password) {
+								//for (int i = 0; i < user.Count; ++i) {
+								//	var nowUser = (UserClass)user[i];
+								//	if (LogIn.UserID == nowUser.userId && LogIn.Password == nowUser.password) {
+								//		SuccessLogin = true;
+								//		nowUser.isOnline = true;
+								//	}
+								//	user[i] = nowUser;
+								//}
+								for (int i = 0; i < allUser.Count; ++i) {
+									UserPw up2 = allUser[i];
+									if (LogIn.UserID == up2.UserID && LogIn.Password == up2.Password) {
 										SuccessLogin = true;
-										nowUser.isOnline = true;
 									}
-									user[i] = nowUser;
 								}
 								if (SuccessLogin == false) {
 									SendMessageTo(LogIn.Sender.Split(':')[0], LogIn.Sender.Split(':')[1], "登录失败");
@@ -281,6 +396,13 @@ namespace Listener {
 								}
 								else {
 									SendMessageTo(LogIn.Sender.Split(':')[0], LogIn.Sender.Split(':')[1], "登录成功");
+									UserPw up = new UserPw();
+									up.UserID = LogIn.UserID;
+									up.Password = LogIn.Password;
+									up.LogInIP = LogIn.Sender.Split(':')[0];
+									up.LogInPort = LogIn.Sender.Split(':')[1];
+									up.LogInTime = DateTime.Now.ToString();
+									this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetUser(SetUserSource), up);
 									continue;
 								}
 							}
@@ -365,7 +487,7 @@ namespace Listener {
 				return;
 			}
 			button_StartServer.Content = "退出";
-			IsPortCanUse = true;
+			//IsPortCanUse = true;
 			var threadAccept = new Thread(AcceptClientConnect);
 			threadAccept.IsBackground = true;
 			threadAccept.Start();
@@ -418,12 +540,13 @@ namespace Listener {
 			var nowEnterPort = 0;
 			bool canTurnPortToInt = int.TryParse(nowTextBoxText, out nowEnterPort);
 			var myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
-			myListener.Start();//start
+			myListener.Start(); //start
 			var newClient = new TcpClient();
-			var group = new ArrayList();
+			//var group = new ArrayList();
 			GroupInfo groupInfo = new GroupInfo();
 			groupInfo.GroupPort = nowEnterPort;
-			allGroup.Add(groupInfo);
+			//allGroup.Add(groupInfo);////
+			this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetAllGroup(SetAllGroupSource), groupInfo);
 			while (true) {
 				try {
 					newClient = myListener.AcceptTcpClient();//等待客户端连接
@@ -446,50 +569,60 @@ namespace Listener {
 					msg.MsgPort = userMessage.Receiver.Split(':')[1];
 					msg.UserID = userMessage.Sender;
 					msg.Msg = userMessage.Message;
-					groupInfo.groupMsg.Add(msg);
+					//groupInfo.groupMsg.Add(msg);////
+					this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetGroupMsg(SetGroupMsgSource), msg, nowEnterPort);
 
 					bool isNewUser = true;
-					for (int i = 0; i < group.Count; ++i) {
-						var t = (GroupUserStruct)group[i];
-						if (t.IP == userMessage.Receiver && t.userID == userMessage.Sender) {
+					for (int i = 0; i < groupInfo.groupUser.Count; ++i) {
+						var t = groupInfo.groupUser[i];
+						if (t.UserID == userMessage.Sender) {
 							TcpClient tcpClient;
 							StateObject stateObject;
-							for (int j = 0; j < group.Count; ++j) {
-								if (i == j)
+							for (int j = 0; j < groupInfo.groupUser.Count; ++j) {
+								if (i == j) {
 									continue;
-								var send = (GroupUserStruct)group[j];
+								}  //找到发送者
+								   //var send = (GroupUserStruct)group[j];
+								var send = groupInfo.groupUser[j];
 								tcpClient = new TcpClient(); //每次发送建立一个TcpClient类对象
 								stateObject = new StateObject(); ////每次发送建立一个StateObject类对象
 								stateObject.tcpClient = tcpClient;
 								//stateObject.buffer = SendMsg;
-								stateObject.friendIPAndPort = send.IP; //所选好友IP和端口号
+								stateObject.friendIPAndPort = send.UserIP+":"+send.UserPort; //所选好友IP和端口号
 								var chatData = new IMClassLibrary.MultiChatDataPackage(nowEnterPort.ToString(), userMessage.Receiver, userMessage.Message);
 								chatData.SenderID = userMessage.Sender;
 								chatData.MessageType = 5;
 								stateObject.buffer = chatData.DataPackageToBytes(); //buffer为发送的数据包的字节数组
-								string[] SplitStr = send.IP.Split(':');
-								tcpClient.BeginConnect(SplitStr[0], int.Parse(SplitStr[1]), new AsyncCallback(SentCallBackF), stateObject); //异步连接
+								//string[] SplitStr = send.IP.Split(':');
+								tcpClient.BeginConnect(send.UserIP, int.Parse(send.UserPort), new AsyncCallback(SentCallBackF), stateObject); //异步连接
 							}
+							var se = groupInfo.groupUser[i];
+							//se.LastMsgTime = DateTime.Now.ToString();
+							//se.MsgTimes++;
 							isNewUser = false;
+							//groupInfo.groupUser[i] = se;////
+							this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetGroupUser2(SetGroupUserSource2), se, nowEnterPort);
 							break;
 						}
 					}
 					if (isNewUser == true) {
-						var newGroupuserStruct = new GroupUserStruct();
-						newGroupuserStruct.userID = userMessage.Sender;
-						newGroupuserStruct.IP = userMessage.Receiver;
-						group.Add(newGroupuserStruct);
+						//var newGroupuserStruct = new GroupUserStruct();
+						//newGroupuserStruct.userID = userMessage.Sender;
+						//newGroupuserStruct.IP = userMessage.Receiver;
+						//group.Add(newGroupuserStruct);
 						UserInfo info = new UserInfo();
 						info.UserID = userMessage.Sender;
 						info.UserIP = userMessage.Receiver.Split(':')[0];
 						info.UserPort = userMessage.Receiver.Split(':')[1];
-						groupInfo.groupUser.Add(info);
+						info.MsgTimes = 1;
+						info.LastMsgTime = DateTime.Now.ToString();
+						//groupInfo.groupUser.Add(info);////
+						this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetGroupUser(SetGroupUserSource), info, nowEnterPort);
 					}
 				}
 				catch {
-					MessageBox.Show("无法在该端口建立群组，该端口已被占用，Error 443");
+					MessageBox.Show("无法在该端口建立群组，该端口已被占用，Error 556");
 					return;
-					break;
 				}
 			}
 		}
@@ -561,7 +694,8 @@ namespace Listener {
 		} //关于
 
 		private void MenuItem_Click_2(object sender, RoutedEventArgs e) {
-
+			SearchUser searchUser = new SearchUser(allUser);
+			searchUser.ShowDialog();
 		} //查询用户信息
 
 		private void MenuItem_Click_3(object sender, RoutedEventArgs e) {
@@ -574,6 +708,11 @@ namespace Listener {
 		private void MenuItem_Click_Sync1(object sender, RoutedEventArgs e) {
 
 		}
+
+		private void MenuItem_Click_4(object sender, RoutedEventArgs e) {
+			SearchUserInGroup searchUserInGroup = new SearchUserInGroup(allGroup);
+			searchUserInGroup.ShowDialog();
+		} //查询群组的用户
 
 		private void MenuItem_Click_Sync2(object sender, RoutedEventArgs e) {
 
@@ -589,10 +728,10 @@ namespace Listener {
 
         GroupMsg SQLDocker_groupmsg
         {
-            get
-            {
+           // get
+            //{
 
-            }
+            //}
             set
             {
 
@@ -601,14 +740,16 @@ namespace Listener {
 
         GroupUser SQLDocker_groupuser
         {
-            get
-            {
+            //get
+            //{
 
-            }
+            //}
             set
             {
 
             }
         }
+
+		
 	}
 }
