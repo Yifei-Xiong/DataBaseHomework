@@ -25,6 +25,7 @@ using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using MySql.Data.MySqlClient;
+using System.Text.RegularExpressions;
 
 namespace Listener {
 	/// <summary>
@@ -61,6 +62,7 @@ namespace Listener {
 			public string LogInIP { get; set; }
 			public string LogInPort { get; set; }
 		}
+		[Serializable]
 		public struct MessageInfo {
 			public string MsgIP { get; set; }
 			public string MsgPort { get; set; }
@@ -69,6 +71,7 @@ namespace Listener {
 			public string MsgTime { get; set; }
 			public string MsgID { get; set; }
 		} //单条消息
+		[Serializable]
 		public struct UserInfo {
 			public string UserIP { get; set; }
 			public string UserPort { get; set; }
@@ -77,7 +80,9 @@ namespace Listener {
 			public int MsgTimes { get; set; }
 		} //单个用户
 		public class AllUser : ObservableCollection<UserPw> { }
+		[Serializable]
 		public class GroupMsg : ObservableCollection<MessageInfo> { } //定义一个群组的聊天数据集合 
+		[Serializable]
 		public class GroupUser : ObservableCollection<UserInfo> { } //定义一个群组的成员集合 
         [Serializable]
         public class GroupInfo {
@@ -763,12 +768,14 @@ namespace Listener {
 				MySqlCommand sql = new MySqlCommand("SELECT * FROM allgroup", connection);
 				MySqlDataReader reader = sql.ExecuteReader();
 				AllGroup result = new AllGroup();
+				string str = string.Empty;
 				while (reader.Read()) {
-					using (MemoryStream ms = new MemoryStream(Serialize(reader[0]))) {
-						IFormatter formatter = new BinaryFormatter();
-						result = formatter.Deserialize(ms) as AllGroup;
-					}
+					str += reader[0].ToString() + "\r\n";
 				}
+				str = str.Replace("_Pt_","\"").Replace("_Rt_",">").Replace("_Lt_","<");
+				XmlSerializer dser = new XmlSerializer(typeof(AllGroup));
+				Stream xmlStream = new MemoryStream(Encoding.UTF8.GetBytes(str));
+				result = dser.Deserialize(xmlStream) as AllGroup;//cat2 就是你要得到的class对象
 				reader.Close();
 				return result;
 			}
@@ -776,10 +783,21 @@ namespace Listener {
 			{
 				if (connection == null || connection.State != System.Data.ConnectionState.Open)
 					InitSQLDocker();
+				XmlSerializer ser = new XmlSerializer(typeof(AllGroup));
+				MemoryStream ms = new MemoryStream();
+				ser.Serialize(ms, allGroup);
+				string xmlString = Encoding.UTF8.GetString(ms.ToArray());
 				var query = new MySqlCommand("DELETE FROM allgroup", connection);
 				query.ExecuteNonQuery();
-				MySqlCommand sql = new MySqlCommand("INSERT INTO allgroup(GroupInfo) " + "VALUES(\"" + Serialize(allGroup) + "\")", connection);
-				sql.ExecuteNonQuery();
+				//xmlString = xmlString.Replace("\r", "r_lea").Replace("\n", "n_lea").Replace("\"", "t_lea");
+				xmlString = xmlString.Replace("\"", "_Pt_").Replace(">", "_Rt_").Replace("<", "_Lt_");
+				var insert = Regex.Split(xmlString, "\r\n", RegexOptions.IgnoreCase);
+				//MySqlCommand sql = new MySqlCommand("INSERT INTO allgroup(GroupInfo) " + "VALUES(\"" + xmlString + "\")", connection);
+				foreach (var str in insert) {
+					MySqlCommand sql = new MySqlCommand("INSERT INTO allgroup(GroupInfo) "
+						+ "VALUES(\"" + str + "\")", connection);
+					sql.ExecuteNonQuery();
+				}
 
 			}
 		}
@@ -834,5 +852,38 @@ namespace Listener {
 			return formatter.Deserialize(rems);
 		} //反序列化
 
+		public byte[] ObjectSerialze(object obj) {
+			MemoryStream stream = new MemoryStream();
+			BinaryFormatter bf = new BinaryFormatter();
+			bf.Serialize(stream, obj);
+			byte[] newArray = new byte[stream.Length];
+			stream.Position = 0;
+			stream.Read(newArray, 0, (int)stream.Length);
+			stream.Close();
+			return newArray;
+		}
+
+		public Object ArrayDeserialize(byte[] array) {
+			MemoryStream stream = new MemoryStream(array);
+			BinaryFormatter bf = new BinaryFormatter();
+			Object obj = bf.Deserialize(stream);
+			stream.Close();
+			return obj;
+		}
+
+		private void button1_Click(object sender, RoutedEventArgs e) {
+			//debug
+			XmlSerializer ser = new XmlSerializer(typeof(AllGroup));
+			MemoryStream ms = new MemoryStream();
+			ser.Serialize(ms, allGroup);
+			string xmlString = Encoding.UTF8.GetString(ms.ToArray());
+			xmlString = xmlString.Replace("\"", "_Point_");
+			var insert = Regex.Split(xmlString, "\r\n", RegexOptions.IgnoreCase);
+			string str = string.Empty;
+			foreach (var v in insert) {
+				str = str + v + "\r\n";
+			}
+			MessageBox.Show(str);
+		}
 	}
 }

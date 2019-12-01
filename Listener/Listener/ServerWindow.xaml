@@ -42,6 +42,7 @@
             <TextBlock x:Name="textBlock1" Grid.Column="1" HorizontalAlignment="Left" Margin="60.2,80,0,0" TextWrapping="Wrap" Text="已添加群聊端口:" VerticalAlignment="Top" Height="43" Width="189"/>
             <CheckBox x:Name="checkBox" Content="用户信息自动同步至数据库" HorizontalAlignment="Left" Margin="116,159,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" IsChecked="True"/>
             <CheckBox x:Name="checkBox_Copy" Content="群聊消息自动同步至数据库" HorizontalAlignment="Left" Margin="116,179,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" IsChecked="True"/>
+            <Button x:Name="button1" Content="Button" HorizontalAlignment="Left" Margin="10,179,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
         </Grid>
     </DockPanel>
 </Window>
