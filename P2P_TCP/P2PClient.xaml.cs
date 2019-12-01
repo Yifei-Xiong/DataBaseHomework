@@ -728,50 +728,71 @@ namespace P2P_TCP {
 			}
 		}
 
-        private MySqlConnection connection;
+		private void MenuItem_Click_Sync1(object sender, RoutedEventArgs e) {
+			SQLDocker_friend = myFriendIPAndPorts;
+		} //同步联系人列表至数据库
+
+		private void MenuItem_Click_Sync2(object sender, RoutedEventArgs e) {
+			SQLDocker_chagmsg = allMsg;
+		} //同步消息记录至数据库
+
+		private void MenuItem_Click_Sync3(object sender, RoutedEventArgs e) {
+			myFriendIPAndPorts = SQLDocker_friend;
+		} //数据库2联系人列表
+
+		private void MenuItem_Click_Sync4(object sender, RoutedEventArgs e) {
+			allMsg = SQLDocker_chagmsg;
+		} //数据库2消息记录
+
+		private MySqlConnection connection;
+
         public void InitSQLDocker()
         {
             connection = new MySqlConnection("server=106.14.44.67;user=root;password=0000;database=clientdb1;");
             connection.Open();
         }
+
         public AllMsg SQLDocker_chagmsg
         {
             get
             {
-                if (connection == null || connection.State != System.Data.ConnectionState.Open)
-                    InitSQLDocker();
-                MySqlCommand sql = new MySqlCommand("SELECT * FROM chatmsg",connection);
-                MySqlDataReader reader = sql.ExecuteReader();
-                AllMsg result = new AllMsg();
-                while (reader.Read())
-                {
-                    Msg msg = new Msg();
-                    msg.MsgID = reader[0].ToString();
-                    msg.MsgTime = reader[1].ToString();
-                    msg.UserIP = reader[2].ToString();
-                    msg.UserPort = reader[3].ToString();
-                    msg.UserName = reader[4].ToString();
-                    msg.ChatMsg = reader[5].ToString();
-                    msg.IsGroup = reader[6].ToString();
-                    msg.OriginPort = reader[7].ToString();
-                    msg.Type = int.Parse(reader[8].ToString());
-                    result.Add(msg);
-                }
-                reader.Close();
-                return result;
+				if (UserID == "admin") {
+					if (connection == null || connection.State != System.Data.ConnectionState.Open)
+						InitSQLDocker();
+					MySqlCommand sql = new MySqlCommand("SELECT * FROM chatmsg", connection);
+					MySqlDataReader reader = sql.ExecuteReader();
+					AllMsg result = new AllMsg();
+					while (reader.Read()) {
+						Msg msg = new Msg();
+						msg.MsgID = reader[0].ToString();
+						msg.MsgTime = reader[1].ToString();
+						msg.UserIP = reader[2].ToString();
+						msg.UserPort = reader[3].ToString();
+						msg.UserName = reader[4].ToString();
+						msg.ChatMsg = reader[5].ToString();
+						msg.IsGroup = reader[6].ToString();
+						msg.OriginPort = reader[7].ToString();
+						msg.Type = int.Parse(reader[8].ToString());
+						result.Add(msg);
+					}
+					reader.Close();
+					return result;
+				}
+				else return this.allMsg;
             }
             set
             {
-                if (connection == null || connection.State != System.Data.ConnectionState.Open)
-                    InitSQLDocker();
-				var query = new MySqlCommand("DELETE FROM chatmsg",connection);
-				query.ExecuteNonQuery();
-				foreach (Msg msg in value)
-                {
-                    MySqlCommand sql = new MySqlCommand("INSERT INTO chatmsg(MsgID, MsgTime, UserIP, UserPort, UserName, ChagMsg, IsGRoup, OriginPort, Typ) "
-                        + "VALUES(\"" + msg.MsgID + "\", \"" + msg.MsgTime + "\", \"" + msg.UserIP + "\", \"" + msg.UserPort + "\", \"" + msg.UserName + "\", \"" + msg.ChatMsg + "\", \"" + msg.IsGroup + "\", \"" + msg.OriginPort + "\", \"" + msg.Type.ToString() + "\")", connection);
-                    sql.ExecuteNonQuery();
-                }
+				if (UserID == "admin") {
+					if (connection == null || connection.State != System.Data.ConnectionState.Open)
+						InitSQLDocker();
+					var query = new MySqlCommand("DELETE FROM chatmsg", connection);
+					query.ExecuteNonQuery();
+					foreach (Msg msg in value) {
+						MySqlCommand sql = new MySqlCommand("INSERT INTO chatmsg(MsgID, MsgTime, UserIP, UserPort, UserName, ChagMsg, IsGRoup, OriginPort, Typ) "
+							+ "VALUES(\"" + msg.MsgID + "\", \"" + msg.MsgTime + "\", \"" + msg.UserIP + "\", \"" + msg.UserPort + "\", \"" + msg.UserName + "\", \"" + msg.ChatMsg + "\", \"" + msg.IsGroup + "\", \"" + msg.OriginPort + "\", \"" + msg.Type.ToString() + "\")", connection);
+						sql.ExecuteNonQuery();
+					}
+				}
             }
         }
 
@@ -779,53 +800,41 @@ namespace P2P_TCP {
         {
             get
             {
-                if (connection == null || connection.State != System.Data.ConnectionState.Open)
-                    InitSQLDocker();
-                MySqlCommand sql = new MySqlCommand("SELECT * FROM friend", connection);
-                MySqlDataReader reader = sql.ExecuteReader();
-                FriendIPAndPorts result = new FriendIPAndPorts();
-                while (reader.Read())
-                {
-                    FriendIPAndPort friend = new FriendIPAndPort();
-                    friend.friendIP = reader[0].ToString();
-                    friend.friendPort = reader[1].ToString();
-                    friend.friendID = reader[2].ToString();
-                    friend.Type = int.Parse(reader[3].ToString());
-                    friend.IsGroup = reader[4].ToString();
-                    result.Add(friend);
-                }
-                reader.Close();
-                return result;
+				if (UserID == "admin") {
+					if (connection == null || connection.State != System.Data.ConnectionState.Open)
+						InitSQLDocker();
+					MySqlCommand sql = new MySqlCommand("SELECT * FROM friend", connection);
+					MySqlDataReader reader = sql.ExecuteReader();
+					FriendIPAndPorts result = new FriendIPAndPorts();
+					while (reader.Read()) {
+						FriendIPAndPort friend = new FriendIPAndPort();
+						friend.friendIP = reader[0].ToString();
+						friend.friendPort = reader[1].ToString();
+						friend.friendID = reader[2].ToString();
+						friend.Type = int.Parse(reader[3].ToString());
+						friend.IsGroup = reader[4].ToString();
+						result.Add(friend);
+					}
+					reader.Close();
+					return result;
+				}
+				else return this.myFriendIPAndPorts;
             }
             set
             {
-                if (connection == null || connection.State != System.Data.ConnectionState.Open)
-                    InitSQLDocker();
-                var query = new MySqlCommand("DELETE FROM friend", connection);
-                query.ExecuteNonQuery();
-                foreach (FriendIPAndPort friend in value)
-                {
-                    MySqlCommand sql = new MySqlCommand("INSERT INTO friend(friendIP, friendPort, friendID, Typ, IsGroup) "
-                        + "VALUES(\"" + friend.friendIP + "\", \"" + friend.friendPort + "\", \"" + friend.friendID + "\", \"" + friend.Type + "\", \"" + friend.IsGroup + "\")", connection);
-                    sql.ExecuteNonQuery();
-                }
+				if (UserID == "admin") {
+					if (connection == null || connection.State != System.Data.ConnectionState.Open)
+						InitSQLDocker();
+					var query = new MySqlCommand("DELETE FROM friend", connection);
+					query.ExecuteNonQuery();
+					foreach (FriendIPAndPort friend in value) {
+						MySqlCommand sql = new MySqlCommand("INSERT INTO friend(friendIP, friendPort, friendID, Typ, IsGroup) "
+							+ "VALUES(\"" + friend.friendIP + "\", \"" + friend.friendPort + "\", \"" + friend.friendID + "\", \"" + friend.Type + "\", \"" + friend.IsGroup + "\")", connection);
+						sql.ExecuteNonQuery();
+					}
+				}
             }
         }
 
-		private void MenuItem_Click_Sync1(object sender, RoutedEventArgs e) {
-
-		} //同步联系人列表至数据库
-
-		private void MenuItem_Click_Sync2(object sender, RoutedEventArgs e) {
-            SQLDocker_chagmsg = allMsg;
-		} //同步消息记录至数据库
-
-		private void MenuItem_Click_Sync3(object sender, RoutedEventArgs e) {
-
-		} //数据库2联系人列表
-
-		private void MenuItem_Click_Sync4(object sender, RoutedEventArgs e) {
-			allMsg = SQLDocker_chagmsg;
-		} //数据库2消息记录
 	}
 }

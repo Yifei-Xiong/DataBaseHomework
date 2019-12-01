@@ -24,6 +24,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using MySql.Data.MySqlClient;
 
 namespace Listener {
 	/// <summary>
@@ -705,51 +706,113 @@ namespace Listener {
 			//SQLDocker = allGroup;
 		} //查询群组信息
 
-		private void MenuItem_Click_Sync1(object sender, RoutedEventArgs e) {
-
-		}
-
 		private void MenuItem_Click_4(object sender, RoutedEventArgs e) {
 			SearchUserInGroup searchUserInGroup = new SearchUserInGroup(allGroup);
 			searchUserInGroup.ShowDialog();
 		} //查询群组的用户
 
-		private void MenuItem_Click_Sync2(object sender, RoutedEventArgs e) {
+		private void MenuItem_Click_Sync1(object sender, RoutedEventArgs e) {
+			SQLDocker_user = allUser;
+		} //同步用户信息至数据库
 
-		}
+		private void MenuItem_Click_Sync2(object sender, RoutedEventArgs e) {
+			SQLDocker_group = allGroup;
+		} //同步群组信息至数据库
 
 		private void MenuItem_Click_Sync3(object sender, RoutedEventArgs e) {
-
-		}
+			allUser = SQLDocker_user;
+		} //同步数据库至用户信息
 
 		private void MenuItem_Click_Sync4(object sender, RoutedEventArgs e) {
-
+			allGroup = SQLDocker_group;
 		}
 
-        GroupMsg SQLDocker_groupmsg
+		private MySqlConnection connection;
+
+		public void InitSQLDocker() {
+			connection = new MySqlConnection("server=106.14.44.67;user=root;password=0000;database=clientdb1;");
+			connection.Open();
+		}
+
+		AllGroup SQLDocker_group
         {
-           // get
-            //{
+			get
+			{
+				if (connection == null || connection.State != System.Data.ConnectionState.Open)
+					InitSQLDocker();
+				MySqlCommand sql = new MySqlCommand("SELECT * FROM allgroup", connection);
+				MySqlDataReader reader = sql.ExecuteReader();
+				AllGroup result = new AllGroup();
+				while (reader.Read()) {
+					using (MemoryStream ms = new MemoryStream(Serialize(reader[0]))) {
+						IFormatter formatter = new BinaryFormatter();
+						result = formatter.Deserialize(ms) as AllGroup;
+					}
+				}
+				reader.Close();
+				return result;
+			}
+			set
+			{
+				if (connection == null || connection.State != System.Data.ConnectionState.Open)
+					InitSQLDocker();
+				var query = new MySqlCommand("DELETE FROM allgroup", connection);
+				query.ExecuteNonQuery();
+				MySqlCommand sql = new MySqlCommand("INSERT INTO allgroup(GroupInfo) " + "VALUES(\"" + Serialize(allGroup) + "\")", connection);
+				sql.ExecuteNonQuery();
 
-            //}
-            set
-            {
+			}
+		}
 
-            }
-        }
-
-        GroupUser SQLDocker_groupuser
+        AllUser SQLDocker_user
         {
-            //get
-            //{
+			get
+			{
+				if (connection == null || connection.State != System.Data.ConnectionState.Open)
+					InitSQLDocker();
+				MySqlCommand sql = new MySqlCommand("SELECT * FROM alluser", connection);
+				MySqlDataReader reader = sql.ExecuteReader();
+				AllUser result = new AllUser();
+				while (reader.Read()) {
+					UserPw up = new UserPw();
+					up.UserID = reader[0].ToString();
+					up.Password = reader[1].ToString();
+					up.Online = reader[2].ToString();
+					up.LogInTime = reader[3].ToString();
+					up.LogInIP = reader[4].ToString();
+					up.LogInPort = reader[5].ToString();
+					result.Add(up);
+				}
+				reader.Close();
+				return result;
+			}
+			set
+			{
+				if (connection == null || connection.State != System.Data.ConnectionState.Open)
+					InitSQLDocker();
+				var query = new MySqlCommand("DELETE FROM alluser", connection);
+				query.ExecuteNonQuery();
+				foreach (UserPw up in value) {
+					MySqlCommand sql = new MySqlCommand("INSERT INTO alluser(UserID,Password,Online,LogInTime,LogInIP,LogInPort) "
+						+ "VALUES(\"" + up.UserID + "\", \"" + up.Password + "\", \"" + up.Online + "\", \"" + up.LogInTime + "\", \"" + up.LogInIP + "\", \"" + up.LogInPort + "\")", connection);
+					sql.ExecuteNonQuery();
+				}
+			}
+		}
 
-            //}
-            set
-            {
+		public static byte[] Serialize(object data) {
+			BinaryFormatter formatter = new BinaryFormatter();
+			MemoryStream rems = new MemoryStream();
+			formatter.Serialize(rems, data);
+			return rems.GetBuffer();
+		} //序列化
 
-            }
-        }
+		public static object Deserialize(byte[] data) {
+			BinaryFormatter formatter = new BinaryFormatter();
+			MemoryStream rems = new MemoryStream(data);
+			data = null;
+			return formatter.Deserialize(rems);
+		} //反序列化
 
-		
 	}
 }

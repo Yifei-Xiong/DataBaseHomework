@@ -19,10 +19,10 @@
                 <MenuItem Header="查询群组聊天" HorizontalAlignment="Left" Click="MenuItem_Click_3"/>
             </MenuItem>
             <MenuItem Header="同步(_S)" InputGestureText="Ctrl+S" Name="MenuItem_Sync" >
-                <MenuItem Header="同步用户信息列表至数据库" HorizontalAlignment="Left" Click="MenuItem_Click_Sync1" />
-                <MenuItem Header="同步群聊消息列表至数据库" HorizontalAlignment="Left" Click="MenuItem_Click_Sync2" />
-                <MenuItem Header="同步数据库至用户信息列表" HorizontalAlignment="Left" Click="MenuItem_Click_Sync3" />
-                <MenuItem Header="同步数据库至群聊消息列表" HorizontalAlignment="Left" Click="MenuItem_Click_Sync4" />
+                <MenuItem Header="同步用户信息至数据库" HorizontalAlignment="Left" Click="MenuItem_Click_Sync1" />
+                <MenuItem Header="同步群组信息至数据库" HorizontalAlignment="Left" Click="MenuItem_Click_Sync2" />
+                <MenuItem Header="同步数据库至用户信息" HorizontalAlignment="Left" Click="MenuItem_Click_Sync3" />
+                <MenuItem Header="同步数据库至群组信息" HorizontalAlignment="Left" Click="MenuItem_Click_Sync4" />
             </MenuItem>
             <MenuItem Header="关于(_A)" InputGestureText="Ctrl+A" Name="MenuItem_About" Click="MenuItem_About_Click"  />
         </Menu>
