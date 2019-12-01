@@ -166,8 +166,8 @@ namespace Listener {
 			int i;
 			for(i=0; i<allGroup.Count; i++) {
 				if (allGroup[i].GroupPort==(int)comboBox.SelectedItem) {
-					MsgList.ItemsSource = allGroup[i].groupMsg;
 					currentGroupMsg = allGroup[i].groupMsg;
+					MsgList.ItemsSource = currentGroupMsg;
 					break;
 				}
 			}

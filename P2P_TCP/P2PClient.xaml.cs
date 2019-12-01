@@ -325,7 +325,15 @@ namespace P2P_TCP {
 					msg2.ChatMsg = chatData2.Message;
 					msg2.IsGroup = "群组聊天";
 					msg2.Type = chatData.MessageType;
-					this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetMsg(SetMsgViewSource), msg2);
+					int j;
+					for (j=0;j<allMsg.Count; j++) {
+						if (allMsg[j].UserName == msg2.UserName) {
+							break;
+						}
+					}
+					if (j== allMsg.Count) {
+						this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetMsg(SetMsgViewSource), msg2);
+					}
 					//allMsg.Add(msg2);
 					break;
 				case 7: //文件传输数据包

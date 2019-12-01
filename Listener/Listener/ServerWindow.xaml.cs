@@ -94,63 +94,76 @@ namespace Listener {
 		ArrayList AllGroupPort;
 		private delegate void SetGroupMsg(MessageInfo arg, int port);
 		private delegate void SetGroupUser(UserInfo arg, int port);
-		private delegate void SetGroupUser2(UserInfo arg, int port); //modify
+		private delegate void SetGroupUser2(string arg, int port); //modify
 		private delegate void SetAllGroup(GroupInfo arg);
 		private delegate void SetUser(UserPw arg);
 		private void SetGroupMsgSource(MessageInfo arg, int port) {
 			int i;
-			for(i=0; i< allGroup.Count; i++) {
+			GroupInfo gp;
+			for (i=0; i< allGroup.Count; i++) {
 				if (allGroup[i].GroupPort == port) {
+					gp = allGroup[i];
+					gp.groupMsg.Add(arg);
 					break;
 				}
 			}
 			if (i== allGroup.Count) {
 				MessageBox.Show("异步消息修改错误!");
 			}
-			else {
-				allGroup[i].groupMsg.Add(arg);
-			}
 		}
 		private void SetGroupUserSource(UserInfo arg, int port) {
 			int i;
+			GroupInfo gp;
 			for (i = 0; i < allGroup.Count; i++) {
 				if (allGroup[i].GroupPort == port) {
+					gp = allGroup[i];
+					if (gp.groupUser.IndexOf(arg)==-1) {
+						gp.groupUser.Add(arg);
+					}
+					else {
+						gp.groupUser.Remove(arg);
+						arg.LastMsgTime = DateTime.Now.ToString();
+						arg.MsgTimes++;
+						gp.groupUser.Add(arg);
+					}
 					break;
 				}
 			}
 			if (i == allGroup.Count) {
 				MessageBox.Show("异步用户修改错误!");
-			}
-			else {
-				allGroup[i].groupUser.Add(arg);
 			}
 		}
 
-		private void SetGroupUserSource2(UserInfo arg, int port) {
+		private void SetGroupUserSource2(string arg, int port) {
 			int i;
+			GroupInfo gp;
 			for (i = 0; i < allGroup.Count; i++) {
 				if (allGroup[i].GroupPort == port) {
+					gp = allGroup[i];
+					int j;
+					for (j = 0; j < gp.groupUser.Count; i++) {
+						if (gp.groupUser[j].UserID == arg) {
+							var vr = new UserInfo();
+							//var vr = allGroup[i].groupUser[j];
+							vr.LastMsgTime = DateTime.Now.ToString();
+							vr.MsgTimes = gp.groupUser[j].MsgTimes+1;
+							vr.UserID = gp.groupUser[j].UserID;
+							vr.UserIP = gp.groupUser[j].UserIP;
+							vr.UserPort = gp.groupUser[j].UserPort;
+							gp.groupUser.RemoveAt(j);
+							//allGroup[i].groupUser[j] = vr;////
+							gp.groupUser.Add(vr);
+							return;
+						}
+					}
+					if (j == allGroup.Count) {
+						MessageBox.Show("异步用户修改查询错误!");
+					}
 					break;
 				}
 			}
 			if (i == allGroup.Count) {
 				MessageBox.Show("异步用户修改错误!");
-			}
-			else {
-				var se = allGroup[i].groupUser;
-				int j;
-				for (j = 0; j < allGroup[i].groupUser.Count; i++) {
-					if (allGroup[i].groupUser[j].UserID == arg.UserID) {
-						break;
-					}
-				}
-				if (j == allGroup.Count) {
-					MessageBox.Show("异步用户修改查询错误!");
-				}
-				var vr = allGroup[i].groupUser[j];
-				vr.LastMsgTime = DateTime.Now.ToString();
-				vr.MsgTimes++;
-				allGroup[i].groupUser[j] = vr;////
 			}
 		}
 
@@ -541,7 +554,13 @@ namespace Listener {
 			var nowEnterPort = 0;
 			bool canTurnPortToInt = int.TryParse(nowTextBoxText, out nowEnterPort);
 			var myListener = new TcpListener(ip, nowEnterPort);//创建TcpListener实例
-			myListener.Start(); //start
+			try {
+				myListener.Start(); //start
+			}
+			catch {
+				MessageBox.Show("无法在该端口建立群组，该端口已被占用");
+				return;
+			}
 			var newClient = new TcpClient();
 			//var group = new ArrayList();
 			GroupInfo groupInfo = new GroupInfo();
@@ -581,6 +600,7 @@ namespace Listener {
 							StateObject stateObject;
 							for (int j = 0; j < groupInfo.groupUser.Count; ++j) {
 								if (i == j) {
+									this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetGroupUser(SetGroupUserSource), t, nowEnterPort);
 									continue;
 								}  //找到发送者
 								   //var send = (GroupUserStruct)group[j];
@@ -597,12 +617,10 @@ namespace Listener {
 								//string[] SplitStr = send.IP.Split(':');
 								tcpClient.BeginConnect(send.UserIP, int.Parse(send.UserPort), new AsyncCallback(SentCallBackF), stateObject); //异步连接
 							}
-							var se = groupInfo.groupUser[i];
 							//se.LastMsgTime = DateTime.Now.ToString();
 							//se.MsgTimes++;
 							isNewUser = false;
 							//groupInfo.groupUser[i] = se;////
-							this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetGroupUser2(SetGroupUserSource2), se, nowEnterPort);
 							break;
 						}
 					}
