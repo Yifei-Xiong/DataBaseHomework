@@ -79,7 +79,8 @@ namespace Listener {
 		public class AllUser : ObservableCollection<UserPw> { }
 		public class GroupMsg : ObservableCollection<MessageInfo> { } //定义一个群组的聊天数据集合 
 		public class GroupUser : ObservableCollection<UserInfo> { } //定义一个群组的成员集合 
-		public class GroupInfo {
+        [Serializable]
+        public class GroupInfo {
 			public GroupInfo() {
 				this.groupMsg = new GroupMsg();
 				this.groupUser = new GroupUser();
@@ -88,7 +89,8 @@ namespace Listener {
 			public GroupUser groupUser { get; set; }
 			public int GroupPort { get; set; }
 		}
-		public class AllGroup : ObservableCollection<GroupInfo> { } //定义所有群组的集合 
+        [Serializable]
+        public class AllGroup : ObservableCollection<GroupInfo> { } //定义所有群组的集合 
 		AllUser allUser;
 		AllGroup allGroup;
 		ArrayList AllGroupPort;
@@ -748,7 +750,7 @@ namespace Listener {
 		private MySqlConnection connection;
 
 		public void InitSQLDocker() {
-			connection = new MySqlConnection("server=106.14.44.67;user=root;password=0000;database=clientdb1;");
+			connection = new MySqlConnection("server=106.14.44.67;user=root;password=0000;database=serverdb1;");
 			connection.Open();
 		}
 
@@ -811,7 +813,7 @@ namespace Listener {
 				var query = new MySqlCommand("DELETE FROM alluser", connection);
 				query.ExecuteNonQuery();
 				foreach (UserPw up in value) {
-					MySqlCommand sql = new MySqlCommand("INSERT INTO alluser(UserID,Password,Online,LogInTime,LogInIP,LogInPort) "
+					MySqlCommand sql = new MySqlCommand("INSERT INTO alluser(UserID,Pwd,Ol,LogInTime,LogInIP,LogInPort) "
 						+ "VALUES(\"" + up.UserID + "\", \"" + up.Password + "\", \"" + up.Online + "\", \"" + up.LogInTime + "\", \"" + up.LogInIP + "\", \"" + up.LogInPort + "\")", connection);
 					sql.ExecuteNonQuery();
 				}
