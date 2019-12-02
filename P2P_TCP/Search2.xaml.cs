@@ -114,7 +114,7 @@ namespace P2P_TCP {
                 SearchMsg.Add(allMsg[i]);
             } //Copy
 
-			if (checkBox2.IsChecked == true) {
+			if (checkBox2.IsChecked == false) {
 				if (textBox_Copy.Text != string.Empty) {
 					for (int i = 0; i < SearchMsg.Count; i++) {
 						if (SearchMsg[i].MsgID.IndexOf(textBox_Copy.Text) == -1) {

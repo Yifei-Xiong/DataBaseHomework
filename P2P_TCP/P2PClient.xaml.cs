@@ -492,6 +492,9 @@ namespace P2P_TCP {
 					FriendListBox.Items.Add(message);
 				}
 			}
+			if (checkBox.IsChecked == true) {
+				SQLDocker_friend = myFriendIPAndPorts;
+			}
 		}
 
 		private void ContactsDataSync(FriendIPAndPorts myFriendIPAndPorts) {
@@ -528,7 +531,7 @@ namespace P2P_TCP {
 				friendIPAndPort.friendPort = addFriendPortTextBox.Text; //端口字符串
 				friendIPAndPort = GetContact(friendIPAndPort);
 				if (!(myFriendPort >= 37529 && myFriendPort <= 37559)) {
-					myFriendIPAndPorts.Add(friendIPAndPort);
+					this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new SetList(SetListViewSource), friendIPAndPort);
 					msg = UserID + "加入了群聊";
 				} //group
 				TcpClient tcpClient;
@@ -559,6 +562,9 @@ namespace P2P_TCP {
 			}
 			for (int i = 0; i < myIPAndPorts.Length; i++) {
 				myFriendIPAndPorts.Remove(myIPAndPorts[i]);
+			}
+			if (checkBox.IsChecked == true) {
+				SQLDocker_friend = myFriendIPAndPorts;
 			}
 		} //删除选中联系人
 
@@ -629,7 +635,11 @@ namespace P2P_TCP {
 							int k = myFriendIPAndPorts.IndexOf(friendIPAndPort);
 							if (k == -1) {
 								myFriendIPAndPorts.Add(friendIPAndPort); //增加此好友
+
 							}
+						}
+						if (checkBox.IsChecked == true) {
+							SQLDocker_friend = myFriendIPAndPorts;
 						}
 					}
 				}
