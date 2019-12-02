@@ -367,7 +367,8 @@ namespace P2P_TCP {
 			//friendIPAndPort.friendPort = s.Substring(i1 + 1, i2 - i1 - 2); //提取端口字符串
 			int i;
 			for (i = 0; i < myFriendIPAndPorts.Count; i++) {
-				if (friendIPAndPort.friendPort == myFriendIPAndPorts[i].friendPort && friendIPAndPort.friendIP == myFriendIPAndPorts[i].friendIP) {
+				if (friendIPAndPort.friendPort == myFriendIPAndPorts[i].friendPort && friendIPAndPort.friendIP == myFriendIPAndPorts[i].friendIP || 
+					friendIPAndPort.friendPort == myFriendIPAndPorts[i].friendID && friendIPAndPort.friendIP == myFriendIPAndPorts[i].friendIP) {
 					break;
 				}
 			}
@@ -425,6 +426,9 @@ namespace P2P_TCP {
 
 		private void SetListViewSource(FriendIPAndPort arg) {
 			myFriendIPAndPorts.Add(arg);
+			if (checkBox.IsChecked == true) {
+				SQLDocker_friend = myFriendIPAndPorts;
+			}
 		} //修改FriendListView的方法
 
 		private void SetMsgViewSource(Msg msg) {
@@ -432,7 +436,6 @@ namespace P2P_TCP {
 			if (checkBox_Copy.IsChecked == true) {
 				SQLDocker_chagmsg = allMsg;
 			}
-
 		} //修改allMsg的方法
 
 		private void ChatDataSync(AllMsg allmsg) {
@@ -746,10 +749,12 @@ namespace P2P_TCP {
 
 		private void MenuItem_Click_Sync3(object sender, RoutedEventArgs e) {
 			myFriendIPAndPorts = SQLDocker_friend;
+			FriendListView.ItemsSource = myFriendIPAndPorts;
 		} //数据库2联系人列表
 
 		private void MenuItem_Click_Sync4(object sender, RoutedEventArgs e) {
 			allMsg = SQLDocker_chagmsg;
+			ChatDataSync(allMsg);
 		} //数据库2消息记录
 
 		private MySqlConnection connection;
