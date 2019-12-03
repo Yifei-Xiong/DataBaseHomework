@@ -177,7 +177,7 @@ namespace P2P_TCP {
 				MessageBox.Show("与服务器连接失败！");
 			}
 			if (msg == "登录成功") {
-				P2PClient client = new P2PClient(textBox_id.Text, tcpListener, MyPort, textBox_ip.Text.Split(':')[1]); //传入用户名&登录端口
+				P2PClient client = new P2PClient(textBox_id.Text, tcpListener, MyPort, textBox_ip.Text.Split(':')[1],passwordBox_Copy.Password); //传入用户名&登录端口
 				client.Show();
 				Close();
 			}

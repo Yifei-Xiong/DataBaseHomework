@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Listener"
         mc:Ignorable="d"
-        Title="服务端登陆 - IM by 熊逸飞 &amp; 程子齐 &amp; 刘雨乔" Height="276.568" Width="430.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="服务端登陆 - IM by 熊逸飞 &amp; 程子齐 &amp; 刘雨乔" Height="318.474" Width="430.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <DockPanel  LastChildFill="True">
         <Menu x:Name="menu" VerticalAlignment="Center"  DockPanel.Dock="Top" >
             <MenuItem Header="文件(_F)" InputGestureText="Ctrl+F" Name="MenuItem_File" >
@@ -31,7 +31,7 @@
                 <ColumnDefinition Width="137*"/>
                 <ColumnDefinition Width="244*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="38,199,0,0" TextWrapping="Wrap" Text="本机IP地址:" VerticalAlignment="Top" Width="323" TextAlignment="Center" Grid.ColumnSpan="2"/>
+            <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="39,239,0,0" TextWrapping="Wrap" Text="本机IP地址:" VerticalAlignment="Top" Width="323" TextAlignment="Center" Grid.ColumnSpan="2"/>
             <Button x:Name="button_StartServer" Content="运行" HorizontalAlignment="Left" Margin="53,128,0,0" VerticalAlignment="Top" Width="75" Click="button_StartServer_Click" />
             <!--<Button x:Name="button_StopServer" Content="关闭" HorizontalAlignment="Left" Margin="216,146,0,0" VerticalAlignment="Top" Width="75" Click="button_StopServer_Click" />-->
             <TextBlock x:Name="port" HorizontalAlignment="Left" Margin="17,51,0,0" TextWrapping="Wrap" Text="请输入用于用户登录的端口号(1024-65535)：" VerticalAlignment="Top" Width="89"/>
@@ -40,9 +40,12 @@
             <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="144.2,51,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86" Grid.Column="1"/>
             <Button x:Name="button" Content="添加群聊" HorizontalAlignment="Left" Margin="125.2,128,0,0" VerticalAlignment="Top" Width="75" Click="button_Click" Grid.Column="1"/>
             <TextBlock x:Name="textBlock1" Grid.Column="1" HorizontalAlignment="Left" Margin="60.2,80,0,0" TextWrapping="Wrap" Text="已添加群聊端口:" VerticalAlignment="Top" Height="43" Width="189"/>
-            <CheckBox x:Name="checkBox" Content="用户信息自动同步至数据库" HorizontalAlignment="Left" Margin="116,159,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-            <CheckBox x:Name="checkBox_Copy" Content="群聊消息自动同步至数据库" HorizontalAlignment="Left" Margin="116,179,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+            <CheckBox x:Name="checkBox" Content="用户信息自动同步至数据库" HorizontalAlignment="Left" Margin="120,163,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+            <CheckBox x:Name="checkBox_Copy" Content="群聊消息自动同步至数据库" HorizontalAlignment="Left" Margin="120,187,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
             <Button x:Name="button1" Content="Button" HorizontalAlignment="Left" Margin="10,179,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click" Visibility="Hidden"/>
+            <TextBlock x:Name="textBlock_ip_Copy" HorizontalAlignment="Left" Margin="53,212,0,0" TextWrapping="Wrap" Text="数据库密码(选填)" VerticalAlignment="Top" FontSize="14" Grid.ColumnSpan="2"/>
+            <PasswordBox x:Name="passwordBox_Copy" HorizontalAlignment="Left" Height="23" Margin="12.2,210,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" Grid.Column="1"/>
+            <Button x:Name="button2" Content="写入" Grid.Column="1" HorizontalAlignment="Left" Margin="144.2,212,0,0" VerticalAlignment="Top" Width="75" Click="button2_Click"/>
         </Grid>
     </DockPanel>
 </Window>

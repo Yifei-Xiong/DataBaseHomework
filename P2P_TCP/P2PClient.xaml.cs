@@ -31,7 +31,7 @@ namespace P2P_TCP {
 	/// P2PClient.xaml 的交互逻辑
 	/// </summary>
 	public partial class P2PClient : Window {
-		public P2PClient(string ID, TcpListener tcpListener,int MyPort,string LoginPort) {
+		public P2PClient(string ID, TcpListener tcpListener,int MyPort,string LoginPort,string dbpw) {
 			InitializeComponent();
 			//myIPAddress = (IPAddress)Dns.GetHostAddresses(Dns.GetHostName()).GetValue(0);
 			myIPAddress = IPAddress.Parse("127.0.0.1");
@@ -66,6 +66,7 @@ namespace P2P_TCP {
 			if (ID=="admin") {
 				MenuItem_Ex.Visibility = System.Windows.Visibility.Visible; //显示查询
 			} //管理员
+			this.dbpw = dbpw; //数据库key
 		}
 
 		string UserID; //用户ID
@@ -76,6 +77,7 @@ namespace P2P_TCP {
 		string IPAndPort; //记录本地IP和端口号
 		AllGroup allGroup = new AllGroup();
 		AllUser allUser = new AllUser();
+		string dbpw; //数据库访问密钥
 
 		public class StateObject {
 			public TcpClient tcpClient = null;
@@ -779,9 +781,14 @@ namespace P2P_TCP {
 
         public void InitSQLDocker()
         {
-            connection = new MySqlConnection("server=106.14.44.67;user=root;password=0000;database=clientdb1;");
-            connection.Open();
-        }
+            connection = new MySqlConnection("server=106.14.44.67;user=root;password="+dbpw+";database=clientdb1;");
+			try {
+				connection.Open();
+			}
+			catch {
+				MessageBox.Show("与远程数据库的通讯失败！");
+			}
+		}
 
         public AllMsg SQLDocker_chagmsg
         {
@@ -790,6 +797,8 @@ namespace P2P_TCP {
 				if (UserID == "admin") {
 					if (connection == null || connection.State != System.Data.ConnectionState.Open)
 						InitSQLDocker();
+					if (connection == null || connection.State != System.Data.ConnectionState.Open)
+						return this.allMsg;
 					MySqlCommand sql = new MySqlCommand("SELECT * FROM chatmsg", connection);
 					MySqlDataReader reader = sql.ExecuteReader();
 					AllMsg result = new AllMsg();
@@ -816,6 +825,8 @@ namespace P2P_TCP {
 				if (UserID == "admin") {
 					if (connection == null || connection.State != System.Data.ConnectionState.Open)
 						InitSQLDocker();
+					if (connection == null || connection.State != System.Data.ConnectionState.Open)
+						return;
 					var query = new MySqlCommand("DELETE FROM chatmsg", connection);
 					query.ExecuteNonQuery();
 					foreach (Msg msg in value) {
@@ -834,6 +845,8 @@ namespace P2P_TCP {
 				if (UserID == "admin") {
 					if (connection == null || connection.State != System.Data.ConnectionState.Open)
 						InitSQLDocker();
+					if (connection == null || connection.State != System.Data.ConnectionState.Open)
+						return this.myFriendIPAndPorts;
 					MySqlCommand sql = new MySqlCommand("SELECT * FROM friend", connection);
 					MySqlDataReader reader = sql.ExecuteReader();
 					FriendIPAndPorts result = new FriendIPAndPorts();
@@ -856,6 +869,8 @@ namespace P2P_TCP {
 				if (UserID == "admin") {
 					if (connection == null || connection.State != System.Data.ConnectionState.Open)
 						InitSQLDocker();
+					if (connection == null || connection.State != System.Data.ConnectionState.Open)
+						return;
 					var query = new MySqlCommand("DELETE FROM friend", connection);
 					query.ExecuteNonQuery();
 					foreach (FriendIPAndPort friend in value) {
@@ -891,8 +906,13 @@ namespace P2P_TCP {
 		private MySqlConnection connection1;
 
 		public void InitSQLDocker1() {
-			connection1 = new MySqlConnection("server=106.14.44.67;user=root;password=0000;database=serverdb1;");
-			connection1.Open();
+			connection1 = new MySqlConnection("server=106.14.44.67;user=root;password="+ dbpw+";database=serverdb1;");
+			try {
+				connection1.Open();
+			}
+			catch {
+				MessageBox.Show("与远程数据库的通讯失败！");
+			}
 		}
 
 		AllGroup SQLDocker_group1
@@ -901,6 +921,8 @@ namespace P2P_TCP {
 			{
 				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
 					InitSQLDocker1();
+				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
+					return new AllGroup();
 				MySqlCommand sql1 = new MySqlCommand("SELECT * FROM allgroup", connection1);
 				MySqlDataReader reader = sql1.ExecuteReader();
 				AllGroup result = new AllGroup();
@@ -919,6 +941,8 @@ namespace P2P_TCP {
 			{
 				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
 					InitSQLDocker1();
+				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
+					return;
 				XmlSerializer ser = new XmlSerializer(typeof(AllGroup));
 				MemoryStream ms = new MemoryStream();
 				ser.Serialize(ms, allGroup);
@@ -944,6 +968,8 @@ namespace P2P_TCP {
 			{
 				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
 					InitSQLDocker1();
+				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
+					return new AllUser();
 				MySqlCommand sql = new MySqlCommand("SELECT * FROM alluser", connection1);
 				MySqlDataReader reader = sql.ExecuteReader();
 				AllUser result = new AllUser();
@@ -964,6 +990,8 @@ namespace P2P_TCP {
 			{
 				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
 					InitSQLDocker1();
+				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
+					return;
 				var query = new MySqlCommand("DELETE FROM alluser", connection1);
 				query.ExecuteNonQuery();
 				foreach (UserPw up in value) {
@@ -974,5 +1002,9 @@ namespace P2P_TCP {
 			}
 		}
 
+		private void button2_Click(object sender, RoutedEventArgs e) {
+			this.dbpw = passwordBox_Copy.Password;
+			passwordBox_Copy.Clear();
+		}
 	}
 }

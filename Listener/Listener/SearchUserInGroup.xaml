@@ -12,9 +12,9 @@
                 <GridView>
                     <GridViewColumn Header="用户IP" Width="90" DisplayMemberBinding="{Binding UserIP}"/>
                     <GridViewColumn Header="用户端口" Width="70" DisplayMemberBinding="{Binding UserPort}"/>
-                    <GridViewColumn Header="用户昵称" Width="110" DisplayMemberBinding="{Binding UserID}"/>
-                    <GridViewColumn Header="发言次数" Width="70" DisplayMemberBinding="{Binding MsgTimes}"/>
-                    <GridViewColumn Header="最后活跃时间" Width="150" DisplayMemberBinding="{Binding LastMsgTime}"/>
+                    <GridViewColumn Header="用户昵称" Width="85" DisplayMemberBinding="{Binding UserID}"/>
+                    <GridViewColumn Header="发言次数" Width="60" DisplayMemberBinding="{Binding MsgTimes}"/>
+                    <GridViewColumn Header="最后活跃时间" Width="195" DisplayMemberBinding="{Binding LastMsgTime}"/>
                 </GridView>
             </ListView.View>
         </ListView>

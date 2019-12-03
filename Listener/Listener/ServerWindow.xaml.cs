@@ -99,6 +99,7 @@ namespace Listener {
 		AllUser allUser;
 		AllGroup allGroup;
 		ArrayList AllGroupPort;
+		string dbpw;
 		private delegate void SetGroupMsg(MessageInfo arg, int port);
 		private delegate void SetGroupUser(UserInfo arg, int port);
 		private delegate void SetGroupUser2(string arg, int port); //modify
@@ -229,6 +230,7 @@ namespace Listener {
 			}
 			allGroup = new AllGroup();
 			AllGroupPort = new ArrayList();
+			this.dbpw = string.Empty;
 		}
 
 		~ServerWindow() {
@@ -767,8 +769,13 @@ namespace Listener {
 		private MySqlConnection connection;
 
 		public void InitSQLDocker() {
-			connection = new MySqlConnection("server=106.14.44.67;user=root;password=0000;database=serverdb1;");
-			connection.Open();
+			connection = new MySqlConnection("server=106.14.44.67;user=root;password="+dbpw+";database=serverdb1;");
+			try {
+				connection.Open();
+			}
+			catch {
+				MessageBox.Show("与远程数据库的通讯失败！");
+			}
 		}
 
 		AllGroup SQLDocker_group
@@ -896,6 +903,11 @@ namespace Listener {
 				str = str + v + "\r\n";
 			}
 			MessageBox.Show(str);
+		}
+
+		private void button2_Click(object sender, RoutedEventArgs e) {
+			this.dbpw = passwordBox_Copy.Password;
+			passwordBox_Copy.Clear();
 		}
 	}
 }

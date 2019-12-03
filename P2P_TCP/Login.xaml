@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:P2P_TCP"
         mc:Ignorable="d"
-        Title="客户端登陆 - IM by 熊逸飞 &amp; 程子齐 &amp; 刘雨乔" Height="233.041" Width="386.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="客户端登陆 - IM by 熊逸飞 &amp; 程子齐 &amp; 刘雨乔" Height="256.777" Width="386.8" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <TextBox x:Name="textBox_id" HorizontalAlignment="Left" Height="23" Margin="196,28,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
         <PasswordBox x:Name="passwordBox" HorizontalAlignment="Left" Height="23" Margin="196,64,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
@@ -13,8 +13,10 @@
         <TextBlock x:Name="textBlock_pw" HorizontalAlignment="Left" Margin="83,69,0,0" TextWrapping="Wrap" Text="请输入密码" VerticalAlignment="Top" FontSize="14"/>
         <TextBox x:Name="textBox_ip" HorizontalAlignment="Left" Height="23" Margin="196,100,0,0" TextWrapping="Wrap" Text="127.0.0.1:1500" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
         <TextBlock x:Name="textBlock_ip" HorizontalAlignment="Left" Margin="60,105,0,0" TextWrapping="Wrap" Text="请输入服务器地址" VerticalAlignment="Top" FontSize="14"/>
-        <Button x:Name="button_register" Content="注册账号" HorizontalAlignment="Left" Margin="60,146,0,0" VerticalAlignment="Top" Width="75" Click="button_register_Click"/>
-        <Button x:Name="button_login" Content="登陆" HorizontalAlignment="Left" Margin="150,146,0,0" VerticalAlignment="Top" Width="75" Click="button_login_Click"/>
-        <Button x:Name="button_about" Content="关于" HorizontalAlignment="Left" Margin="241,146,0,0" VerticalAlignment="Top" Width="75" Click="button_about_Click"/>
+        <Button x:Name="button_register" Content="注册账号" HorizontalAlignment="Left" Margin="60,172,0,0" VerticalAlignment="Top" Width="75" Click="button_register_Click"/>
+        <Button x:Name="button_login" Content="登陆" HorizontalAlignment="Left" Margin="150,172,0,0" VerticalAlignment="Top" Width="75" Click="button_login_Click"/>
+        <Button x:Name="button_about" Content="关于" HorizontalAlignment="Left" Margin="241,172,0,0" VerticalAlignment="Top" Width="75" Click="button_about_Click"/>
+        <TextBlock x:Name="textBlock_ip_Copy" HorizontalAlignment="Left" Margin="60,138,0,0" TextWrapping="Wrap" Text="数据库密码(选填)" VerticalAlignment="Top" FontSize="14"/>
+        <PasswordBox x:Name="passwordBox_Copy" HorizontalAlignment="Left" Height="23" Margin="196,136,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
     </Grid>
 </Window>
