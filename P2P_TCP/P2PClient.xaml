@@ -27,6 +27,11 @@
                 <MenuItem Header="同步数据库至消息记录" HorizontalAlignment="Left" Click="MenuItem_Click_Sync4" />
             </MenuItem>
             <MenuItem Header="关于(_A)" InputGestureText="Ctrl+A" Name="MenuItem_About" Click="MenuItem_About_Click"  />
+            <MenuItem Header="查询服务端信息(_G)" InputGestureText="Ctrl+G" Name="MenuItem_Ex" Visibility="Hidden" >
+                <MenuItem Header="查询服务端用户信息" HorizontalAlignment="Left" Click="MenuItem_Click_Ex1"/>
+                <MenuItem Header="查询服务端群组用户" HorizontalAlignment="Left" Click="MenuItem_Click_Ex2"/>
+                <MenuItem Header="查询服务端群组聊天" HorizontalAlignment="Left" Click="MenuItem_Click_Ex3"/>
+            </MenuItem>
         </Menu>
         <Grid HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="907"  DockPanel.Dock="Left" Margin="0,-394,0,0">
             <Grid.ColumnDefinitions>

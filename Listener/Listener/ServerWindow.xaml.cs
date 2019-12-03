@@ -117,6 +117,9 @@ namespace Listener {
 			if (i== allGroup.Count) {
 				MessageBox.Show("异步消息修改错误!");
 			}
+			if (checkBox_Copy.IsChecked == true) {
+				SQLDocker_group = allGroup;
+			}
 		}
 		private void SetGroupUserSource(UserInfo arg, int port) {
 			int i;
@@ -138,6 +141,9 @@ namespace Listener {
 			}
 			if (i == allGroup.Count) {
 				MessageBox.Show("异步用户修改错误!");
+			}
+			if (checkBox_Copy.IsChecked == true) {
+				SQLDocker_group = allGroup;
 			}
 		}
 
@@ -176,6 +182,9 @@ namespace Listener {
 
 		private void SetAllGroupSource(GroupInfo arg) {
 			allGroup.Add(arg);
+			if (checkBox_Copy.IsChecked == true) {
+				SQLDocker_group = allGroup;
+			}
 		}
 		private void SetUserSource(UserPw arg) {
 			int i;
@@ -196,6 +205,9 @@ namespace Listener {
 				up.Online = "在线";
 				allUser.RemoveAt(i);
 				allUser.Add(up);
+			}
+			if (checkBox.IsChecked == true) {
+				SQLDocker_user = allUser;
 			}
 		}
 

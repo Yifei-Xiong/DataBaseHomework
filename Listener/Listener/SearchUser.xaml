@@ -31,9 +31,9 @@
         <Button x:Name="button2_Copy" Content="清空" HorizontalAlignment="Left" Margin="22.4,23,0,0" VerticalAlignment="Top" Width="75" Click="Button2_Copy_Click" Grid.Column="2" />
         <CheckBox x:Name="checkBox" Content="精确搜索" HorizontalAlignment="Left" Margin="33,48,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.403,0.632" Grid.ColumnSpan="2" Grid.Column="1"/>
         <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="144,330,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="214"/>
-        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="44" Margin="144,371,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="56" Margin="144,364,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="214"/>
         <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="85,338,0,0" TextWrapping="Wrap" Text="用户ID: " VerticalAlignment="Top" RenderTransformOrigin="0.063,0.434"/>
-        <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="74,387,0,0" TextWrapping="Wrap" Text="用户密码: " VerticalAlignment="Top" RenderTransformOrigin="0.525,1.024"/>
+        <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="72,381,0,0" TextWrapping="Wrap" Text="用户密码: " VerticalAlignment="Top" RenderTransformOrigin="0.525,1.024"/>
         <Button x:Name="button" Content="修改用户信息" HorizontalAlignment="Left" Margin="32.8,338,0,0" VerticalAlignment="Top" Width="75" Click="button_Click" Grid.ColumnSpan="2" Grid.Column="1"/>
         <Button x:Name="button1" Content="删除用户信息" HorizontalAlignment="Left" Margin="32.8,377,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click" Grid.ColumnSpan="2" Grid.Column="1"/>
         <TextBlock x:Name="textBlock5_Copy" HorizontalAlignment="Left" Margin="431,385,0,0" TextWrapping="Wrap" Text="登录时间: " VerticalAlignment="Top"/>
@@ -48,8 +48,8 @@
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="52,429,0,0" TextWrapping="Wrap" Text="SHA256加密: " VerticalAlignment="Top"/>
         <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="144,429,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="214"/>
         <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="227,457,0,0" TextWrapping="Wrap" Text="明文密码" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox2_Copy" HorizontalAlignment="Left" Height="44" Margin="431,408,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="214"/>
-        <TextBlock x:Name="textBlock1_Copy4" HorizontalAlignment="Left" Margin="514,457,0,0" TextWrapping="Wrap" Text="密文密码" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox2_Copy" HorizontalAlignment="Left" Height="44" Margin="431,408,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="234"/>
+        <TextBlock x:Name="textBlock1_Copy4" HorizontalAlignment="Left" Margin="534,457,0,0" TextWrapping="Wrap" Text="密文密码" VerticalAlignment="Top"/>
         <Button x:Name="button1_Copy" Content="密码加密" HorizontalAlignment="Left" Margin="32.8,415,0,0" VerticalAlignment="Top" Width="75" Grid.ColumnSpan="2" Grid.Column="1" Click="button1_Copy_Click"/>
     </Grid>
 </Window>

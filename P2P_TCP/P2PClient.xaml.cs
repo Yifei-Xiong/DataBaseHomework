@@ -22,6 +22,9 @@ using Microsoft.Win32;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using MySql.Data.MySqlClient;
+using System.Xml.Serialization;
+using static Listener.ServerWindow;
+using System.Text.RegularExpressions;
 
 namespace P2P_TCP {
 	/// <summary>
@@ -60,6 +63,9 @@ namespace P2P_TCP {
 			this.MyPort = MyPort;
 			this.tcpListener = tcpListener;
 			this.LoginPort = LoginPort;
+			if (ID=="admin") {
+				MenuItem_Ex.Visibility = System.Windows.Visibility.Visible; //显示查询
+			} //管理员
 		}
 
 		string UserID; //用户ID
@@ -68,6 +74,8 @@ namespace P2P_TCP {
 		IPAddress myIPAddress = null; //本程序侦听使用的IP地址
 		TcpListener tcpListener = null; //接收信息的侦听类对象,检查是否有信息
 		string IPAndPort; //记录本地IP和端口号
+		AllGroup allGroup = new AllGroup();
+		AllUser allUser = new AllUser();
 
 		public class StateObject {
 			public TcpClient tcpClient = null;
@@ -858,6 +866,113 @@ namespace P2P_TCP {
 				}
             }
         }
+
+		private void MenuItem_Click_Ex1(object sender, RoutedEventArgs e) {
+			allUser = SQLDocker_user1;
+			Listener.SearchUser searchUser = new Listener.SearchUser(allUser);
+			searchUser.ShowDialog();
+			SQLDocker_user1 = allUser;
+		}
+
+		private void MenuItem_Click_Ex3(object sender, RoutedEventArgs e) {
+			allGroup = SQLDocker_group1;
+			Listener.SearchGroup searchGroup = new Listener.SearchGroup(allGroup);
+			searchGroup.ShowDialog();
+			SQLDocker_group1 = allGroup;
+		}
+
+		private void MenuItem_Click_Ex2(object sender, RoutedEventArgs e) {
+			allGroup = SQLDocker_group1;
+			Listener.SearchUserInGroup searchUserInGroup = new Listener.SearchUserInGroup(allGroup);
+			searchUserInGroup.ShowDialog();
+			SQLDocker_group1 = allGroup;
+		}
+
+		private MySqlConnection connection1;
+
+		public void InitSQLDocker1() {
+			connection1 = new MySqlConnection("server=106.14.44.67;user=root;password=0000;database=serverdb1;");
+			connection1.Open();
+		}
+
+		AllGroup SQLDocker_group1
+		{
+			get
+			{
+				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
+					InitSQLDocker1();
+				MySqlCommand sql1 = new MySqlCommand("SELECT * FROM allgroup", connection1);
+				MySqlDataReader reader = sql1.ExecuteReader();
+				AllGroup result = new AllGroup();
+				string str = string.Empty;
+				while (reader.Read()) {
+					str += reader[0].ToString() + "\r\n";
+				}
+				str = str.Replace("_Pt_", "\"").Replace("_Rt_", ">").Replace("_Lt_", "<");
+				XmlSerializer dser = new XmlSerializer(typeof(AllGroup));
+				Stream xmlStream = new MemoryStream(Encoding.UTF8.GetBytes(str));
+				result = dser.Deserialize(xmlStream) as AllGroup;//cat2 就是你要得到的class对象
+				reader.Close();
+				return result;
+			}
+			set
+			{
+				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
+					InitSQLDocker1();
+				XmlSerializer ser = new XmlSerializer(typeof(AllGroup));
+				MemoryStream ms = new MemoryStream();
+				ser.Serialize(ms, allGroup);
+				string xmlString = Encoding.UTF8.GetString(ms.ToArray());
+				var query = new MySqlCommand("DELETE FROM allgroup", connection1);
+				query.ExecuteNonQuery();
+				//xmlString = xmlString.Replace("\r", "r_lea").Replace("\n", "n_lea").Replace("\"", "t_lea");
+				xmlString = xmlString.Replace("\"", "_Pt_").Replace(">", "_Rt_").Replace("<", "_Lt_");
+				var insert = Regex.Split(xmlString, "\r\n", RegexOptions.IgnoreCase);
+				//MySqlCommand sql = new MySqlCommand("INSERT INTO allgroup(GroupInfo) " + "VALUES(\"" + xmlString + "\")", connection);
+				foreach (var str in insert) {
+					MySqlCommand sql = new MySqlCommand("INSERT INTO allgroup(GroupInfo) "
+						+ "VALUES(\"" + str + "\")", connection1);
+					sql.ExecuteNonQuery();
+				}
+
+			}
+		}
+
+		AllUser SQLDocker_user1
+		{
+			get
+			{
+				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
+					InitSQLDocker1();
+				MySqlCommand sql = new MySqlCommand("SELECT * FROM alluser", connection1);
+				MySqlDataReader reader = sql.ExecuteReader();
+				AllUser result = new AllUser();
+				while (reader.Read()) {
+					UserPw up = new UserPw();
+					up.UserID = reader[0].ToString();
+					up.Password = reader[1].ToString();
+					up.Online = reader[2].ToString();
+					up.LogInTime = reader[3].ToString();
+					up.LogInIP = reader[4].ToString();
+					up.LogInPort = reader[5].ToString();
+					result.Add(up);
+				}
+				reader.Close();
+				return result;
+			}
+			set
+			{
+				if (connection1 == null || connection1.State != System.Data.ConnectionState.Open)
+					InitSQLDocker1();
+				var query = new MySqlCommand("DELETE FROM alluser", connection1);
+				query.ExecuteNonQuery();
+				foreach (UserPw up in value) {
+					MySqlCommand sql = new MySqlCommand("INSERT INTO alluser(UserID,Pwd,Ol,LogInTime,LogInIP,LogInPort) "
+						+ "VALUES(\"" + up.UserID + "\", \"" + up.Password + "\", \"" + up.Online + "\", \"" + up.LogInTime + "\", \"" + up.LogInIP + "\", \"" + up.LogInPort + "\")", connection1);
+					sql.ExecuteNonQuery();
+				}
+			}
+		}
 
 	}
 }
