@@ -784,6 +784,8 @@ namespace Listener {
 			{
 				if (connection == null || connection.State != System.Data.ConnectionState.Open)
 					InitSQLDocker();
+				if (connection == null || connection.State != System.Data.ConnectionState.Open)
+					return this.allGroup;
 				MySqlCommand sql = new MySqlCommand("SELECT * FROM allgroup", connection);
 				MySqlDataReader reader = sql.ExecuteReader();
 				AllGroup result = new AllGroup();
@@ -802,6 +804,8 @@ namespace Listener {
 			{
 				if (connection == null || connection.State != System.Data.ConnectionState.Open)
 					InitSQLDocker();
+				if (connection == null || connection.State != System.Data.ConnectionState.Open)
+					return;
 				XmlSerializer ser = new XmlSerializer(typeof(AllGroup));
 				MemoryStream ms = new MemoryStream();
 				ser.Serialize(ms, allGroup);
@@ -827,6 +831,8 @@ namespace Listener {
 			{
 				if (connection == null || connection.State != System.Data.ConnectionState.Open)
 					InitSQLDocker();
+				if (connection == null || connection.State != System.Data.ConnectionState.Open)
+					return this.allUser;
 				MySqlCommand sql = new MySqlCommand("SELECT * FROM alluser", connection);
 				MySqlDataReader reader = sql.ExecuteReader();
 				AllUser result = new AllUser();
@@ -847,6 +853,8 @@ namespace Listener {
 			{
 				if (connection == null || connection.State != System.Data.ConnectionState.Open)
 					InitSQLDocker();
+				if (connection == null || connection.State != System.Data.ConnectionState.Open)
+					return;
 				var query = new MySqlCommand("DELETE FROM alluser", connection);
 				query.ExecuteNonQuery();
 				foreach (UserPw up in value) {

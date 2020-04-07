@@ -65,6 +65,9 @@ namespace P2P_TCP {
 			this.LoginPort = LoginPort;
 			if (ID=="admin") {
 				MenuItem_Ex.Visibility = System.Windows.Visibility.Visible; //显示查询
+				textBlock_ip_Copy.Visibility = System.Windows.Visibility.Visible;
+				passwordBox_Copy.Visibility = System.Windows.Visibility.Visible;
+				button2.Visibility = System.Windows.Visibility.Visible;
 			} //管理员
 			this.dbpw = dbpw; //数据库key
 		}
